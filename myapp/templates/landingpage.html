@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContractorHub · Join As</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --navy:      #0a1628;
+            --blue:      #1a3a6b;
+            --gold:      #c9903a;
+            --gold-light:#e8a84a;
+            --gold-dim:  rgba(201,144,58,0.12);
+            --border:    #e2e8f0;
+            --light:     #f1f5f9;
+            --gray:      #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f4f7fd;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+
+            /* subtle grid background */
+            background-image:
+                linear-gradient(rgba(201,144,58,0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(201,144,58,0.06) 1px, transparent 1px);
+            background-size: 35px 35px;
+            background-color: #f4f7fd;
+        }
+
+        /* Logo */
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        .logo span { color: var(--gold); }
+
+        .tagline {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+
+        /* Card wrapper */
+        .card {
+            background: white;
+            border-radius: 28px;
+            padding: 2.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            width: 100%;
+            max-width: 560px;
+        }
+
+        .card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--navy);
+            margin-bottom: 0.4rem;
+            text-align: center;
+        }
+
+        .card p {
+            color: var(--gray);
+            font-size: 0.875rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* Role options */
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .option {
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 1.8rem 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.22s ease;
+            position: relative;
+            user-select: none;
+        }
+
+        .option:hover {
+            border-color: var(--gold);
+            background: var(--gold-dim);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(201,144,58,0.12);
+        }
+
+        .option.selected {
+            border-color: var(--gold);
+            background: var(--gold-dim);
+            box-shadow: 0 8px 25px rgba(201,144,58,0.18);
+        }
+
+        /* Checkmark */
+        .option .check {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            background: white;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            color: white;
+        }
+
+        .option.selected .check {
+            background: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .option-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 1rem;
+            transition: 0.2s;
+        }
+
+        .option.selected .option-icon,
+        .option:hover .option-icon {
+            background: rgba(201,144,58,0.2);
+        }
+
+        .option h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 0.4rem;
+        }
+
+        .option p {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+
+        /* Next button */
+        .btn-next {
+            width: 100%;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: var(--navy);
+            border: none;
+            padding: 0.95rem;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(201,144,58,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
+        .btn-next.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .btn-next.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(201,144,58,0.4);
+        }
+
+        .login-text {
+            text-align: center;
+            margin-top: 1.2rem;
+            font-size: 0.82rem;
+            color: var(--gray);
+        }
+
+        .login-text a {
+            color: var(--gold);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        @media (max-width: 480px) {
+            .options { grid-template-columns: 1fr; }
+            .card { padding: 1.8rem 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo">Contractor<span>Hub</span></div>
+    <p class="tagline">Pakistan ka #1 Construction Platform</p>
+
+    <div class="card">
+        <h2>Aap kaise join karna chahte hain?</h2>
+        <p>Apna role select karein — aap baad mein switch bhi kar sakte hain</p>
+
+        <form method="POST" action="{% url 'landing_page' %}" id="roleForm">
+            {% csrf_token %}
+            <input type="hidden" name="user_type" id="userTypeInput" value="">
+
+            <div class="options">
+
+                <!-- Client -->
+                <div class="option" id="opt-client" onclick="selectRole('client')">
+                    <div class="check"><i class="fas fa-check"></i></div>
+                    <div class="option-icon">🏠</div>
+                    <h3>Client</h3>
+                    <p>Kaam karwana chahta hun — contractor dhundhna hai</p>
+                </div>
+
+                <!-- Contractor -->
+                <div class="option" id="opt-contractor" onclick="selectRole('contractor')">
+                    <div class="check"><i class="fas fa-check"></i></div>
+                    <div class="option-icon">🔨</div>
+                    <h3>Contractor</h3>
+                    <p>Kaam karna chahta hun — apni services sell karni hain</p>
+                </div>
+
+            </div>
+
+            <!-- Next Button -->
+             
+            <button  type="submit" class="btn-next" id="nextBtn" disabled>
+                Next <i class="fas fa-arrow-right"></i>
+            </button>
+
+        </form>
+
+        <p class="login-text">
+            Pehle se account hai? <a href="{% url 'signin' %}">Login karein</a>
+        </p>
+    </div>
+
+    <script>
+        function selectRole(role) {
+            // Dono sy selected class hata do
+            document.getElementById('opt-client').classList.remove('selected');
+            document.getElementById('opt-contractor').classList.remove('selected');
+
+            // Selected wale ko add karo
+            document.getElementById('opt-' + role).classList.add('selected');
+
+            // Hidden input mein value set karo — Django ko yahan sy milega
+            document.getElementById('userTypeInput').value = role;
+
+            // Next button enable karo
+            const btn = document.getElementById('nextBtn');
+            btn.classList.add('active');
+            btn.disabled = false;
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContractorHub - Loading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0a1628;
+            --blue: #1a3a6b;
+            --gold: #c9903a;
+            --gold-light: #e8a84a;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--navy);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Animated grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: -50%;
+            background-image:
+                linear-gradient(rgba(201,144,58,0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(201,144,58,0.06) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridMove 20s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translateY(0) translateX(0); }
+            100% { transform: translateY(60px) translateX(60px); }
+        }
+
+        /* Radial glow center */
+        body::after {
+            content: '';
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(26,58,107,0.5) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .orb-1 {
+            width: 300px; height: 300px;
+            background: rgba(201, 144, 58, 0.08);
+            top: 10%; right: 15%;
+            animation: orbFloat1 8s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 400px; height: 400px;
+            background: rgba(26, 58, 107, 0.2);
+            bottom: 10%; left: 10%;
+            animation: orbFloat2 10s ease-in-out infinite;
+        }
+
+        @keyframes orbFloat1 {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-30px) translateX(20px); }
+        }
+
+        @keyframes orbFloat2 {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(20px) translateX(-30px); }
+        }
+
+        /* Main loader wrapper */
+        .loader-wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        /* Logo */
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--white);
+            letter-spacing: -1px;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeDown 0.8s ease 0.2s forwards;
+        }
+
+        .logo span { color: var(--gold); }
+
+        @keyframes fadeDown {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Ring loader */
+        .ring-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease 0.6s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid transparent;
+        }
+
+        .ring-1 {
+            border-top-color: var(--gold);
+            border-right-color: var(--gold);
+            animation: spin 1.2s linear infinite;
+        }
+
+        .ring-2 {
+            inset: 10px;
+            border-bottom-color: rgba(201, 144, 58, 0.4);
+            border-left-color: rgba(201, 144, 58, 0.4);
+            animation: spin 1.8s linear infinite reverse;
+        }
+
+        .ring-3 {
+            inset: 22px;
+            border-top-color: rgba(255,255,255,0.15);
+            border-right-color: rgba(255,255,255,0.15);
+            animation: spin 2.4s linear infinite;
+        }
+
+        /* Center dot */
+        .ring-dot {
+            position: absolute;
+            inset: 38px;
+            border-radius: 50%;
+            background: var(--gold);
+            animation: dotPulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.6); opacity: 0.4; }
+        }
+
+        /* Progress bar */
+        .progress-wrap {
+            width: 220px;
+            opacity: 0;
+            animation: fadeIn 0.6s ease 0.9s forwards;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-text {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .progress-pct {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .progress-bar {
+            height: 2px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light));
+            border-radius: 2px;
+            width: 0%;
+            animation: progressLoad 2.5s ease 1s forwards;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -2px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gold-light);
+            box-shadow: 0 0 8px var(--gold-light);
+        }
+
+        @keyframes progressLoad {
+            0% { width: 0%; }
+            30% { width: 35%; }
+            60% { width: 65%; }
+            85% { width: 85%; }
+            100% { width: 100%; }
+        }
+
+        /* Status text */
+        .status-text {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 1px;
+            min-height: 1.2em;
+            opacity: 0;
+            animation: fadeIn 0.6s ease 1.2s forwards;
+        }
+
+        /* Decorative dots */
+        .dots-row {
+            display: flex;
+            gap: 0.4rem;
+            opacity: 0;
+            animation: fadeIn 0.6s ease 1s forwards;
+        }
+
+        .dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: rgba(201,144,58,0.3);
+        }
+
+        .dot:nth-child(1) { animation: dotBlink 1.4s ease-in-out 0s infinite; }
+        .dot:nth-child(2) { animation: dotBlink 1.4s ease-in-out 0.2s infinite; }
+        .dot:nth-child(3) { animation: dotBlink 1.4s ease-in-out 0.4s infinite; }
+        .dot:nth-child(4) { animation: dotBlink 1.4s ease-in-out 0.6s infinite; }
+        .dot:nth-child(5) { animation: dotBlink 1.4s ease-in-out 0.8s infinite; }
+
+        @keyframes dotBlink {
+            0%, 100% { background: rgba(201,144,58,0.2); }
+            50% { background: var(--gold); }
+        }
+
+        /* Corner decorations */
+        .corner {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            z-index: 5;
+            opacity: 0.15;
+        }
+
+        .corner-tl { top: 2rem; left: 2rem; border-top: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+        .corner-tr { top: 2rem; right: 2rem; border-top: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+        .corner-bl { bottom: 2rem; left: 2rem; border-bottom: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+        .corner-br { bottom: 2rem; right: 2rem; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+
+        /* Fade out entire loader */
+        .loader-wrapper.done {
+            animation: loaderFadeOut 0.6s ease forwards;
+        }
+
+        @keyframes loaderFadeOut {
+            to { opacity: 0; transform: scale(0.95); }
+        }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+
+    <div class="loader-wrapper" id="loader">
+        <div class="logo">Contractor<span>Hub</span></div>
+
+        <div class="ring-container">
+            <div class="ring ring-1"></div>
+            <div class="ring ring-2"></div>
+            <div class="ring ring-3"></div>
+            <div class="ring-dot"></div>
+        </div>
+
+        <div class="dots-row">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+        <div class="progress-wrap">
+            <div class="progress-label">
+                <span class="progress-text">Loading</span>
+                <span class="progress-pct" id="pct">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="fill"></div>
+            </div>
+        </div>
+
+        <div class="status-text" id="status">Connecting to platform...</div>
+    </div>
+
+    <script>
+        const messages = [
+            'Connecting to platform...',
+            'Loading contractors...',
+            'Preparing your dashboard...',
+            'Almost there...'
+        ];
+
+        const statusEl = document.getElementById('status');
+        const pctEl = document.getElementById('pct');
+        const fillEl = document.getElementById('fill');
+        let msgIndex = 0;
+
+        // Cycle status messages
+        setInterval(() => {
+            msgIndex = (msgIndex + 1) % messages.length;
+            statusEl.style.opacity = '0';
+            setTimeout(() => {
+                statusEl.textContent = messages[msgIndex];
+                statusEl.style.transition = 'opacity 0.4s ease';
+                statusEl.style.opacity = '0.3';
+            }, 300);
+        }, 700);
+
+        // Update percentage counter
+        let pct = 0;
+        const targets = [35, 65, 85, 100];
+        let targetIndex = 0;
+        const delays = [800, 1500, 2200, 2800];
+
+        delays.forEach((delay, i) => {
+            setTimeout(() => {
+                const target = targets[i];
+                const interval = setInterval(() => {
+                    if (pct < target) {
+                        pct++;
+                        pctEl.textContent = pct + '%';
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 15);
+            }, delay);
+        });
+
+        // Redirect after load
+        setTimeout(() => {
+            document.getElementById('loader').classList.add('done');
+            setTimeout(() => {
+                window.location.href = {% url "landing_page" %}; 
+            }, 600);
+        }, 3400);
+    </script>
+</body>
+</html>

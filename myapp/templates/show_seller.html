@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContractorHub · Find Workers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --navy:      #0a1628;
+            --blue:      #1a3a6b;
+            --gold:      #c9903a;
+            --gold-light:#e8a84a;
+            --gold-dim:  rgba(201,144,58,0.12);
+            --gray:      #64748b;
+            --light:     #f1f5f9;
+            --border:    #e2e8f0;
+            --success:   #10b981;
+            --danger:    #ef4444;
+        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f0f4fb;
+            color: var(--navy);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ═══════════════════════════
+           TOP BAR
+        ═══════════════════════════ */
+        .topbar-wrap {
+            background: #f0f4fb;
+            padding: 1.4rem 2.5rem 0;
+        }
+        .top-bar {
+            background: white;
+            border-radius: 60px;
+            padding: 0 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            height: 64px;
+            white-space: nowrap;
+            position: relative;
+            z-index: 200;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem; font-weight: 900;
+            color: var(--navy); flex-shrink: 0;
+            text-decoration: none;
+        }
+        .logo span { color: var(--gold); }
+
+        .nav-divider { width:1px; height:28px; background:var(--border); flex-shrink:0; }
+
+        .main-nav { display:flex; align-items:center; gap:0.2rem; flex:1; }
+        .nav-item {
+            padding: 0.48rem 1rem;
+            border-radius: 40px;
+            font-size: 0.875rem; font-weight: 500; color: var(--gray);
+            cursor: pointer; transition: 0.18s;
+            display: flex; align-items: center; gap: 0.45rem;
+            text-decoration: none; flex-shrink: 0;
+        }
+        .nav-item i { font-size: 0.78rem; }
+        .nav-item:hover  { background: var(--light); color: var(--navy); }
+        .nav-item.active { background: var(--gold-dim); color: var(--gold); font-weight: 600; }
+
+        /* right icons */
+        .right-icons { display:flex; align-items:center; gap:0.5rem; margin-left:auto; flex-shrink:0; }
+        .icon-circle {
+            width:40px; height:40px; border-radius:50%;
+            background: var(--light);
+            display:flex; align-items:center; justify-content:center;
+            color:var(--gray); font-size:1rem;
+            cursor:pointer; position:relative;
+            transition:0.18s; text-decoration:none; border:none;
+        }
+        .icon-circle:hover { background:var(--gold-dim); color:var(--gold); }
+        .message-dot, .notif-dot-badge {
+            position:absolute; top:8px; right:8px;
+            width:8px; height:8px; border-radius:50%; border:1.5px solid white;
+        }
+        .message-dot    { background: var(--success); }
+        .notif-dot-badge{ background: var(--gold); }
+
+        /* notif popup */
+        .notif-wrapper { position:relative; }
+        .notif-popup {
+            position:absolute; top:calc(100% + 12px); right:0;
+            width:300px; background:white; border-radius:20px;
+            box-shadow:0 15px 40px rgba(0,0,0,0.13);
+            border:1px solid var(--border); overflow:hidden;
+            display:none; z-index:1000;
+            animation: dropIn 0.2s ease;
+        }
+        .notif-popup.show { display:block; }
+        @keyframes dropIn {
+            from { opacity:0; transform:translateY(-8px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+        .notif-head {
+            padding:0.9rem 1.2rem; border-bottom:1px solid var(--border);
+            background:linear-gradient(135deg,var(--navy),var(--blue));
+            display:flex; align-items:center; justify-content:space-between;
+        }
+        .notif-head h4 { font-size:0.88rem; color:white; display:flex; align-items:center; gap:0.5rem; }
+        .notif-head h4 i { color:var(--gold); }
+        .notif-mark { font-size:0.7rem; color:var(--gold-light); cursor:pointer; background:none; border:none; font-family:'DM Sans',sans-serif; }
+        .notif-list { max-height:260px; overflow-y:auto; }
+        .notif-row {
+            display:flex; align-items:flex-start; gap:0.75rem;
+            padding:0.8rem 1.2rem; border-bottom:1px solid var(--border);
+            cursor:pointer; transition:0.15s;
+        }
+        .notif-row:last-child { border-bottom:none; }
+        .notif-row:hover { background:var(--light); }
+        .notif-row.unread { background:rgba(201,144,58,0.04); }
+        .ni { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.82rem; flex-shrink:0; }
+        .ni.msg  { background:rgba(16,185,129,0.12); color:var(--success); }
+        .ni.info { background:var(--gold-dim); color:var(--gold); }
+        .notif-row p  { font-size:0.79rem; color:var(--navy); line-height:1.4; }
+        .notif-row small { font-size:0.67rem; color:var(--gray); display:block; margin-top:0.2rem; }
+        .nu-dot { width:8px; height:8px; border-radius:50%; background:var(--gold); flex-shrink:0; margin-top:6px; }
+        .notif-footer-link { padding:0.6rem 1.2rem; border-top:1px solid var(--border); text-align:center; }
+        .notif-footer-link a { font-size:0.77rem; color:var(--gold); text-decoration:none; font-weight:600; }
+
+        /* profile dropdown */
+        .profile-dropdown { position:relative; }
+        .profile-avatar {
+            display:flex; align-items:center; gap:0.5rem;
+            background:var(--light); padding:0.25rem 0.8rem 0.25rem 1rem;
+            border-radius:40px; cursor:pointer;
+            font-size:0.875rem; font-weight:500; color:var(--navy);
+            border:none; transition:0.2s;
+        }
+        .profile-avatar:hover { background:var(--gold-dim); }
+        .av {
+            width:36px; height:36px;
+            background:linear-gradient(135deg,var(--gold),var(--gold-light));
+            border-radius:50%; display:flex; align-items:center; justify-content:center;
+            font-weight:700; font-size:0.78rem; color:var(--navy);
+            text-transform:uppercase; overflow:hidden; flex-shrink:0;
+        }
+        .av img { width:100%; height:100%; object-fit:cover; }
+        .dd-menu {
+            position:absolute; top:calc(100% + 10px); right:0;
+            width:250px; background:white; border-radius:20px;
+            box-shadow:0 15px 40px rgba(0,0,0,0.12);
+            border:1px solid var(--border); overflow:hidden;
+            display:none; z-index:1000; animation:dropIn 0.2s ease;
+        }
+        .dd-menu.show { display:block; }
+        .dd-head { padding:1rem 1.2rem; border-bottom:1px solid var(--border); background:linear-gradient(135deg,var(--navy),var(--blue)); }
+        .dd-head h4 { font-size:0.9rem; color:white; margin-bottom:0.2rem; }
+        .dd-head p  { font-size:0.72rem; color:rgba(255,255,255,0.6); }
+        .dd-item {
+            padding:0.75rem 1.2rem; display:flex; align-items:center; gap:0.8rem;
+            cursor:pointer; transition:0.15s; font-size:0.85rem;
+            text-decoration:none; color:var(--navy);
+        }
+        .dd-item:hover { background:var(--light); }
+        .dd-item i { width:18px; color:var(--gold); font-size:0.9rem; }
+        .dd-div { height:1px; background:var(--border); }
+        .dd-item.danger { color:var(--danger); }
+        .dd-item.danger i { color:var(--danger); }
+        .dd-item.danger:hover { background:#fef2f2; }
+
+        /* ═══════════════════════════
+           PAGE LAYOUT
+        ═══════════════════════════ */
+        .page {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 2rem 2.5rem 3rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* ═══════════════════════════
+           SEARCH HERO
+        ═══════════════════════════ */
+        .search-hero {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+            border-radius: 28px;
+            padding: 2.8rem 3rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .search-hero::before {
+            content:'';
+            position:absolute; inset:0;
+            background-image:
+                linear-gradient(rgba(201,144,58,0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(201,144,58,0.07) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+        }
+        .hero-text { position:relative; z-index:2; margin-bottom:1.8rem; }
+        .hero-text h1 {
+            font-family:'Playfair Display',serif;
+            font-size:2.1rem; color:white; margin-bottom:0.5rem; line-height:1.2;
+        }
+        .hero-text h1 span { color:var(--gold); }
+        .hero-text p { color:rgba(255,255,255,0.5); font-size:0.95rem; }
+
+        .search-bar {
+            position:relative; z-index:2;
+            display:flex; align-items:center;
+            background:white; border-radius:60px;
+            padding: 0.55rem 0.55rem 0.55rem 1.6rem;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+            gap:0.6rem;
+        }
+        .search-bar .s-icon { color:var(--gray); font-size:1rem; flex-shrink:0; }
+        .search-bar input {
+            flex:1; border:none; outline:none;
+            font-size:1rem; font-family:'DM Sans',sans-serif;
+            color:var(--navy); background:transparent; min-width:0;
+        }
+        .search-bar input::placeholder { color:#aab; }
+        .s-clear {
+            width:30px; height:30px; border-radius:50%;
+            background:var(--light); border:none; cursor:pointer;
+            display:none; align-items:center; justify-content:center;
+            color:var(--gray); font-size:0.75rem; flex-shrink:0; transition:0.15s;
+        }
+        .s-clear.on { display:flex; }
+        .s-clear:hover { background:var(--border); }
+        .s-btn {
+            background:var(--gold); color:white; border:none;
+            padding:0.75rem 2rem; border-radius:40px;
+            font-size:0.92rem; font-weight:600; cursor:pointer;
+            display:flex; align-items:center; gap:0.5rem;
+            transition:0.2s; white-space:nowrap; flex-shrink:0;
+        }
+        .s-btn:hover { background:var(--gold-light); transform:scale(1.02); }
+
+        /* ═══════════════════════════
+           BODY: sidebar + grid
+        ═══════════════════════════ */
+        .body-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            background: white;
+            border-radius: 22px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            position: sticky;
+            top: 1.5rem;
+        }
+        .sb-head {
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem; font-weight: 700;
+            color: var(--gray); text-transform: uppercase; letter-spacing: 0.07em;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .sb-head i { color:var(--gold); }
+        .sb-item {
+            display:flex; align-items:center; justify-content:space-between;
+            padding: 0.85rem 1.4rem;
+            font-size:0.88rem; font-weight:500; color:var(--gray);
+            cursor:pointer; transition:0.15s;
+            border-bottom:1px solid var(--border); gap:0.5rem;
+        }
+        .sb-item:last-child { border-bottom:none; }
+        .sb-item:hover { background:var(--light); color:var(--navy); }
+        .sb-item.active { background:var(--gold-dim); color:var(--gold); font-weight:600; }
+        .sb-left { display:flex; align-items:center; gap:0.7rem; }
+        .sb-left i { width:16px; font-size:0.82rem; }
+        .sb-cnt {
+            background:var(--light); color:var(--gray);
+            padding:0.12rem 0.55rem; border-radius:12px;
+            font-size:0.68rem; font-weight:700;
+            font-family:'Space Mono',monospace; flex-shrink:0;
+        }
+        .sb-item.active .sb-cnt { background:rgba(201,144,58,0.2); color:var(--gold); }
+
+        /* ── MAIN CONTENT ── */
+        .main-content { min-width:0; }
+
+        /* results bar */
+        .results-bar {
+            display:flex; align-items:center; justify-content:space-between;
+            margin-bottom:1.4rem; flex-wrap:wrap; gap:0.8rem;
+        }
+        .res-left { display:flex; align-items:center; gap:0.8rem; flex-wrap:wrap; }
+        .res-count { font-size:0.9rem; color:var(--gray); }
+        .res-count strong { color:var(--navy); font-size:1.05rem; }
+        .query-badge {
+            background:var(--gold-dim); color:var(--gold);
+            border:1px solid rgba(201,144,58,0.25);
+            padding:0.28rem 0.85rem; border-radius:20px;
+            font-size:0.78rem; font-weight:600;
+            display:none; align-items:center; gap:0.4rem;
+        }
+        .query-badge.on { display:flex; }
+        .query-badge button { background:none; border:none; cursor:pointer; color:var(--gold); font-size:0.7rem; padding:0; margin-left:0.15rem; }
+        .query-badge button:hover { color:var(--danger); }
+        .section-label {
+            font-family:'Playfair Display',serif;
+            font-size:1.25rem; color:var(--navy);
+        }
+        .section-label span { font-family:'DM Sans',sans-serif; font-size:0.8rem; color:var(--gray); font-weight:400; }
+
+        /* ── WORKERS GRID ── */
+        .workers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 1.4rem;
+        }
+
+        /* ── WORKER CARD ── */
+        .wcard {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: 0.25s;
+            animation: fadeUp 0.35s ease both;
+        }
+        @keyframes fadeUp {
+            from { opacity:0; transform:translateY(14px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+        .wcard:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 36px rgba(0,0,0,0.09);
+            border-color: rgba(201,144,58,0.35);
+        }
+
+        /* cover */
+        .wcard-cover {
+            height: 80px;
+            position: relative;
+            background: linear-gradient(120deg, var(--navy), var(--blue));
+        }
+        .wcard-cover.construction { background:linear-gradient(120deg,#162440,#2d4a7a); }
+        .wcard-cover.plumbing     { background:linear-gradient(120deg,#0f3460,#1e5f8a); }
+        .wcard-cover.electrical   { background:linear-gradient(120deg,#1a3a2a,#2a6a4a); }
+        .wcard-cover.painting     { background:linear-gradient(120deg,#3a1a2a,#6a2a4a); }
+        .wcard-cover.carpentry    { background:linear-gradient(120deg,#3a2a1a,#6a4a2a); }
+        .wcard-cover.agriculture  { background:linear-gradient(120deg,#1a3a1a,#2a5a2a); }
+        .wcard-cover.drivers      { background:linear-gradient(120deg,#2a1a3a,#4a2a6a); }
+        .cover-dots {
+            position:absolute; inset:0;
+            background-image:radial-gradient(rgba(201,144,58,0.18) 1px,transparent 1px);
+            background-size:14px 14px;
+        }
+        .wcard-avail {
+            position:absolute; top:10px; right:10px;
+            background:rgba(16,185,129,0.9); color:white;
+            padding:0.22rem 0.6rem; border-radius:20px;
+            font-size:0.65rem; font-weight:600;
+            display:flex; align-items:center; gap:0.3rem;
+            backdrop-filter:blur(4px);
+        }
+        .wcard-avail::before { content:''; width:6px; height:6px; background:white; border-radius:50%; }
+
+        /* avatar */
+        .wcard-avatar {
+            width:66px; height:66px;
+            border-radius:50%; border:3px solid white;
+            position:absolute; bottom:-33px; left:18px;
+            display:flex; align-items:center; justify-content:center;
+            font-weight:700; font-size:1.3rem; color:white;
+            text-transform:uppercase; overflow:hidden;
+            background:linear-gradient(135deg,var(--gold),var(--gold-light));
+            box-shadow:0 4px 12px rgba(0,0,0,0.15);
+        }
+        .wcard-avatar img { width:100%; height:100%; object-fit:cover; }
+
+        /* body */
+        .wcard-body { padding:2.6rem 1.4rem 1.3rem; }
+        .wcard-name { font-size:1.02rem; font-weight:700; margin-bottom:0.2rem; }
+        .wcard-role { font-size:0.78rem; color:var(--gray); margin-bottom:0.75rem; line-height:1.3; }
+
+        .wcard-tags { display:flex; flex-wrap:wrap; gap:0.3rem; margin-bottom:0.8rem; }
+        .wtag {
+            background:var(--light); color:var(--gray);
+            padding:0.22rem 0.6rem; border-radius:20px; font-size:0.7rem;
+        }
+        .wtag.match {
+            background:var(--gold-dim); color:var(--gold);
+            border:1px solid rgba(201,144,58,0.2);
+        }
+
+        .wcard-meta {
+            display:flex; align-items:center; gap:1rem;
+            font-size:0.77rem; color:var(--gray); margin-bottom:0.9rem;
+            flex-wrap:wrap;
+        }
+        .wcard-meta span { display:flex; align-items:center; gap:0.3rem; }
+        .wcard-meta .stars { color:var(--gold); }
+
+        /* footer */
+        .wcard-footer {
+            display:flex; align-items:center; justify-content:space-between;
+            padding-top:0.85rem; border-top:1px solid var(--border);
+        }
+        .wcard-price { font-family:'Space Mono',monospace; font-size:0.92rem; font-weight:700; color:var(--navy); }
+        .wcard-price small { font-size:0.62rem; font-weight:400; color:var(--gray); font-family:'DM Sans',sans-serif; }
+        .wcard-btns { display:flex; gap:0.45rem; }
+        .wcbtn {
+            width:34px; height:34px; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            font-size:0.78rem; text-decoration:none; transition:0.18s;
+            border:1px solid var(--border); color:var(--gray); background:var(--light);
+        }
+        .wcbtn:hover { background:var(--navy); color:white; border-color:var(--navy); }
+        .wcbtn.gold { background:var(--gold-dim); color:var(--gold); border-color:rgba(201,144,58,0.2); }
+        .wcbtn.gold:hover { background:var(--gold); color:white; border-color:var(--gold); }
+
+
+        /* ── GIG SECTION ── */
+        .wcard-gig {
+            margin:0.8rem 0 0; border-top:1px dashed var(--border); padding-top:0.8rem;
+        }
+        .wcard-gig-img {
+            width:100%; height:115px; border-radius:12px; overflow:hidden;
+            background:linear-gradient(135deg,#0a1628,#1a3a6b);
+            margin-bottom:0.65rem; cursor:pointer; position:relative;
+        }
+        .wcard-gig-img img { width:100%; height:100%; object-fit:cover; display:block; }
+        .wcard-gig-img-placeholder {
+            width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+            background-image: linear-gradient(rgba(201,144,58,0.07) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(201,144,58,0.07) 1px, transparent 1px);
+            background-size:16px 16px;
+        }
+        .wcard-gig-img-placeholder i { font-size:2rem; color:rgba(201,144,58,0.35); }
+        .wcard-gig-title {
+            font-size:0.82rem; font-weight:700; color:var(--navy);
+            margin-bottom:0.3rem; line-height:1.3;
+            white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        }
+        .wcard-gig-desc {
+            font-size:0.73rem; color:var(--gray); line-height:1.45;
+            display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+        }
+
+        /* highlight */
+        mark { background:rgba(201,144,58,0.25); color:var(--navy); border-radius:3px; padding:0 2px; }
+
+        /* empty */
+        .no-results {
+            grid-column:1/-1; text-align:center;
+            padding:4rem 2rem; background:white;
+            border-radius:22px; border:1px dashed var(--border);
+        }
+        .no-results i { font-size:3.2rem; color:var(--border); display:block; margin-bottom:1rem; }
+        .no-results h3 { font-size:1.15rem; margin-bottom:0.5rem; }
+        .no-results p { color:var(--gray); font-size:0.87rem; }
+        .no-results button {
+            margin-top:1.3rem;
+            background:var(--gold-dim); color:var(--gold);
+            border:1px solid rgba(201,144,58,0.25);
+            padding:0.65rem 1.6rem; border-radius:30px;
+            font-size:0.86rem; font-weight:600; cursor:pointer; transition:0.2s;
+        }
+        .no-results button:hover { background:var(--gold); color:white; }
+
+        /* loading skeleton */
+        .skeleton-grid {
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+            gap:1.4rem;
+        }
+        .skel {
+            background:white; border-radius:20px; border:1px solid var(--border); overflow:hidden;
+        }
+        .skel-cover { height:80px; background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%); background-size:400% 100%; animation:shimmer 1.4s infinite; }
+        .skel-body { padding:2.5rem 1.4rem 1.3rem; }
+        .skel-line { height:12px; border-radius:6px; background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%); background-size:400% 100%; animation:shimmer 1.4s infinite; margin-bottom:0.7rem; }
+        .skel-line.w70 { width:70%; }
+        .skel-line.w50 { width:50%; }
+        .skel-line.w40 { width:40%; }
+        @keyframes shimmer { to { background-position:-400% 0; } }
+
+        /* ═══════════════════════════
+           FOOTER
+        ═══════════════════════════ */
+        footer {
+            background: var(--navy); color:white;
+            padding: 2rem 2.5rem 1.3rem;
+            margin-top: auto;
+            border-radius: 30px 30px 0 0;
+        }
+        .foot-inner {
+            max-width:1500px; margin:0 auto;
+            display:flex; align-items:center; justify-content:space-between;
+            flex-wrap:wrap; gap:1rem;
+        }
+        .foot-logo { font-family:'Playfair Display',serif; font-size:1.2rem; color:white; }
+        .foot-logo span { color:var(--gold); }
+        .foot-copy { color:rgba(255,255,255,0.4); font-size:0.8rem; }
+        .foot-links { display:flex; gap:1.5rem; }
+        .foot-links a { color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.82rem; transition:0.2s; }
+        .foot-links a:hover { color:var(--gold); }
+
+        /* ═══════════════════════════
+           RESPONSIVE
+        ═══════════════════════════ */
+        @media (max-width:980px) {
+            .body-layout { grid-template-columns:1fr; }
+            .sidebar { position:static; display:flex; overflow-x:auto; border-radius:16px; }
+            .sb-item { border-bottom:none; border-right:1px solid var(--border); white-space:nowrap; flex-shrink:0; }
+            .sb-item:last-child { border-right:none; }
+        }
+        @media (max-width:640px) {
+            .page { padding:1.2rem 1rem 2rem; }
+            .topbar-wrap { padding:1rem 1rem 0; }
+            .search-hero { padding:1.8rem 1.4rem; }
+            .hero-text h1 { font-size:1.6rem; }
+            .s-btn span { display:none; }
+            .workers-grid { grid-template-columns:1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════ TOP BAR ═══════ -->
+<div class="topbar-wrap">
+<div class="top-bar">
+    <a href="{% url 'client' %}" class="logo">Contractor<span>Hub</span></a>
+    <div class="nav-divider"></div>
+    <div class="main-nav">
+        <a href="{% url 'client' %}"       class="nav-item"><i class="fas fa-home"></i> Home</a>
+        <a href="{% url 'show_seller' %}"  class="nav-item active"><i class="fas fa-search"></i> Find Workers</a>
+        <a href="{% url 'client' %}?tab=contracts" class="nav-item"><i class="fas fa-file-contract"></i> Contracts</a>
+    </div>
+    <div class="right-icons">
+
+        <!-- Messages -->
+        <a href="{% url 'messages_page' %}" class="icon-circle" title="Messages">
+            <i class="far fa-envelope"></i>
+            {% if total_unread > 0 %}<span class="message-dot"></span>{% endif %}
+        </a>
+
+        <!-- Notifications -->
+        <div class="notif-wrapper">
+            <button class="icon-circle" onclick="toggleNotif(event)" title="Notifications">
+                <i class="far fa-bell"></i>
+                {% if total_unread > 0 %}<span class="notif-dot-badge" id="notifDot"></span>{% endif %}
+            </button>
+            <div class="notif-popup" id="notifPopup">
+                <div class="notif-head">
+                    <h4><i class="fas fa-bell"></i> Notifications</h4>
+                    <button class="notif-mark" onclick="markAllRead()">Mark all read</button>
+                </div>
+                <div class="notif-list">
+                    {% if total_unread > 0 %}
+                    <div class="notif-row unread" onclick="location.href='{% url 'messages_page' %}'">
+                        <div class="ni msg"><i class="fas fa-envelope"></i></div>
+                        <div>
+                            <p>You have <strong>{{ total_unread }} unread message{{ total_unread|pluralize }}</strong>.</p>
+                            <small>Just now</small>
+                        </div>
+                        <div class="nu-dot"></div>
+                    </div>
+                    {% endif %}
+                    <div class="notif-row">
+                        <div class="ni info"><i class="fas fa-star"></i></div>
+                        <div>
+                            <p>New skilled workers have joined your area.</p>
+                            <small>Today</small>
+                        </div>
+                    </div>
+                    {% if total_unread == 0 %}
+                    <div style="padding:1.5rem;text-align:center;color:var(--gray);font-size:0.82rem;">
+                        <i class="far fa-bell-slash" style="font-size:1.8rem;color:var(--border);display:block;margin-bottom:0.5rem;"></i>
+                        No new notifications
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="notif-footer-link"><a href="{% url 'messages_page' %}">View all messages →</a></div>
+            </div>
+        </div>
+
+        <!-- Profile Dropdown -->
+        <div class="profile-dropdown">
+            <button class="profile-avatar" onclick="toggleDD(event)" type="button">
+                <span>{% if user.name %}{{ user.name|truncatechars:12 }}{% else %}Client{% endif %}</span>
+                <div class="av">
+                    {% if user.name %}{{ user.name|slice:":2"|upper }}{% else %}C{% endif %}
+                </div>
+            </button>
+            <div class="dd-menu" id="profileDD">
+                <div class="dd-head">
+                    <h4>{% if user.name %}{{ user.name }}{% else %}Client{% endif %}</h4>
+                    <p>{{ user.email }}</p>
+                </div>
+                <a href="{% url 'client_profile' %}" class="dd-item"><i class="fas fa-user-circle"></i> My Profile</a>
+                <a href="{% url 'messages_page' %}"  class="dd-item">
+                    <i class="fas fa-envelope"></i> Messages
+                    {% if total_unread > 0 %}
+                    <span style="margin-left:auto;background:var(--gold);color:white;padding:0.1rem 0.45rem;border-radius:10px;font-size:0.65rem;font-weight:700;">{{ total_unread }}</span>
+                    {% endif %}
+                </a>
+                <div class="dd-div"></div>
+                <a href="{% url 'faqs' %}"    class="dd-item"><i class="fas fa-question-circle"></i> Help Center</a>
+                <div class="dd-div"></div>
+                <a href="{% url 'logout' %}"  class="dd-item danger"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- ═══════ PAGE ═══════ -->
+<div class="page">
+
+    <!-- SEARCH HERO -->
+    <div class="search-hero">
+        <div class="hero-text">
+            <h1>Find the perfect <span>worker</span></h1>
+            <p>Search by name, skill, or city — results update instantly, no page reload</p>
+        </div>
+        <div class="search-bar">
+            <i class="fas fa-search s-icon"></i>
+            <input type="text" id="searchInput"
+                   placeholder="e.g. plumber, Lahore, carpenter…"
+                   oninput="handleSearch(this.value)"
+                   autocomplete="off">
+            <button class="s-clear" id="clearBtn" onclick="clearSearch()">
+                <i class="fas fa-times"></i>
+            </button>
+            <button class="s-btn">
+                <i class="fas fa-search"></i> <span>Search</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="body-layout">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sb-head"><i class="fas fa-layer-group"></i> Categories</div>
+            <div class="sb-item active" onclick="filterCat('')"              data-cat=""><div class="sb-left"><i class="fas fa-th"></i> All Workers</div>   <span class="sb-cnt" id="cnt-all">0</span></div>
+            <div class="sb-item"        onclick="filterCat('construction')"  data-cat="construction"><div class="sb-left"><i class="fas fa-hard-hat"></i> Construction</div> <span class="sb-cnt" id="cnt-construction">0</span></div>
+            <div class="sb-item"        onclick="filterCat('plumbing')"      data-cat="plumbing">    <div class="sb-left"><i class="fas fa-faucet"></i> Plumbing</div>      <span class="sb-cnt" id="cnt-plumbing">0</span></div>
+            <div class="sb-item"        onclick="filterCat('electrical')"    data-cat="electrical">  <div class="sb-left"><i class="fas fa-bolt"></i> Electrical</div>      <span class="sb-cnt" id="cnt-electrical">0</span></div>
+            <div class="sb-item"        onclick="filterCat('painting')"      data-cat="painting">    <div class="sb-left"><i class="fas fa-paint-roller"></i> Painting</div><span class="sb-cnt" id="cnt-painting">0</span></div>
+            <div class="sb-item"        onclick="filterCat('carpentry')"     data-cat="carpentry">   <div class="sb-left"><i class="fas fa-hammer"></i> Carpentry</div>     <span class="sb-cnt" id="cnt-carpentry">0</span></div>
+            <div class="sb-item"        onclick="filterCat('agriculture')"   data-cat="agriculture"> <div class="sb-left"><i class="fas fa-seedling"></i> Agriculture</div> <span class="sb-cnt" id="cnt-agriculture">0</span></div>
+            <div class="sb-item"        onclick="filterCat('drivers')"       data-cat="drivers">     <div class="sb-left"><i class="fas fa-truck"></i> Drivers</div>        <span class="sb-cnt" id="cnt-drivers">0</span></div>
+        </div>
+
+        <!-- MAIN -->
+        <div class="main-content">
+            <div class="results-bar">
+                <div class="res-left">
+                    <div class="res-count">Showing <strong id="countDisplay">…</strong> workers</div>
+                    <div class="query-badge" id="queryBadge">
+                        <i class="fas fa-search"></i>
+                        <span id="badgeText"></span>
+                        <button onclick="clearSearch()"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="section-label" id="sectionLabel">
+                    All Workers <span id="sectionSub"></span>
+                </div>
+            </div>
+
+            <!-- skeleton while loading -->
+            <div class="skeleton-grid" id="skeletonGrid">
+                {% for i in "123456" %}
+                <div class="skel">
+                    <div class="skel-cover"></div>
+                    <div class="skel-body">
+                        <div class="skel-line w70"></div>
+                        <div class="skel-line w50"></div>
+                        <div class="skel-line w40"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="workers-grid" id="workersGrid" style="display:none;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer>
+    <div class="foot-inner">
+        <div class="foot-logo">Contractor<span>Hub</span></div>
+        <div class="foot-links">
+            <a href="{% url 'about_us' %}">About</a>
+            <a href="{% url 'faqs' %}">Help</a>
+            <a href="{% url 'privacy' %}">Privacy</a>
+        </div>
+        <div class="foot-copy">&copy; 2026 ContractorHub. All rights reserved.</div>
+    </div>
+</footer>
+
+<!-- ═══════════════════════════════════════
+     BACKEND DATA — Django injects workers
+════════════════════════════════════════ -->
+<script>
+// ── Data from Django backend ──
+const WORKERS = {{ workers_json|safe }};
+
+// ── CATEGORY MAP ──
+// Since skills is a comma-separated string, we detect category from it
+const CAT_KEYWORDS = {
+    construction: ['construction','mason','bricklaying','plastering','shuttering','tiling','marble','foundation','steel','civil'],
+    plumbing:     ['plumb','pipe','drainage','water','faucet','bathroom','sink','gas line','tank'],
+    electrical:   ['electric','wiring','solar','panel','inverter','generator','cable','ac'],
+    painting:     ['paint','texture','stucco','spray','emulsion','wall paper','ceiling','decor'],
+    carpentry:    ['carpent','wood','cabinet','door','window','floor','wardrobe','furniture','aluminum'],
+    agriculture:  ['agricult','farm','crop','irrigation','harvest','soil','wheat','vegetable'],
+    drivers:      ['driver','driving','transport','logistics','delivery','forklift','truck','vehicle'],
+};
+
+function detectCat(worker) {
+    const hay = (worker.skills + ' ' + worker.title).toLowerCase();
+    for (const [cat, kws] of Object.entries(CAT_KEYWORDS)) {
+        if (kws.some(k => hay.includes(k))) return cat;
+    }
+    return 'other';
+}
+
+// Attach category to each worker once
+WORKERS.forEach(w => { w._cat = detectCat(w); });
+
+// ── STATE ──
+let currentQuery = '';
+let currentCat   = '';
+
+// ── HELPERS ──
+function getInitials(name) {
+    return (name || '??').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+}
+function esc(str) {
+    return (str||'').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+}
+function highlight(text, q) {
+    if (!q) return esc(text);
+    const safe = esc(text);
+    const re   = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+    return safe.replace(re, '<mark>$1</mark>');
+}
+function starsHtml(r) {
+    const full = Math.floor(r);
+    let h = '';
+    for (let i=1;i<=5;i++) h += `<i class="fa${i<=full?'s':'r'} fa-star"></i>`;
+    return h;
+}
+
+// ── RENDER ──
+function renderCards(list, q) {
+    const grid = document.getElementById('workersGrid');
+    document.getElementById('countDisplay').textContent = list.length;
+
+    if (list.length === 0) {
+        grid.innerHTML = `
+        <div class="no-results">
+            <i class="fas fa-user-slash"></i>
+            <h3>No workers found</h3>
+            <p>Try a different keyword or select another category</p>
+            <button onclick="clearSearch()"><i class="fas fa-redo" style="margin-right:.4rem"></i>Clear Search</button>
+        </div>`;
+        return;
+    }
+
+    grid.innerHTML = list.map((w, i) => {
+        const initials = getInitials(w.name);
+        const skillArr = (w.skills || '').split(',').map(s=>s.trim()).filter(Boolean);
+        const tagsHtml = skillArr.slice(0,4).map(s => {
+            const isMatch = q && s.toLowerCase().includes(q.toLowerCase());
+            return `<span class="wtag ${isMatch?'match':''}">${highlight(s,q)}</span>`;
+        }).join('');
+        const extra = skillArr.length > 4 ? `<span class="wtag">+${skillArr.length-4}</span>` : '';
+        const priceHtml = w.price
+            ? `<div class="wcard-price">Rs ${esc(w.price)} <small>base</small></div>`
+            : `<div class="wcard-price" style="font-size:.75rem;font-family:'DM Sans',sans-serif;color:var(--gray);">Price on request</div>`;
+        const avatarHtml = w.photo
+            ? `<img src="${esc(w.photo)}" alt="${esc(w.name)}">`
+            : initials;
+
+        // ── Gig image ──
+        const gigImgHtml = w.proposal_image
+            ? `<img src="${esc(w.proposal_image)}" alt="${esc(w.gig_title||'Gig')}">`
+            : `<div class="wcard-gig-img-placeholder"><i class="fas fa-hard-hat"></i></div>`;
+
+        return `
+        <div class="wcard" style="animation-delay:${Math.min(i,10)*0.04}s">
+            <div class="wcard-cover ${w._cat}">
+                <div class="cover-dots"></div>
+                <div class="wcard-avatar">${avatarHtml}</div>
+                <div class="wcard-avail">Available</div>
+            </div>
+            <div class="wcard-body">
+                <div class="wcard-name">${highlight(w.name, q)}</div>
+                <div class="wcard-role">${highlight(w.title || w.skills.split(',')[0] || '', q)}</div>
+                <div class="wcard-tags">${tagsHtml}${extra}</div>
+                <div class="wcard-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> ${esc(w.city||'–')}</span>
+                    <span class="stars" title="${w.rating}">${w.rating} ★</span>
+                </div>
+
+                <!-- ── GIG SECTION ── -->
+                <div class="wcard-gig">
+                    <div class="wcard-gig-img" onclick="window.location='${esc(w.profile_url)}'">
+                        ${gigImgHtml}
+                    </div>
+                    <div class="wcard-gig-title">${w.gig_title ? esc(w.gig_title) : '<span style="color:var(--gray);font-weight:400;font-style:italic;">No gig title</span>'}</div>
+                    <div class="wcard-gig-desc">${w.proposal_desc ? esc(w.proposal_desc) : ''}</div>
+                </div>
+
+                <div class="wcard-footer">
+                    ${priceHtml}
+                    <div class="wcard-btns">
+                        <a href="${esc(w.profile_url)}" class="wcbtn" title="View Profile"><i class="fas fa-user"></i></a>
+                        <a href="${esc(w.message_url)}" class="wcbtn gold" title="Message"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ── FILTER ──
+function applyFilters() {
+    let list = WORKERS;
+    if (currentCat) list = list.filter(w => w._cat === currentCat);
+    if (currentQuery.trim()) {
+        const q = currentQuery.trim().toLowerCase();
+        list = list.filter(w =>
+            (w.name   ||'').toLowerCase().includes(q) ||
+            (w.title  ||'').toLowerCase().includes(q) ||
+            (w.skills ||'').toLowerCase().includes(q) ||
+            (w.city   ||'').toLowerCase().includes(q)
+        );
+    }
+    renderCards(list, currentQuery.trim());
+    updateCounts();
+}
+
+// ── SEARCH ──
+let _t;
+function handleSearch(val) {
+    currentQuery = val;
+    document.getElementById('clearBtn').classList.toggle('on', val.length > 0);
+    const badge = document.getElementById('queryBadge');
+    if (val.trim()) {
+        badge.classList.add('on');
+        document.getElementById('badgeText').textContent = '"' + val.trim() + '"';
+    } else {
+        badge.classList.remove('on');
+    }
+    clearTimeout(_t);
+    _t = setTimeout(applyFilters, 150);
+}
+function clearSearch() {
+    currentQuery = '';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('clearBtn').classList.remove('on');
+    document.getElementById('queryBadge').classList.remove('on');
+    applyFilters();
+}
+
+// ── CATEGORY ──
+const CAT_LABELS = {
+    '':'All Workers', construction:'Construction', plumbing:'Plumbing',
+    electrical:'Electrical', painting:'Painting', carpentry:'Carpentry',
+    agriculture:'Agriculture', drivers:'Drivers'
+};
+function filterCat(cat) {
+    currentCat = cat;
+    document.querySelectorAll('.sb-item').forEach(el =>
+        el.classList.toggle('active', el.dataset.cat === cat));
+    document.getElementById('sectionLabel').innerHTML =
+        `${CAT_LABELS[cat]||'All'} <span id="sectionSub"></span>`;
+    applyFilters();
+}
+
+// ── SIDEBAR COUNTS ──
+function updateCounts() {
+    const q = currentQuery.trim().toLowerCase();
+    const matchQ = w =>
+        !q ||
+        (w.name  ||'').toLowerCase().includes(q) ||
+        (w.title ||'').toLowerCase().includes(q) ||
+        (w.skills||'').toLowerCase().includes(q) ||
+        (w.city  ||'').toLowerCase().includes(q);
+
+    document.getElementById('cnt-all').textContent = WORKERS.filter(matchQ).length;
+    Object.keys(CAT_KEYWORDS).forEach(cat => {
+        const el = document.getElementById('cnt-' + cat);
+        if (el) el.textContent = WORKERS.filter(w => w._cat === cat && matchQ(w)).length;
+    });
+}
+
+// ── DROPDOWN / NOTIF ──
+function toggleDD(e) {
+    e.stopPropagation();
+    document.getElementById('profileDD').classList.toggle('show');
+    document.getElementById('notifPopup').classList.remove('show');
+}
+function toggleNotif(e) {
+    e.stopPropagation();
+    document.getElementById('notifPopup').classList.toggle('show');
+    document.getElementById('profileDD').classList.remove('show');
+}
+function markAllRead() {
+    document.querySelectorAll('.notif-row.unread').forEach(el => el.classList.remove('unread'));
+    document.querySelectorAll('.nu-dot').forEach(el => el.remove());
+    const d = document.getElementById('notifDot');
+    if (d) d.style.display = 'none';
+}
+document.addEventListener('click', e => {
+    if (!e.target.closest('.profile-dropdown')) document.getElementById('profileDD').classList.remove('show');
+    if (!e.target.closest('.notif-wrapper'))    document.getElementById('notifPopup').classList.remove('show');
+});
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+    // Hide skeleton, show grid
+    setTimeout(() => {
+        document.getElementById('skeletonGrid').style.display = 'none';
+        document.getElementById('workersGrid').style.display = 'grid';
+        renderCards(WORKERS, '');
+        updateCounts();
+    }, 400);
+});
+</script>
+
+
+<!-- ══ AI BUBBLE ══ -->
+<!-- ╔════════════════════════════════════════════════════════╗
+     ║  ContractorHub AI Bubble — paste before </body>        ║
+     ║  Works on client.html, seller.html, and any other page ║
+     ╚════════════════════════════════════════════════════════╝ -->
+
+<style>
+/* ═══════════════════════════════
+   AI BUBBLE STYLES
+═══════════════════════════════ */
+#ai-bubble-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(201,144,58,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9000;
+    transition: transform 0.25s, box-shadow 0.25s;
+    color: #0a1628;
+    font-size: 1.4rem;
+}
+#ai-bubble-btn:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(201,144,58,0.6);
+}
+#ai-bubble-btn .ai-notif {
+    position: absolute;
+    top: -2px; right: -2px;
+    width: 16px; height: 16px;
+    background: #10b981;
+    border-radius: 50%;
+    border: 2px solid white;
+    font-size: 0.5rem;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700;
+}
+
+/* Chat window */
+#ai-chat-window {
+    position: fixed;
+    bottom: 6.5rem;
+    right: 2rem;
+    width: 380px;
+    max-height: 560px;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(10,22,40,0.18);
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    z-index: 9001;
+    overflow: hidden;
+    transform: scale(0.85) translateY(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.28s cubic-bezier(.34,1.56,.64,1), opacity 0.22s ease;
+    transform-origin: bottom right;
+}
+#ai-chat-window.open {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Header */
+.ai-header {
+    background: linear-gradient(135deg, #0a1628, #1a3a6b);
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.ai-header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+        linear-gradient(rgba(201,144,58,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,144,58,0.08) 1px, transparent 1px);
+    background-size: 22px 22px;
+}
+.ai-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+    position: relative; z-index: 1;
+    box-shadow: 0 3px 10px rgba(201,144,58,0.4);
+}
+.ai-header-info { flex: 1; position: relative; z-index: 1; }
+.ai-header-info h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem; font-weight: 700; color: white;
+    margin-bottom: 0.1rem;
+}
+.ai-header-info p {
+    font-size: 0.68rem; color: rgba(255,255,255,0.55);
+    display: flex; align-items: center; gap: 0.35rem;
+}
+.ai-online-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%; background: #10b981;
+    display: inline-block;
+}
+.ai-close-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%; background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white; cursor: pointer; font-size: 0.8rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.18s; position: relative; z-index: 1;
+}
+.ai-close-btn:hover { background: rgba(255,255,255,0.25); }
+
+/* Role pill */
+.ai-role-pill {
+    font-size: 0.62rem; font-weight: 700;
+    padding: 0.18rem 0.55rem; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    margin-top: 0.2rem; display: inline-block;
+}
+.ai-role-pill.client { background: rgba(59,130,246,0.25); color: #93c5fd; }
+.ai-role-pill.seller { background: rgba(201,144,58,0.25); color: #e8a84a; }
+
+/* Messages area */
+.ai-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    scroll-behavior: smooth;
+}
+.ai-messages::-webkit-scrollbar { width: 4px; }
+.ai-messages::-webkit-scrollbar-track { background: transparent; }
+.ai-messages::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+
+/* Message bubbles */
+.ai-msg {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    animation: msgIn 0.2s ease;
+}
+@keyframes msgIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.ai-msg.user { flex-direction: row-reverse; }
+
+.ai-msg-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; flex-shrink: 0; color: #0a1628; font-weight: 700;
+}
+.ai-msg-avatar.user-av {
+    background: linear-gradient(135deg, #1a3a6b, #0a1628);
+    color: white;
+}
+.ai-msg-bubble {
+    max-width: 80%;
+    padding: 0.65rem 0.9rem;
+    border-radius: 18px;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: #0a1628;
+}
+.ai-msg.ai .ai-msg-bubble {
+    background: #f1f5f9;
+    border-radius: 18px 18px 18px 4px;
+}
+.ai-msg.user .ai-msg-bubble {
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    color: #0a1628;
+    font-weight: 500;
+    border-radius: 18px 18px 4px 18px;
+}
+
+/* Typing indicator */
+.ai-typing {
+    display: flex; gap: 4px;
+    padding: 0.65rem 0.9rem;
+    background: #f1f5f9;
+    border-radius: 18px 18px 18px 4px;
+    width: fit-content;
+}
+.ai-typing span {
+    width: 7px; height: 7px;
+    background: #94a3b8;
+    border-radius: 50%;
+    animation: typingDot 1.2s infinite;
+}
+.ai-typing span:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingDot {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Suggestion chips */
+.ai-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.3rem;
+}
+.ai-chip {
+    background: rgba(201,144,58,0.1);
+    border: 1px solid rgba(201,144,58,0.3);
+    color: #c9903a;
+    padding: 0.3rem 0.75rem;
+    border-radius: 40px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.18s;
+    white-space: nowrap;
+}
+.ai-chip:hover {
+    background: #c9903a;
+    color: white;
+}
+
+/* Input area */
+.ai-input-wrap {
+    padding: 0.75rem;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    flex-shrink: 0;
+    background: white;
+}
+.ai-input {
+    flex: 1;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 0.6rem 1rem;
+    font-size: 0.82rem;
+    font-family: 'DM Sans', sans-serif;
+    color: #0a1628;
+    outline: none;
+    resize: none;
+    max-height: 100px;
+    transition: 0.2s;
+    line-height: 1.4;
+}
+.ai-input:focus { border-color: #c9903a; box-shadow: 0 0 0 3px rgba(201,144,58,0.1); }
+.ai-input::placeholder { color: #94a3b8; }
+.ai-send-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #0a1628; font-size: 0.9rem;
+    transition: 0.2s; flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(201,144,58,0.3);
+}
+.ai-send-btn:hover { transform: scale(1.1); }
+.ai-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* Powered by */
+.ai-powered {
+    text-align: center;
+    font-size: 0.62rem;
+    color: #94a3b8;
+    padding: 0.3rem;
+    border-top: 1px solid #f1f5f9;
+    flex-shrink: 0;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    #ai-chat-window {
+        width: calc(100vw - 1.5rem);
+        right: 0.75rem;
+        bottom: 5.5rem;
+        max-height: 70vh;
+    }
+    #ai-bubble-btn { bottom: 1.2rem; right: 1.2rem; width: 54px; height: 54px; }
+}
+</style>
+
+<!-- ── BUBBLE BUTTON ── -->
+<button id="ai-bubble-btn" onclick="toggleAIBubble()" title="AI Assistant">
+    <i class="fas fa-robot"></i>
+    <div class="ai-notif">AI</div>
+</button>
+
+<!-- ── CHAT WINDOW ── -->
+<div id="ai-chat-window">
+
+    <!-- Header -->
+    <div class="ai-header">
+        <div class="ai-avatar">🤖</div>
+        <div class="ai-header-info">
+            <h4>ContractorHub AI</h4>
+            <p><span class="ai-online-dot"></span> Online — <span id="aiRoleLabel">Loading...</span></p>
+            <div class="ai-role-pill" id="aiRolePill">...</div>
+        </div>
+        <button class="ai-close-btn" onclick="toggleAIBubble()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Messages -->
+    <div class="ai-messages" id="aiMessages">
+        <!-- messages inject here -->
+    </div>
+
+    <!-- Input -->
+    <div class="ai-input-wrap">
+        <textarea
+            class="ai-input"
+            id="aiInput"
+            placeholder="Message likhein..."
+            rows="1"
+            onkeydown="aiInputKeydown(event)"
+            oninput="aiAutoResize(this)"
+        ></textarea>
+        <button class="ai-send-btn" id="aiSendBtn" onclick="aiSend()">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+
+    <div class="ai-powered">Powered by Groq · llama-3.3-70b · ContractorHub AI</div>
+</div>
+
+
+<script>
+// ════════════════════════════════════════
+// ContractorHub AI Bubble — JS
+// ════════════════════════════════════════
+
+let aiOpen       = false;
+let aiRole       = null;      // 'client' | 'seller'
+let aiContext    = null;      // context data from server
+let aiHistory    = [];        // conversation history [{role, content}]
+let aiInitialized = false;
+
+// ── Suggestion chips per role ──
+const CLIENT_CHIPS = [
+    'Electrician chahiye Lahore mein',
+    'Plumber — budget 3000',
+    'Painter ghar ke liye',
+    'Best rated contractor kaun?',
+];
+const SELLER_CHIPS = [
+    'Meri profile improve karo',
+    'Photo mein kya daalu?',
+    'Video tips chahiye',
+    'Document kaise upload karein?',
+    'Price kaise set karoon?',
+];
+
+// ── Toggle window ──
+function toggleAIBubble() {
+    aiOpen = !aiOpen;
+    const win = document.getElementById('ai-chat-window');
+    win.classList.toggle('open', aiOpen);
+
+    if (aiOpen && !aiInitialized) {
+        initAI();
+    }
+    if (aiOpen) {
+        setTimeout(() => document.getElementById('aiInput').focus(), 300);
+    }
+}
+
+// ── Initialize: fetch context + show welcome ──
+async function initAI() {
+    aiInitialized = true;
+    addTypingIndicator();
+
+    try {
+        const resp = await fetch('/ai-context/', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        const data = await resp.json();
+        aiRole    = data.role;
+        aiContext = data.context;
+
+        removeTypingIndicator();
+
+        // Update header
+        const isClient = aiRole === 'client';
+        document.getElementById('aiRoleLabel').textContent = isClient ? 'Client Mode' : 'Seller Coach';
+        const pill = document.getElementById('aiRolePill');
+        pill.textContent = isClient ? '🔍 Find Workers' : '🛠 Profile Coach';
+        pill.className = `ai-role-pill ${aiRole}`;
+
+        // Show welcome message
+        addAIMessage(data.welcome);
+
+        // Show suggestion chips
+        const chips = isClient ? CLIENT_CHIPS : SELLER_CHIPS;
+        addChips(chips);
+
+    } catch (err) {
+        removeTypingIndicator();
+        addAIMessage('⚠ Kuch masla aa gaya. Page refresh karein aur dobara try karein.');
+    }
+}
+
+// ── Send message ──
+async function aiSend() {
+    const input = document.getElementById('aiInput');
+    const msg   = input.value.trim();
+    if (!msg) return;
+
+    input.value  = '';
+    input.style.height = 'auto';
+
+    addUserMessage(msg);
+    document.getElementById('aiSendBtn').disabled = true;
+    addTypingIndicator();
+
+    try {
+        const resp = await fetch('/ai-chat/', {
+            method:  'POST',
+            headers: {
+                'Content-Type':  'application/json',
+                'X-CSRFToken':   getCookie('csrftoken'),
+            },
+            body: JSON.stringify({
+                message: msg,
+                history: aiHistory,
+            }),
+        });
+
+        const data = await resp.json();
+        removeTypingIndicator();
+        document.getElementById('aiSendBtn').disabled = false;
+
+        if (data.error) {
+            addAIMessage('⚠ Error: ' + data.error);
+        } else {
+            addAIMessage(data.reply);
+            // Save to history
+            aiHistory.push({ role: 'user',      content: msg });
+            aiHistory.push({ role: 'assistant', content: data.reply });
+            // Trim history
+            if (aiHistory.length > 16) aiHistory = aiHistory.slice(-16);
+        }
+
+    } catch (err) {
+        removeTypingIndicator();
+        document.getElementById('aiSendBtn').disabled = false;
+        addAIMessage('⚠ Network error. Internet check karein.');
+    }
+}
+
+// ── DOM helpers ──
+function addUserMessage(text) {
+    const msgs = document.getElementById('aiMessages');
+    const el = document.createElement('div');
+    el.className = 'ai-msg user';
+    el.innerHTML = `
+        <div class="ai-msg-avatar user-av">U</div>
+        <div class="ai-msg-bubble">${escHtml(text)}</div>
+    `;
+    msgs.appendChild(el);
+    scrollAI();
+}
+
+function addAIMessage(text) {
+    const msgs = document.getElementById('aiMessages');
+    const el = document.createElement('div');
+    el.className = 'ai-msg ai';
+    // Convert basic markdown-style formatting
+    const formatted = formatAIText(text);
+    el.innerHTML = `
+        <div class="ai-msg-avatar">🤖</div>
+        <div class="ai-msg-bubble">${formatted}</div>
+    `;
+    msgs.appendChild(el);
+    scrollAI();
+}
+
+function addChips(chips) {
+    const msgs = document.getElementById('aiMessages');
+    const el = document.createElement('div');
+    el.className = 'ai-chips';
+    el.style.paddingLeft = '38px';
+    chips.forEach(chip => {
+        const btn = document.createElement('button');
+        btn.className = 'ai-chip';
+        btn.textContent = chip;
+        btn.onclick = () => {
+            document.getElementById('aiInput').value = chip;
+            el.remove();
+            aiSend();
+        };
+        el.appendChild(btn);
+    });
+    msgs.appendChild(el);
+    scrollAI();
+}
+
+function addTypingIndicator() {
+    const msgs = document.getElementById('aiMessages');
+    const el = document.createElement('div');
+    el.className = 'ai-msg ai';
+    el.id = 'aiTyping';
+    el.innerHTML = `
+        <div class="ai-msg-avatar">🤖</div>
+        <div class="ai-typing"><span></span><span></span><span></span></div>
+    `;
+    msgs.appendChild(el);
+    scrollAI();
+}
+
+function removeTypingIndicator() {
+    const el = document.getElementById('aiTyping');
+    if (el) el.remove();
+}
+
+function scrollAI() {
+    const msgs = document.getElementById('aiMessages');
+    setTimeout(() => msgs.scrollTop = msgs.scrollHeight, 50);
+}
+
+// ── Text formatting (basic markdown) ──
+function formatAIText(text) {
+    return escHtml(text)
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/•\s/g, '• ')
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>');
+}
+
+function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Input helpers ──
+function aiInputKeydown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        aiSend();
+    }
+}
+function aiAutoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+// ── CSRF helper ──
+function getCookie(name) {
+    let val = null;
+    document.cookie.split(';').forEach(c => {
+        const [k, v] = c.trim().split('=');
+        if (k === name) val = decodeURIComponent(v);
+    });
+    return val;
+}
+</script>
+
+</body>
+</html>

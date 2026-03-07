@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContractorHub · Client Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <style>
+        :root {
+            --navy:      #0a1628;
+            --blue:      #1a3a6b;
+            --gold:      #c9903a;
+            --gold-light:#e8a84a;
+            --gold-dim:  rgba(201,144,58,0.12);
+            --gray:      #64748b;
+            --light:     #f1f5f9;
+            --border:    #e2e8f0;
+            --success:   #10b981;
+            --danger:    #ef4444;
+        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'DM Sans',sans-serif; background:#f0f4fb; color:var(--navy); min-height:100vh; display:flex; flex-direction:column; }
+
+        /* ══ TOP BAR ══ */
+        .topbar-wrap { background:#f0f4fb; padding:1.4rem 2.5rem 0; }
+        .top-nav {
+            background:white; border-radius:60px;
+            padding:0 1.5rem; box-shadow:0 4px 20px rgba(0,0,0,0.05);
+            border:1px solid var(--border);
+            display:flex; align-items:center; gap:1rem;
+            height:64px; white-space:nowrap; position:relative; z-index:200;
+            max-width:1500px; margin:0 auto;
+        }
+        .logo { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:900; color:var(--navy); flex-shrink:0; text-decoration:none; }
+        .logo span { color:var(--gold); }
+        .nav-divider { width:1px; height:28px; background:var(--border); flex-shrink:0; }
+        .nav-menu { display:flex; align-items:center; gap:0.2rem; flex:1; }
+        .nav-item {
+            padding:0.48rem 1rem; border-radius:40px;
+            font-size:0.875rem; font-weight:500; color:var(--gray);
+            cursor:pointer; transition:0.18s;
+            display:flex; align-items:center; gap:0.45rem;
+            text-decoration:none; flex-shrink:0;
+        }
+        .nav-item i { font-size:0.78rem; }
+        .nav-item:hover  { background:var(--light); color:var(--navy); }
+        .nav-item.active { background:var(--gold-dim); color:var(--gold); font-weight:600; }
+        .right-icons { display:flex; align-items:center; gap:0.5rem; margin-left:auto; flex-shrink:0; }
+        .icon-circle {
+            width:40px; height:40px; border-radius:50%; background:var(--light);
+            display:flex; align-items:center; justify-content:center;
+            color:var(--gray); font-size:1rem; cursor:pointer; position:relative;
+            transition:0.18s; text-decoration:none; border:none;
+        }
+        .icon-circle:hover { background:var(--gold-dim); color:var(--gold); }
+        .message-dot { position:absolute; top:8px; right:8px; width:8px; height:8px; background:var(--success); border-radius:50%; border:1.5px solid white; }
+
+        /* profile dropdown */
+        .profile-dropdown { position:relative; }
+        .profile-avatar-btn {
+            display:flex; align-items:center; gap:0.5rem;
+            background:var(--light); padding:0.25rem 0.8rem 0.25rem 1rem;
+            border-radius:40px; cursor:pointer;
+            font-size:0.875rem; font-weight:500; color:var(--navy);
+            border:none; transition:0.2s;
+        }
+        .profile-avatar-btn:hover { background:var(--gold-dim); }
+        .avatar {
+            width:36px; height:36px;
+            background:linear-gradient(135deg,var(--gold),var(--gold-light));
+            border-radius:50%; display:flex; align-items:center; justify-content:center;
+            font-weight:700; font-size:0.78rem; color:var(--navy);
+            text-transform:uppercase; overflow:hidden; flex-shrink:0;
+        }
+        .avatar img { width:100%; height:100%; object-fit:cover; }
+        .dropdown-menu {
+            position:absolute; top:calc(100% + 10px); right:0;
+            width:250px; background:white; border-radius:20px;
+            box-shadow:0 15px 40px rgba(0,0,0,0.12);
+            border:1px solid var(--border); overflow:hidden;
+            display:none; z-index:1000; animation:dropIn 0.2s ease;
+        }
+        @keyframes dropIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+        .dropdown-menu.show { display:block; }
+        .dd-head { padding:1rem 1.2rem; border-bottom:1px solid var(--border); background:linear-gradient(135deg,var(--navy),var(--blue)); }
+        .dd-head h4 { font-size:0.9rem; color:white; margin-bottom:0.2rem; }
+        .dd-head p  { font-size:0.72rem; color:rgba(255,255,255,0.6); }
+        .dd-item { padding:0.75rem 1.2rem; display:flex; align-items:center; gap:0.8rem; cursor:pointer; transition:0.15s; font-size:0.85rem; text-decoration:none; color:var(--navy); }
+        .dd-item:hover { background:var(--light); }
+        .dd-item i { width:18px; color:var(--gold); font-size:0.9rem; }
+        .dd-div { height:1px; background:var(--border); }
+        .dd-item.danger { color:var(--danger); }
+        .dd-item.danger i { color:var(--danger); }
+        .dd-item.danger:hover { background:#fef2f2; }
+
+        /* ══ PAGE ══ */
+        .page { max-width:1500px; margin:0 auto; padding:2rem 2.5rem 3rem; flex:1; width:100%; }
+
+        /* page header */
+        .page-header {
+            background:linear-gradient(135deg,var(--navy),var(--blue));
+            border-radius:24px; padding:2rem 2.5rem; margin-bottom:2rem;
+            position:relative; overflow:hidden;
+            display:flex; align-items:center; justify-content:space-between; gap:1rem;
+        }
+        .page-header::before {
+            content:''; position:absolute; inset:0;
+            background-image:
+                linear-gradient(rgba(201,144,58,0.07) 1px,transparent 1px),
+                linear-gradient(90deg,rgba(201,144,58,0.07) 1px,transparent 1px);
+            background-size:30px 30px;
+        }
+        .ph-text { position:relative; z-index:1; }
+        .ph-text h1 { font-family:'Playfair Display',serif; font-size:1.7rem; color:white; margin-bottom:0.3rem; }
+        .ph-text h1 span { color:var(--gold); }
+        .ph-text p { color:rgba(255,255,255,0.55); font-size:0.9rem; }
+        .ph-avatar {
+            width:72px; height:72px;
+            background:linear-gradient(135deg,var(--gold),var(--gold-light));
+            border-radius:50%; border:3px solid rgba(255,255,255,0.25);
+            display:flex; align-items:center; justify-content:center;
+            font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; color:var(--navy);
+            flex-shrink:0; position:relative; z-index:1;
+            text-transform:uppercase; overflow:hidden;
+        }
+        .ph-avatar img { width:100%; height:100%; object-fit:cover; }
+
+        /* layout */
+        .profile-layout { display:grid; grid-template-columns:1fr 310px; gap:1.8rem; align-items:start; }
+
+        /* photo section */
+        .photo-section {
+            background:white; border-radius:22px; border:1px solid var(--border);
+            padding:1.8rem; margin-bottom:1.5rem;
+            display:flex; align-items:center; gap:2rem; flex-wrap:wrap;
+        }
+        .photo-preview {
+            width:110px; height:110px; border-radius:50%;
+            background:linear-gradient(135deg,var(--gold),var(--gold-light));
+            display:flex; align-items:center; justify-content:center;
+            font-size:2.5rem; color:var(--navy); overflow:hidden;
+            border:3px solid var(--gold-dim); flex-shrink:0;
+        }
+        .photo-preview img { width:100%; height:100%; object-fit:cover; }
+        .photo-info { flex:1; }
+        .photo-info h3 { font-size:1.05rem; margin-bottom:0.4rem; }
+        .photo-info p { color:var(--gray); font-size:0.83rem; margin-bottom:0.8rem; }
+        .photo-btn {
+            background:var(--gold-dim); color:var(--gold);
+            border:1px solid rgba(201,144,58,0.3);
+            padding:0.65rem 1.4rem; border-radius:40px;
+            font-size:0.875rem; font-weight:600; cursor:pointer;
+            display:inline-flex; align-items:center; gap:0.5rem; transition:0.2s;
+        }
+        .photo-btn:hover { background:var(--gold); color:white; }
+
+        /* form cards */
+        .form-card { background:white; border-radius:22px; border:1px solid var(--border); overflow:hidden; margin-bottom:1.5rem; }
+        .form-card:last-child { margin-bottom:0; }
+        .fc-head { padding:1.2rem 1.8rem; border-bottom:1px solid var(--border); }
+        .fc-head h3 { font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--navy); display:flex; align-items:center; gap:0.5rem; }
+        .fc-head h3 i { color:var(--gold); }
+        .fc-body { padding:1.8rem; }
+
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; margin-bottom:1.2rem; }
+        .form-row.single { grid-template-columns:1fr; }
+        .form-group { display:flex; flex-direction:column; gap:0.4rem; }
+        .form-label { font-size:0.82rem; font-weight:600; color:var(--navy); display:flex; align-items:center; gap:0.4rem; }
+        .form-label i { color:var(--gold); font-size:0.75rem; }
+        .required { color:var(--gold); }
+        .form-input, .form-select {
+            border:1.5px solid var(--border); border-radius:12px;
+            padding:0.7rem 1rem; font-size:0.875rem;
+            font-family:'DM Sans',sans-serif; color:var(--navy);
+            background:white; transition:0.2s; outline:none; width:100%;
+        }
+        .form-input:focus, .form-select:focus { border-color:var(--gold); box-shadow:0 0 0 3px var(--gold-dim); }
+        .form-input:disabled { background:var(--light); color:var(--gray); cursor:not-allowed; }
+        .field-note { font-size:0.68rem; color:var(--gray); display:flex; align-items:center; gap:0.3rem; margin-top:0.2rem; }
+        .field-note i { color:var(--success); }
+
+        /* ══ LOCATION CARD ══ */
+        .location-card {
+            background:white; border-radius:22px; border:1px solid var(--border);
+            overflow:hidden; margin-bottom:1.5rem;
+        }
+        .loc-head {
+            padding:1.2rem 1.8rem; border-bottom:1px solid var(--border);
+            display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.8rem;
+        }
+        .loc-head h3 { font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--navy); display:flex; align-items:center; gap:0.5rem; }
+        .loc-head h3 i { color:var(--gold); }
+
+        /* map — always visible */
+        #locationMap {
+            height: 320px;
+            width: 100%;
+            display: block;
+        }
+        .map-footer {
+            padding: 0.8rem 1.5rem;
+            background: var(--light);
+            border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 0.8rem;
+        }
+
+        /* single Add Location button */
+        .gps-btn {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            color: var(--navy); border: none;
+            padding: 0.65rem 1.6rem; border-radius: 40px;
+            font-size: 0.875rem; font-weight: 700; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 0.55rem; transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(201,144,58,0.3);
+            white-space: nowrap;
+        }
+        .gps-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(201,144,58,0.4); }
+        .gps-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .spin { animation: spin 0.9s linear infinite; }
+
+        /* detected city pill */
+        .city-pill {
+            display: none;
+            align-items: center; gap: 0.5rem;
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.25);
+            color: #059669;
+            padding: 0.45rem 1rem; border-radius: 30px;
+            font-size: 0.82rem; font-weight: 600;
+        }
+        .city-pill.show { display: flex; }
+
+        /* status toast */
+        .loc-status {
+            font-size: 0.78rem; color: var(--danger);
+            padding: 0.5rem 1rem; border-radius: 10px;
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.15);
+            display: none;
+        }
+        .loc-status.show { display: block; }
+
+        /* manual fallback */
+        .manual-toggle {
+            font-size: 0.75rem; color: var(--gray); cursor: pointer;
+            text-decoration: underline; display: block;
+            padding: 0.4rem 1.5rem 0.8rem;
+        }
+        .manual-toggle:hover { color: var(--gold); }
+        .manual-fallback { display: none; padding: 0 1.5rem 1.2rem; }
+        .manual-fallback.show { display: block; }
+
+        /* lang pills */
+        .lang-options { display:flex; gap:0.8rem; flex-wrap:wrap; margin-top:0.4rem; }
+        .lang-pill {
+            border:2px solid var(--border); border-radius:40px;
+            padding:0.5rem 1.2rem; font-size:0.85rem; font-weight:600; color:var(--gray);
+            cursor:pointer; transition:0.2s;
+            display:flex; align-items:center; gap:0.5rem; user-select:none;
+        }
+        .lang-pill:hover { border-color:var(--gold); color:var(--gold); background:var(--gold-dim); }
+        .lang-pill.selected { border-color:var(--gold); background:var(--gold-dim); color:var(--gold); }
+
+        .form-divider { height:1px; background:var(--border); margin:1.5rem 0; }
+
+        .form-actions { display:flex; align-items:center; gap:0.8rem; margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border); }
+        .btn-save {
+            background:linear-gradient(135deg,var(--gold),var(--gold-light));
+            color:var(--navy); border:none;
+            padding:0.85rem 2rem; border-radius:40px;
+            font-size:0.95rem; font-weight:700; cursor:pointer; transition:0.2s;
+            display:inline-flex; align-items:center; gap:0.6rem;
+            box-shadow:0 4px 15px rgba(201,144,58,0.3);
+        }
+        .btn-save:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(201,144,58,0.4); }
+        .btn-cancel {
+            background:transparent; color:var(--gray);
+            border:1.5px solid var(--border);
+            padding:0.85rem 1.8rem; border-radius:40px;
+            font-size:0.95rem; font-weight:600; cursor:pointer; transition:0.2s;
+            text-decoration:none; display:inline-block;
+        }
+        .btn-cancel:hover { border-color:var(--navy); color:var(--navy); }
+
+        /* ══ SIDEBAR ══ */
+        .sidebar-card { background:white; border-radius:20px; border:1px solid var(--border); overflow:hidden; margin-bottom:1.2rem; }
+        .sidebar-card:last-child { margin-bottom:0; }
+        .sc-head { padding:1rem 1.3rem; border-bottom:1px solid var(--border); }
+        .sc-head h4 { font-size:0.9rem; font-weight:700; color:var(--navy); display:flex; align-items:center; gap:0.5rem; }
+        .sc-head h4 i { color:var(--gold); }
+        .sc-body { padding:1.1rem 1.3rem; }
+        .info-item { display:flex; align-items:center; gap:0.7rem; padding:0.55rem 0; border-bottom:1px solid var(--border); font-size:0.82rem; }
+        .info-item:last-child { border-bottom:none; }
+        .info-icon { width:32px; height:32px; border-radius:10px; background:var(--gold-dim); display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:0.75rem; flex-shrink:0; }
+        .info-label { color:var(--gray); font-size:0.72rem; }
+        .info-value { font-weight:600; color:var(--navy); font-size:0.82rem; }
+
+        /* completeness */
+        .comp-wrap { margin-bottom:0.8rem; }
+        .comp-header { display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:0.4rem; }
+        .comp-label { color:var(--gray); }
+        .comp-pct { color:var(--gold); font-weight:700; font-family:'Space Mono',monospace; }
+        .comp-bar { height:8px; background:var(--light); border-radius:8px; overflow:hidden; }
+        .comp-fill { height:100%; background:linear-gradient(90deg,var(--gold),var(--gold-light)); border-radius:8px; transition:width 0.4s ease; }
+        .comp-tip { font-size:0.72rem; color:var(--gray); margin-top:0.5rem; line-height:1.5; }
+
+        /* reviews */
+        .review-item { padding:0.75rem 0; border-bottom:1px solid var(--border); }
+        .review-item:last-child { border-bottom:none; }
+        .review-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem; }
+        .review-name { font-weight:700; font-size:0.82rem; color:var(--navy); }
+        .review-date { font-size:0.65rem; color:var(--gray); font-family:'Space Mono',monospace; }
+        .review-stars { color:var(--gold); font-size:0.75rem; margin-bottom:0.3rem; }
+        .review-comment { font-size:0.78rem; color:var(--gray); line-height:1.5; }
+
+        /* footer */
+        footer { background:var(--navy); color:white; padding:2rem 2.5rem 1.3rem; border-radius:30px 30px 0 0; }
+        .foot-bottom { max-width:1500px; margin:0 auto; text-align:center; color:rgba(255,255,255,0.4); font-size:0.8rem; }
+
+        @media (max-width:960px) { .profile-layout { grid-template-columns:1fr; } }
+        @media (max-width:640px) {
+            .topbar-wrap { padding:1rem 1rem 0; }
+            .page { padding:1.2rem 1rem 2rem; }
+            .form-row { grid-template-columns:1fr; }
+            .photo-section { flex-direction:column; text-align:center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══ TOP BAR ══ -->
+<div class="topbar-wrap">
+<nav class="top-nav">
+    <a href="{% url 'client' %}" class="logo">Contractor<span>Hub</span></a>
+    <div class="nav-divider"></div>
+    <div class="nav-menu">
+        <a href="{% url 'client' %}"        class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="{% url 'show_seller' %}"   class="nav-item"><i class="fas fa-search"></i> Find Workers</a>
+        <a href="{% url 'client_profile' %}" class="nav-item active"><i class="fas fa-user"></i> Profile</a>
+    </div>
+    <div class="right-icons">
+        <a href="{% url 'faqs' %}" class="icon-circle" title="Help"><i class="fas fa-question-circle"></i></a>
+        <a href="{% url 'messages_page' %}" class="icon-circle" title="Messages">
+            <i class="far fa-envelope"></i>
+            {% if total_unread > 0 %}<span class="message-dot"></span>{% endif %}
+        </a>
+        <div class="profile-dropdown">
+            <button class="profile-avatar-btn" onclick="toggleDD()" type="button">
+                {% if user.name %}{{ user.name|truncatechars:12 }}{% else %}Client{% endif %}
+                <div class="avatar">
+                    {% if client_profile.profile_photo %}
+                        <img src="{{ client_profile.profile_photo.url }}" alt="">
+                    {% elif user.name %}
+                        {{ user.name|slice:":2"|upper }}
+                    {% else %}C{% endif %}
+                </div>
+            </button>
+            <div class="dropdown-menu" id="profileDD">
+                <div class="dd-head">
+                    <h4>{% if user.name %}{{ user.name }}{% else %}Client{% endif %}</h4>
+                    <p>{{ user.email }}</p>
+                </div>
+                <a href="{% url 'client_profile' %}" class="dd-item"><i class="fas fa-user-circle"></i> My Profile</a>
+                <a href="{% url 'messages_page' %}"  class="dd-item">
+                    <i class="fas fa-envelope"></i> Messages
+                    {% if total_unread > 0 %}<span style="margin-left:auto;background:var(--gold);color:white;padding:.1rem .45rem;border-radius:10px;font-size:.65rem;font-weight:700;">{{ total_unread }}</span>{% endif %}
+                </a>
+                <div class="dd-div"></div>
+                <a href="{% url 'faqs' %}"   class="dd-item"><i class="fas fa-question-circle"></i> Help Center</a>
+                <div class="dd-div"></div>
+                <a href="{% url 'logout' %}" class="dd-item danger"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+            </div>
+        </div>
+    </div>
+</nav>
+</div>
+
+<!-- ══ PAGE ══ -->
+<div class="page">
+
+    <!-- page header -->
+    <div class="page-header">
+        <div class="ph-text">
+            <h1>My <span>Profile</span></h1>
+            <p>Apni information update karein — contractors aapko dhundh sakein</p>
+        </div>
+        <div class="ph-avatar" id="headerAvatar">
+            {% if client_profile.profile_photo %}
+                <img src="{{ client_profile.profile_photo.url }}" alt="{{ user.name }}">
+            {% elif user.name %}{{ user.name|slice:":2"|upper }}
+            {% else %}C{% endif %}
+        </div>
+    </div>
+
+    <div class="profile-layout">
+    <div>
+
+        <!-- Photo Upload -->
+        <div class="photo-section">
+            <div class="photo-preview" id="photoPreview">
+                {% if client_profile.profile_photo %}
+                    <img src="{{ client_profile.profile_photo.url }}" alt="">
+                {% else %}
+                    <i class="fas fa-user"></i>
+                {% endif %}
+            </div>
+            <div class="photo-info">
+                <h3>Profile Photo</h3>
+                <p>Apni photo upload karein takay contractors aapko asani se pehchan saken</p>
+                <label for="photoFileInput" class="photo-btn">
+                    <i class="fas fa-camera"></i> Upload Photo
+                </label>
+                <input type="file" id="photoFileInput" accept="image/*" onchange="previewPhoto(this)" style="display:none;">
+                <p style="font-size:0.7rem;color:var(--gray);margin-top:0.5rem;">Max size: 5MB · JPG, PNG</p>
+            </div>
+        </div>
+
+        <form method="POST" action="{% url 'client_profile' %}" enctype="multipart/form-data" id="profileForm">
+            {% csrf_token %}
+            <!-- hidden file input synced from preview -->
+            <input type="file" name="profile_photo" id="photoHidden" style="display:none;">
+            <!-- hidden city value saved by GPS/map/manual -->
+            <input type="hidden" name="city" id="cityHidden" value="{{ client_profile.city|default:'' }}">
+
+            <!-- Account Info -->
+            <div class="form-card">
+                <div class="fc-head"><h3><i class="fas fa-id-card"></i> Account Information</h3></div>
+                <div class="fc-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-user"></i> Full Name</label>
+                            <input class="form-input" value="{{ user.name|default:'' }}" disabled>
+                            <span class="field-note"><i class="fas fa-check-circle"></i> Account sy auto fill</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-envelope"></i> Email</label>
+                            <input class="form-input" value="{{ user.email }}" disabled>
+                            <span class="field-note"><i class="fas fa-check-circle"></i> Account sy auto fill</span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-phone"></i> Phone</label>
+                            <input class="form-input" value="{{ user.phone|default:'' }}" disabled>
+                            <span class="field-note"><i class="fas fa-check-circle"></i> Account sy auto fill</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-user-tag"></i> Account Type</label>
+                            <input class="form-input" value="Client" disabled>
+                            <span class="field-note"><i class="fas fa-check-circle"></i> Account sy auto fill</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══ LOCATION CARD ══ -->
+            <div class="location-card">
+                <div class="loc-head">
+                    <h3><i class="fas fa-map-marker-alt"></i> Location / City</h3>
+                    <div class="city-pill" id="cityPill">
+                        <i class="fas fa-check-circle"></i>
+                        <span id="cityName">{% if client_profile.city %}{{ client_profile.city|capfirst }}{% endif %}</span>
+                    </div>
+                </div>
+
+                <!-- MAP — always visible, default Pakistan view -->
+                <div id="locationMap"></div>
+
+                <!-- Footer bar: button + status -->
+                <div class="map-footer">
+                    <button type="button" class="gps-btn" id="gpsBtn" onclick="detectLocation()">
+                        <i class="fas fa-location-arrow" id="gpsIcon"></i>
+                        <span id="gpsBtnText">Add Location</span>
+                    </button>
+                    <div class="loc-status" id="locStatus"></div>
+                </div>
+
+                <!-- manual fallback -->
+                <span class="manual-toggle" onclick="toggleManual()">
+                    <i class="fas fa-edit" style="margin-right:3px;"></i>Manually city select karein
+                </span>
+                <div class="manual-fallback" id="manualFallback">
+                    <select class="form-select" id="manualCity" onchange="setManualCity(this.value)">
+                        <option value="">-- Apna shehar chunein --</option>
+                        <optgroup label="Punjab">
+                            <option value="Lahore"     {% if client_profile.city|lower == 'lahore' %}selected{% endif %}>Lahore</option>
+                            <option value="Faisalabad" {% if client_profile.city|lower == 'faisalabad' %}selected{% endif %}>Faisalabad</option>
+                            <option value="Rawalpindi" {% if client_profile.city|lower == 'rawalpindi' %}selected{% endif %}>Rawalpindi</option>
+                            <option value="Gujranwala" {% if client_profile.city|lower == 'gujranwala' %}selected{% endif %}>Gujranwala</option>
+                            <option value="Multan"     {% if client_profile.city|lower == 'multan' %}selected{% endif %}>Multan</option>
+                            <option value="Sialkot"    {% if client_profile.city|lower == 'sialkot' %}selected{% endif %}>Sialkot</option>
+                        </optgroup>
+                        <optgroup label="Sindh">
+                            <option value="Karachi"    {% if client_profile.city|lower == 'karachi' %}selected{% endif %}>Karachi</option>
+                            <option value="Hyderabad"  {% if client_profile.city|lower == 'hyderabad' %}selected{% endif %}>Hyderabad</option>
+                            <option value="Sukkur"     {% if client_profile.city|lower == 'sukkur' %}selected{% endif %}>Sukkur</option>
+                        </optgroup>
+                        <optgroup label="KPK">
+                            <option value="Peshawar"   {% if client_profile.city|lower == 'peshawar' %}selected{% endif %}>Peshawar</option>
+                            <option value="Abbottabad" {% if client_profile.city|lower == 'abbottabad' %}selected{% endif %}>Abbottabad</option>
+                        </optgroup>
+                        <optgroup label="Balochistan">
+                            <option value="Quetta"     {% if client_profile.city|lower == 'quetta' %}selected{% endif %}>Quetta</option>
+                        </optgroup>
+                        <optgroup label="Islamabad">
+                            <option value="Islamabad"  {% if client_profile.city|lower == 'islamabad' %}selected{% endif %}>Islamabad</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Language + Save -->
+            <div class="form-card">
+                <div class="fc-head"><h3><i class="fas fa-pen"></i> Preferences</h3></div>
+                <div class="fc-body">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-language"></i>
+                            Preferred Language <span class="required">*</span>
+                        </label>
+                        <div class="lang-options">
+                            <div class="lang-pill {% if client_profile.language == 'urdu' %}selected{% endif %}"    id="lang-urdu"    onclick="selectLang('urdu')">🇵🇰 Urdu</div>
+                            <div class="lang-pill {% if client_profile.language == 'english' %}selected{% endif %}" id="lang-english" onclick="selectLang('english')">🇬🇧 English</div>
+                            <div class="lang-pill {% if client_profile.language == 'both' %}selected{% endif %}"    id="lang-both"    onclick="selectLang('both')">🌐 Dono (Both)</div>
+                        </div>
+                        <input type="hidden" name="language" id="langInput" value="{{ client_profile.language|default:'' }}">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save"><i class="fas fa-save"></i> Save Profile</button>
+                        <a href="{% url 'client' %}" class="btn-cancel">Cancel</a>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- ══ SIDEBAR ══ -->
+    <div>
+        <!-- Completeness -->
+        <div class="sidebar-card">
+            <div class="sc-head"><h4><i class="fas fa-chart-pie"></i> Profile Complete</h4></div>
+            <div class="sc-body">
+                <div class="comp-wrap">
+                    <div class="comp-header">
+                        <span class="comp-label">Completeness</span>
+                        <span class="comp-pct" id="completePct">{{ profile_complete|default:"50" }}%</span>
+                    </div>
+                    <div class="comp-bar">
+                        <div class="comp-fill" id="completeFill" style="width:{{ profile_complete|default:'50' }}%;"></div>
+                    </div>
+                </div>
+                <p class="comp-tip">Location aur Language fill karo — contractors aapko better match kar sakein! ✅</p>
+            </div>
+        </div>
+
+        <!-- Account Summary -->
+        <div class="sidebar-card">
+            <div class="sc-head"><h4><i class="fas fa-user-circle"></i> Account Summary</h4></div>
+            <div class="sc-body">
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                    <div><div class="info-label">Email</div><div class="info-value">{{ user.email }}</div></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-phone"></i></div>
+                    <div><div class="info-label">Phone</div><div class="info-value">{{ user.phone|default:"Not added" }}</div></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div><div class="info-label">City</div><div class="info-value" id="sidebarCity">{{ client_profile.city|default:"Not set"|capfirst }}</div></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-user-tag"></i></div>
+                    <div><div class="info-label">Account Type</div><div class="info-value" style="color:var(--gold);">Client</div></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-calendar"></i></div>
+                    <div><div class="info-label">Member Since</div><div class="info-value">{{ user.date_joined|date:"M Y" }}</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews -->
+        <div class="sidebar-card">
+            <div class="sc-head">
+                <h4>
+                    <i class="fas fa-star"></i> My Reviews
+                    {% if my_reviews %}
+                    <span style="margin-left:auto;background:var(--gold);color:white;padding:.1rem .5rem;border-radius:10px;font-size:.65rem;font-weight:700;">{{ my_reviews|length }}</span>
+                    {% endif %}
+                </h4>
+            </div>
+            <div class="sc-body" style="padding:0.8rem 1.3rem;">
+                {% if my_reviews %}
+                <div style="text-align:center;padding:0.8rem 0 1rem;border-bottom:1px solid var(--border);margin-bottom:0.8rem;">
+                    <div style="font-family:'Space Mono',monospace;font-size:2rem;font-weight:700;color:var(--gold);line-height:1;">{{ avg_rating|floatformat:1 }}</div>
+                    <div style="color:var(--gold);font-size:0.85rem;margin:0.3rem 0;">
+                        {% for i in "12345" %}{% if forloop.counter <= avg_rating %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star"></i>{% endif %}{% endfor %}
+                    </div>
+                    <div style="font-size:0.72rem;color:var(--gray);">{{ my_reviews|length }} review{{ my_reviews|length|pluralize }}</div>
+                </div>
+                {% endif %}
+                {% for review in my_reviews %}
+                <div class="review-item">
+                    <div class="review-top">
+                        <span class="review-name">{% if review.client.name %}{{ review.client.name }}{% else %}{{ review.client.email }}{% endif %}</span>
+                        <span class="review-date">{{ review.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="review-stars">
+                        {% for i in "12345" %}{% if forloop.counter <= review.rating %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star"></i>{% endif %}{% endfor %}
+                    </div>
+                    {% if review.comment %}<p class="review-comment">{{ review.comment }}</p>{% endif %}
+                </div>
+                {% empty %}
+                <div style="text-align:center;padding:1.5rem 0;color:var(--gray);">
+                    <i class="far fa-star" style="font-size:1.8rem;color:var(--border);display:block;margin-bottom:0.5rem;"></i>
+                    <p style="font-size:0.8rem;">Abhi tak koi review nahi mili</p>
+                    <p style="font-size:0.72rem;color:#b0bec5;margin-top:0.3rem;">Contractors kaam ke baad review dein ge</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    </div><!-- profile-layout -->
+</div><!-- page -->
+
+<footer>
+    <div class="foot-bottom"><p>&copy; 2026 ContractorHub. All rights reserved.</p></div>
+</footer>
+
+<!-- Leaflet JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+// ══════════════════════════════════════════
+// DROPDOWN
+// ══════════════════════════════════════════
+function toggleDD() {
+    document.getElementById('profileDD').classList.toggle('show');
+}
+document.addEventListener('click', e => {
+    if (!e.target.closest('.profile-dropdown'))
+        document.getElementById('profileDD').classList.remove('show');
+});
+
+// ══════════════════════════════════════════
+// LANGUAGE
+// ══════════════════════════════════════════
+function selectLang(lang) {
+    document.querySelectorAll('.lang-pill').forEach(p => p.classList.remove('selected'));
+    document.getElementById('lang-' + lang).classList.add('selected');
+    document.getElementById('langInput').value = lang;
+    updateComplete();
+}
+
+// ══════════════════════════════════════════
+// COMPLETENESS
+// ══════════════════════════════════════════
+function updateComplete() {
+    const city = document.getElementById('cityHidden').value;
+    const lang = document.getElementById('langInput').value;
+    let pct = 50;
+    if (city) pct += 25;
+    if (lang) pct += 25;
+    document.getElementById('completePct').textContent = pct + '%';
+    document.getElementById('completeFill').style.width = pct + '%';
+}
+updateComplete();
+
+// ══════════════════════════════════════════
+// PHOTO PREVIEW
+// ══════════════════════════════════════════
+function previewPhoto(input) {
+    if (!input.files || !input.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        const src = e.target.result;
+        document.getElementById('photoPreview').innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;">`;
+        document.getElementById('headerAvatar').innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;">`;
+        const navAv = document.querySelector('.avatar');
+        if (navAv) navAv.innerHTML = `<img src="${src}" style="width:100%;height:100%;object-fit:cover;">`;
+    };
+    reader.readAsDataURL(input.files[0]);
+    const dt = new DataTransfer();
+    dt.items.add(input.files[0]);
+    document.getElementById('photoHidden').files = dt.files;
+}
+
+// ══════════════════════════════════════════
+// MAP SETUP — always visible, Pakistan default
+// ══════════════════════════════════════════
+let map, marker;
+
+// Pakistan center — zoom 6 shows whole country
+const PK_LAT = 30.3753, PK_LON = 69.3451;
+
+// Gold pin icon
+const goldIcon = () => L.divIcon({
+    html: `<div style="
+        width:28px;height:28px;
+        background:linear-gradient(135deg,#c9903a,#e8a84a);
+        border-radius:50% 50% 50% 0;
+        transform:rotate(-45deg);
+        border:2.5px solid white;
+        box-shadow:0 3px 12px rgba(201,144,58,0.55);
+    "></div>`,
+    iconSize: [28,28], iconAnchor: [14,28], className:''
+});
+
+function initMap() {
+    map = L.map('locationMap', { zoomControl: true }).setView([PK_LAT, PK_LON], 6);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>',
+        maxZoom: 19
+    }).addTo(map);
+
+    // If city already saved — place pin there
+    const savedCity = '{{ client_profile.city|default:"" }}';
+    if (savedCity) {
+        const coords = CITY_COORDS[savedCity.charAt(0).toUpperCase() + savedCity.slice(1).toLowerCase()];
+        if (coords) placePin(coords[0], coords[1], savedCity, false);
+        // Show city pill
+        document.getElementById('cityPill').classList.add('show');
+    }
+
+    // Click on map to set location manually
+    map.on('click', async function(e) {
+        placePin(e.latlng.lat, e.latlng.lng, null, true);
+        const city = await reverseGeocode(e.latlng.lat, e.latlng.lng);
+        saveCity(city, e.latlng.lat, e.latlng.lng);
+    });
+}
+
+function placePin(lat, lon, cityLabel, animate) {
+    if (marker) map.removeLayer(marker);
+    marker = L.marker([lat, lon], { icon: goldIcon(), draggable: true }).addTo(map);
+
+    if (animate) map.flyTo([lat, lon], 13, { duration: 1.2 });
+    else map.setView([lat, lon], 13);
+
+    if (cityLabel) {
+        marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${cityLabel}</b>`).openPopup();
+    }
+
+    // Drag pin to refine
+    marker.on('dragend', async function(e) {
+        const pos = e.target.getLatLng();
+        const city = await reverseGeocode(pos.lat, pos.lng);
+        saveCity(city, pos.lat, pos.lng);
+        marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${city}</b>`).openPopup();
+    });
+}
+
+function saveCity(city, lat, lon) {
+    document.getElementById('cityHidden').value = city;
+    document.getElementById('cityName').textContent = city;
+    document.getElementById('cityPill').classList.add('show');
+    document.getElementById('sidebarCity').textContent = city;
+    document.getElementById('locStatus').className = 'loc-status';
+    document.getElementById('gpsBtnText').textContent = 'Update Location';
+    document.getElementById('gpsIcon').className = 'fas fa-check';
+    setTimeout(() => { document.getElementById('gpsIcon').className = 'fas fa-location-arrow'; }, 2000);
+    updateComplete();
+}
+
+// ══════════════════════════════════════════
+// GPS DETECT — single button
+// ══════════════════════════════════════════
+async function detectLocation() {
+    if (!navigator.geolocation) {
+        showErr('GPS support nahi hai. Map pe click karein ya manually select karein.');
+        return;
+    }
+    const btn  = document.getElementById('gpsBtn');
+    const icon = document.getElementById('gpsIcon');
+    const txt  = document.getElementById('gpsBtnText');
+
+    btn.disabled = true;
+    icon.className = 'fas fa-spinner spin';
+    txt.textContent = 'Locating…';
+    document.getElementById('locStatus').className = 'loc-status';
+
+    navigator.geolocation.getCurrentPosition(
+        async pos => {
+            const { latitude: lat, longitude: lon } = pos.coords;
+            placePin(lat, lon, null, true);
+            const city = await reverseGeocode(lat, lon);
+            saveCity(city, lat, lon);
+            marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${city}</b>`).openPopup();
+            btn.disabled = false;
+            txt.textContent = 'Update Location';
+        },
+        err => {
+            btn.disabled = false;
+            icon.className = 'fas fa-location-arrow';
+            txt.textContent = 'Add Location';
+            const msgs = {
+                1: 'Location permission denied. Browser settings mein allow karein ya map pe click karein.',
+                2: 'Location unavailable. Map pe click karein.',
+                3: 'Timeout. Dobara try karein.'
+            };
+            showErr(msgs[err.code] || 'Location detect nahi hui.');
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+}
+
+function showErr(msg) {
+    const el = document.getElementById('locStatus');
+    el.textContent = '⚠ ' + msg;
+    el.className = 'loc-status show';
+}
+
+// ══════════════════════════════════════════
+// REVERSE GEOCODING — free Nominatim
+// ══════════════════════════════════════════
+async function reverseGeocode(lat, lon) {
+    try {
+        const r = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+            { headers: { 'Accept-Language': 'en' } }
+        );
+        const d = await r.json();
+        const a = d.address || {};
+        return a.city || a.town || a.county || a.state_district || a.state || 'Unknown';
+    } catch { return 'Unknown'; }
+}
+
+// ══════════════════════════════════════════
+// MANUAL FALLBACK
+// ══════════════════════════════════════════
+const CITY_COORDS = {
+    'Lahore':     [31.5204, 74.3587], 'Karachi':    [24.8607, 67.0011],
+    'Islamabad':  [33.6844, 73.0479], 'Rawalpindi': [33.5651, 73.0169],
+    'Faisalabad': [31.4504, 73.1350], 'Multan':     [30.1575, 71.5249],
+    'Peshawar':   [34.0150, 71.5805], 'Quetta':     [30.1798, 66.9750],
+    'Gujranwala': [32.1614, 74.1883], 'Sialkot':    [32.4945, 74.5229],
+    'Hyderabad':  [25.3960, 68.3578], 'Sukkur':     [27.7052, 68.8574],
+    'Abbottabad': [34.1463, 73.2117],
+};
+
+function toggleManual() {
+    document.getElementById('manualFallback').classList.toggle('show');
+}
+
+function setManualCity(val) {
+    if (!val) return;
+    const coords = CITY_COORDS[val];
+    if (coords) {
+        placePin(coords[0], coords[1], val, true);
+        saveCity(val, coords[0], coords[1]);
+        marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${val}</b>`).openPopup();
+    } else {
+        saveCity(val, 0, 0);
+    }
+    document.getElementById('manualFallback').classList.remove('show');
+}
+
+// ══════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+    initMap();
+    // Show pill if city already exists
+    const saved = document.getElementById('cityHidden').value;
+    if (saved) document.getElementById('cityPill').classList.add('show');
+});
+</script>
+
+
+<!-- ══ AI BUBBLE ══ -->
+<!-- ╔════════════════════════════════════════════════════════╗
+     ║  ContractorHub AI Bubble — paste before </body>        ║
+     ║  Works on client.html, seller.html, and any other page ║
+     ╚════════════════════════════════════════════════════════╝ -->
+
+<style>
+/* ═══════════════════════════════
+   AI BUBBLE STYLES
+═══════════════════════════════ */
+#ai-bubble-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(201,144,58,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9000;
+    transition: transform 0.25s, box-shadow 0.25s;
+    color: #0a1628;
+    font-size: 1.4rem;
+}
+#ai-bubble-btn:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(201,144,58,0.6);
+}
+#ai-bubble-btn .ai-notif {
+    position: absolute;
+    top: -2px; right: -2px;
+    width: 16px; height: 16px;
+    background: #10b981;
+    border-radius: 50%;
+    border: 2px solid white;
+    font-size: 0.5rem;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700;
+}
+
+/* Chat window */
+#ai-chat-window {
+    position: fixed;
+    bottom: 6.5rem;
+    right: 2rem;
+    width: 380px;
+    max-height: 560px;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(10,22,40,0.18);
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    z-index: 9001;
+    overflow: hidden;
+    transform: scale(0.85) translateY(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.28s cubic-bezier(.34,1.56,.64,1), opacity 0.22s ease;
+    transform-origin: bottom right;
+}
+#ai-chat-window.open {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Header */
+.ai-header {
+    background: linear-gradient(135deg, #0a1628, #1a3a6b);
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.ai-header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+        linear-gradient(rgba(201,144,58,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,144,58,0.08) 1px, transparent 1px);
+    background-size: 22px 22px;
+}
+.ai-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+    position: relative; z-index: 1;
+    box-shadow: 0 3px 10px rgba(201,144,58,0.4);
+}
+.ai-header-info { flex: 1; position: relative; z-index: 1; }
+.ai-header-info h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem; font-weight: 700; color: white;
+    margin-bottom: 0.1rem;
+}
+.ai-header-info p {
+    font-size: 0.68rem; color: rgba(255,255,255,0.55);
+    display: flex; align-items: center; gap: 0.35rem;
+}
+.ai-online-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%; background: #10b981;
+    display: inline-block;
+}
+.ai-close-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%; background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white; cursor: pointer; font-size: 0.8rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.18s; position: relative; z-index: 1;
+}
+.ai-close-btn:hover { background: rgba(255,255,255,0.25); }
+
+/* Role pill */
+.ai-role-pill {
+    font-size: 0.62rem; font-weight: 700;
+    padding: 0.18rem 0.55rem; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    margin-top: 0.2rem; display: inline-block;
+}
+.ai-role-pill.client { background: rgba(59,130,246,0.25); color: #93c5fd; }
+.ai-role-pill.seller { background: rgba(201,144,58,0.25); color: #e8a84a; }
+
+/* Messages area */
+.ai-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    scroll-behavior: smooth;
+}
+.ai-messages::-webkit-scrollbar { width: 4px; }
+.ai-messages::-webkit-scrollbar-track { background: transparent; }
+.ai-messages::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+
+/* Message bubbles */
+.ai-msg {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    animation: msgIn 0.2s ease;
+}
+@keyframes msgIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.ai-msg.user { flex-direction: row-reverse; }
+
+.ai-msg-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; flex-shrink: 0; color: #0a1628; font-weight: 700;
+}
+.ai-msg-avatar.user-av {
+    background: linear-gradient(135deg, #1a3a6b, #0a1628);
+    color: white;
+}
+.ai-msg-bubble {
+    max-width: 80%;
+    padding: 0.65rem 0.9rem;
+    border-radius: 18px;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: #0a1628;
+}
+.ai-msg.ai .ai-msg-bubble {
+    background: #f1f5f9;
+    border-radius: 18px 18px 18px 4px;
+}
+.ai-msg.user .ai-msg-bubble {
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    color: #0a1628;
+    font-weight: 500;
+    border-radius: 18px 18px 4px 18px;
+}
+
+/* Typing indicator */
+.ai-typing {
+    display: flex; gap: 4px;
+    padding: 0.65rem 0.9rem;
+    background: #f1f5f9;
+    border-radius: 18px 18px 18px 4px;
+    width: fit-content;
+}
+.ai-typing span {
+    width: 7px; height: 7px;
+    background: #94a3b8;
+    border-radius: 50%;
+    animation: typingDot 1.2s infinite;
+}
+.ai-typing span:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingDot {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Suggestion chips */
+.ai-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.3rem;
+}
+.ai-chip {
+    background: rgba(201,144,58,0.1);
+    border: 1px solid rgba(201,144,58,0.3);
+    color: #c9903a;
+    padding: 0.3rem 0.75rem;
+    border-radius: 40px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.18s;
+    white-space: nowrap;
+}
+.ai-chip:hover {
+    background: #c9903a;
+    color: white;
+}
+
+/* Input area */
+.ai-input-wrap {
+    padding: 0.75rem;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    flex-shrink: 0;
+    background: white;
+}
+.ai-input {
+    flex: 1;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 0.6rem 1rem;
+    font-size: 0.82rem;
+    font-family: 'DM Sans', sans-serif;
+    color: #0a1628;
+    outline: none;
+    resize: none;
+    max-height: 100px;
+    transition: 0.2s;
+    line-height: 1.4;
+}
+.ai-input:focus { border-color: #c9903a; box-shadow: 0 0 0 3px rgba(201,144,58,0.1); }
+.ai-input::placeholder { color: #94a3b8; }
+.ai-send-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #0a1628; font-size: 0.9rem;
+    transition: 0.2s; flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(201,144,58,0.3);
+}
+.ai-send-btn:hover { transform: scale(1.1); }
+.ai-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* Powered by */
+.ai-powered {
+    text-align: center;
+    font-size: 0.62rem;
+    color: #94a3b8;
+    padding: 0.3rem;
+    border-top: 1px solid #f1f5f9;
+    flex-shrink: 0;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    #ai-chat-window {
+        width: calc(100vw - 1.5rem);
+        right: 0.75rem;
+        bottom: 5.5rem;
+        max-height: 70vh;
+    }
+    #ai-bubble-btn { bottom: 1.2rem; right: 1.2rem; width: 54px; height: 54px; }
+}
+</style>
+
+<!-- ── BUBBLE BUTTON ── -->
+<button id="ai-bubble-btn" onclick="toggleAIBubble()" title="AI Assistant">
+    <i class="fas fa-robot"></i>
+    <div class="ai-notif">AI</div>
+</button>
+
+<!-- ── CHAT WINDOW ── -->
+<div id="ai-chat-window">
+
+    <!-- Header -->
+    <div class="ai-header">
+        <div class="ai-avatar">🤖</div>
+        <div class="ai-header-info">
+            <h4>ContractorHub AI</h4>
+            <p><span class="ai-online-dot"></span> Online — <span id="aiRoleLabel">Loading...</span></p>
+            <div class="ai-role-pill" id="aiRolePill">...</div>
+        </div>
+        <button class="ai-close-btn" onclick="toggleAIBubble()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Messages -->
+    <div class="ai-messages" id="aiMessages">
+        <!-- messages inject here -->
+    </div>
+
+    <!-- Input -->
+    <div class="ai-input-wrap">
+        <textarea
+            class="ai-input"
+            id="aiInput"
+            placeholder="Message likhein..."
+            rows="1"
+            onkeydown="aiInputKeydown(event)"
+            oninput="aiAutoResize(this)"
+        ></textarea>
+        <button class="ai-send-btn" id="aiSendBtn" onclick="aiSend()">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+
+    <div class="ai-powered">Powered by Groq · llama-3.3-70b · ContractorHub AI</div>
+</div>
+
+
+<script>
+// ════════════════════════════════════════
+// ContractorHub AI Bubble — JS
+// ════════════════════════════════════════
+
+let aiOpen       = false;
+let aiRole       = null;      // 'client' | 'seller'
+let aiContext    = null;      // context data from server
+let aiHistory    = [];        // conversation history [{role, content}]
+let aiInitialized = false;
+
+// ── Suggestion chips per role ──
+const CLIENT_CHIPS = [
+    'Electrician chahiye Lahore mein',
+    'Plumber — budget 3000',
+    'Painter ghar ke liye',
+    'Best rated contractor kaun?',
+];
+const SELLER_CHIPS = [
+    'Meri profile improve karo',
+    'Photo mein kya daalu?',
+    'Video tips chahiye',
+    'Document kaise upload karein?',
+    'Price kaise set karoon?',
+];
+
+// ── Toggle window ──
+function toggleAIBubble() {
+    aiOpen = !aiOpen;
+    const win = document.getElementById('ai-chat-window');
+    win.classList.toggle('open', aiOpen);
+
+    if (aiOpen && !aiInitialized) {
+        initAI();
+    }
+    if (aiOpen) {
+        setTimeout(() => document.getElementById('aiInput').focus(), 300);
+    }
+}
+
+// ── Initialize: fetch context + show welcome ──
+async function initAI() {
+    aiInitialized = true;
+    addTypingIndicator();
+
+    try {
+        const resp = await fetch('/ai-context/', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        const data = await resp.json();
+        aiRole    = data.role;
+        aiContext = data.context;
+
+        removeTypingIndicator();
+
+        // Update header
+        const isClient = aiRole === 'client';
+        document.getElementById('aiRoleLabel').textContent = isClient ? 'Client Mode' : 'Seller Coach';
+        const pill = document.getElementById('aiRolePill');
+        pill.textContent = isClient ? '🔍 Find Workers' : '🛠 Profile Coach';
+        pill.className = `ai-role-pill ${aiRole}`;
+
+        // Show welcome message
+        addAIMessage(data.welcome);
+
+        // Show suggestion chips
+        const chips = isClient ? CLIENT_CHIPS : SELLER_CHIPS;
+        addChips(chips);
+
+    } catch (err) {
+        removeTypingIndicator();
+        addAIMessage('⚠ Kuch masla aa gaya. Page refresh karein aur dobara try karein.');
+    }
+}
+
+// ── Send message ──
+async function aiSend() {
+    const input = document.getElementById('aiInput');
+    const msg   = input.value.trim();
+    if (!msg) return;
+
+    input.value  = '';
+    input.style.height = 'auto';
+
+    addUserMessage(msg);
+    document.getElementById('aiSendBtn').disabled = true;
+    addTypingIndicator();
+
+    try {
+        const resp = await fetch('/ai-chat/', {
+            method:  'POST',
+            headers: {
+                'Content-Type':  'application/json',
+                'X-CSRFToken':   getCookie('csrftoken'),
+            },
+            body: JSON.stringify({
+                message: msg,
+                history: aiHistory,
+            }),
+        });
+
+        const data = await resp.json();
+        removeTypingIndicator();
+        document.getElementById('aiSendBtn').disabled = false;
+
+        if (data.error) {
+            addAIMessage('⚠ Error: ' + data.error);
+        } else {
+            addAIMessage(data.reply);
+            // Save to history
+            aiHistory.push({ role: 'user',      content: msg });
+            aiHistory.push({ role: 'assistant', content: data.reply });
+            // Trim history
+            if (aiHistory.length > 16) aiHistory = aiHistory.slice(-16);
+        }
+
+    } catch (err) {
+        removeTypingIndicator();
+        document.getElementById('aiSendBtn').disabled = false;
+        addAIMessage('⚠ Network error. Internet check karein.');
+    }
+}
+
+// ── DOM helpers ──
+function addUserMessage(text) {
+    const msgs = document.getElementById('aiMessages');
+    const el = document.createElement('div');
+    el.className = 'ai-msg user';
+    el.innerHTML = `
+        <div class="ai-msg-avatar user-av">U</div>
+        <div class="ai-msg-bubble">${escHtml(text)}</div>
+    `;
+    msgs.appendChild(el);
+    scrollAI();
+}
+
+function addAIMessage(text) {
+    const msgs = document.getElementById('aiMessages');
+    const el = document.createElement('div');
+    el.className = 'ai-msg ai';
+    // Convert basic markdown-style formatting
+    const formatted = formatAIText(text);
+    el.innerHTML = `
+        <div class="ai-msg-avatar">🤖</div>
+        <div class="ai-msg-bubble">${formatted}</div>
+    `;
+    msgs.appendChild(el);
+    scrollAI();
+}
+
+function addChips(chips) {
+    const msgs = document.getElementById('aiMessages');
+    const el = document.createElement('div');
+    el.className = 'ai-chips';
+    el.style.paddingLeft = '38px';
+    chips.forEach(chip => {
+        const btn = document.createElement('button');
+        btn.className = 'ai-chip';
+        btn.textContent = chip;
+        btn.onclick = () => {
+            document.getElementById('aiInput').value = chip;
+            el.remove();
+            aiSend();
+        };
+        el.appendChild(btn);
+    });
+    msgs.appendChild(el);
+    scrollAI();
+}
+
+function addTypingIndicator() {
+    const msgs = document.getElementById('aiMessages');
+    const el = document.createElement('div');
+    el.className = 'ai-msg ai';
+    el.id = 'aiTyping';
+    el.innerHTML = `
+        <div class="ai-msg-avatar">🤖</div>
+        <div class="ai-typing"><span></span><span></span><span></span></div>
+    `;
+    msgs.appendChild(el);
+    scrollAI();
+}
+
+function removeTypingIndicator() {
+    const el = document.getElementById('aiTyping');
+    if (el) el.remove();
+}
+
+function scrollAI() {
+    const msgs = document.getElementById('aiMessages');
+    setTimeout(() => msgs.scrollTop = msgs.scrollHeight, 50);
+}
+
+// ── Text formatting (basic markdown) ──
+function formatAIText(text) {
+    return escHtml(text)
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/•\s/g, '• ')
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>');
+}
+
+function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Input helpers ──
+function aiInputKeydown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        aiSend();
+    }
+}
+function aiAutoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+// ── CSRF helper ──
+function getCookie(name) {
+    let val = null;
+    document.cookie.split(';').forEach(c => {
+        const [k, v] = c.trim().split('=');
+        if (k === name) val = decodeURIComponent(v);
+    });
+    return val;
+}
+</script>
+
+</body>
+</html>

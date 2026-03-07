@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContractorHub · My Proposals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --navy: #0a1628;
+            --navy-2: #0d1f3c;
+            --blue: #1a3a6b;
+            --gold: #c9903a;
+            --gold-light: #e8a84a;
+            --gold-dim: rgba(201,144,58,0.12);
+            --white: #ffffff;
+            --gray: #64748b;
+            --light: #f1f5f9;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f4f7fd;
+            color: var(--navy);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── TOP NAV ── */
+        .app { max-width: 1400px; margin: 0 auto; padding: 1.5rem 2rem; flex: 1; width: 100%; }
+
+        .top-nav {
+            background: white; border-radius: 60px;
+            padding: 0 1.5rem; margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+            display: flex; align-items: center; gap: 1.5rem;
+            height: 64px; white-space: nowrap;
+        }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.45rem; font-weight: 900; color: var(--navy); flex-shrink: 0; }
+        .logo span { color: var(--gold); }
+        .nav-divider { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
+        .nav-menu { display: flex; align-items: center; gap: 0.25rem; flex: 1; overflow: hidden; }
+        .nav-item {
+            padding: 0.5rem 1rem; border-radius: 40px;
+            font-size: 0.875rem; font-weight: 500; color: var(--gray);
+            cursor: pointer; transition: background 0.18s, color 0.18s;
+            display: flex; align-items: center; gap: 0.45rem;
+            flex-shrink: 0; text-decoration: none;
+        }
+        .nav-item i { font-size: 0.8rem; }
+        .nav-item:hover { background: var(--light); color: var(--navy); }
+        .nav-item.active { background: var(--gold-dim); color: var(--gold); font-weight: 600; }
+        .right-icons { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; margin-left: auto; }
+        .icon-circle {
+            width: 40px; height: 40px; border-radius: 50%; background: var(--light);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gray); font-size: 1rem; cursor: pointer;
+            transition: background 0.18s, color 0.18s; text-decoration: none;
+            border: none; position: relative; flex-shrink: 0;
+        }
+        .icon-circle:hover { background: var(--gold-dim); color: var(--gold); }
+
+        /* ── ICON DROPDOWN (help) ── */
+        .icon-dropdown { position: relative; }
+        .icon-drop-menu {
+            position: absolute; top: calc(100% + 10px); right: 0;
+            min-width: 200px; background: white; border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+            border: 1px solid var(--border);
+            overflow: hidden; display: none; z-index: 200;
+        }
+        .icon-drop-menu.show { display: block; animation: sdrop 0.25s ease; }
+        @keyframes sdrop { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+        .icon-drop-item {
+            padding: 0.75rem 1.1rem; font-size: 0.875rem; color: var(--navy);
+            display: flex; align-items: center; gap: 0.7rem;
+            text-decoration: none; transition: background 0.15s;
+        }
+        .icon-drop-item i { color: var(--gold); width: 16px; }
+        .icon-drop-item:hover { background: var(--light); }
+
+        /* ── NOTIFICATION POPUP ── */
+        .notif-wrapper { position: relative; }
+        .notif-popup {
+            position: absolute; top: calc(100% + 12px); right: 0;
+            width: 320px; background: white;
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.13);
+            border: 1px solid var(--border);
+            overflow: hidden; display: none; z-index: 200;
+        }
+        .notif-popup.show { display: block; animation: sdrop 0.25s ease; }
+        .notif-popup-header {
+            padding: 0.9rem 1.2rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--light);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .notif-popup-header h4 { font-size: 0.9rem; font-weight: 700; color: var(--navy); display: flex; align-items: center; gap: 0.5rem; }
+        .notif-popup-header h4 i { color: var(--gold); }
+        .notif-popup-header span { font-size: 0.7rem; color: var(--gray); }
+        .notif-item {
+            padding: 1rem 1.2rem; border-bottom: 1px solid var(--border);
+            display: flex; align-items: flex-start; gap: 0.8rem;
+            transition: background 0.15s; cursor: pointer;
+        }
+        .notif-item:last-of-type { border-bottom: none; }
+        .notif-item:hover { background: var(--light); }
+        .notif-item-icon { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; }
+        .notif-item-icon.msg  { background: #d1fae5; color: #065f46; }
+        .notif-item-icon.info { background: var(--gold-dim); color: var(--gold); }
+        .notif-item-body { flex: 1; }
+        .notif-item-body p { font-size: 0.8rem; color: var(--navy); line-height: 1.4; margin-bottom: 0.2rem; }
+        .notif-item-body span { font-size: 0.68rem; color: var(--gray); font-family: 'Space Mono', monospace; }
+        .notif-unread-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); margin-top: 5px; flex-shrink: 0; }
+        .notif-footer { padding: 0.75rem 1.2rem; text-align: center; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--gold); font-weight: 600; cursor: pointer; }
+        .notif-footer:hover { background: var(--gold-dim); }
+
+        /* ── AVATAR PILL & PROFILE DROPDOWN ── */
+        .profile-dropdown { position: relative; }
+        .dropdown-menu {
+            position: absolute; top: calc(100% + 10px); right: 0;
+            width: 260px; background: white; border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+            border: 1px solid var(--border);
+            overflow: hidden; display: none; z-index: 200;
+        }
+        .dropdown-menu.show { display: block; animation: sdrop 0.25s ease; }
+        .dropdown-user-header { display:flex; align-items:center; gap:0.9rem; padding:1rem 1.1rem; background:var(--light); border-bottom:1px solid var(--border); }
+        .dropdown-user-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#e8b96a); display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--navy); flex-shrink:0; }
+        .dropdown-user-avatar-img { width:44px; height:44px; border-radius:50%; object-fit:cover; }
+        .dropdown-user-info h4 { font-size:0.9rem; font-weight:700; color:var(--navy); }
+        .dropdown-user-info p  { font-size:0.75rem; color:var(--gray); }
+        .dropdown-item { padding:0.75rem 1.1rem; font-size:0.875rem; color:var(--navy); display:flex; align-items:center; gap:0.7rem; text-decoration:none; transition:background 0.15s; }
+        .dropdown-item i { color:var(--gold); width:16px; }
+        .dropdown-item:hover { background:var(--light); }
+        .dropdown-item.client-mode { background:var(--gold-dim); color:var(--gold); font-weight:600; }
+        .dropdown-item.client-mode:hover { background:rgba(201,144,58,0.2); }
+        .dropdown-divider { height:1px; background:var(--border); margin:0.2rem 0; }
+        .avatar-pill {
+            display: flex; align-items: center; gap: 0.55rem;
+            background: var(--light); padding: 0.25rem 0.75rem 0.25rem 1rem;
+            border-radius: 40px; cursor: pointer; font-size: 0.875rem;
+            font-weight: 500; color: var(--navy); text-decoration: none;
+        }
+        .avatar-pill:hover { background: #e5e9f0; }
+        .avatar { width: 34px; height: 34px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; color: var(--navy); }
+        .avatar-img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            background: linear-gradient(135deg, var(--navy), var(--blue));
+            border-radius: 28px; padding: 2rem 2.5rem;
+            margin-bottom: 2rem; position: relative; overflow: hidden;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image: radial-gradient(circle at 80% 50%, rgba(201,144,58,0.15) 0%, transparent 60%);
+        }
+        .page-header::after {
+            content: '';
+            position: absolute; top: -30px; right: -30px;
+            width: 200px; height: 200px; border-radius: 50%;
+            border: 40px solid rgba(201,144,58,0.07);
+        }
+        .page-header-inner { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+        .page-header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; color: white; margin-bottom: 0.35rem; }
+        .page-header p { color: rgba(255,255,255,0.65); font-size: 0.9rem; }
+        .header-stats { display: flex; gap: 2rem; }
+        .hstat { text-align: center; }
+        .hstat .num { font-family: 'Space Mono', monospace; font-size: 2rem; font-weight: 700; color: var(--gold); }
+        .hstat .lbl { font-size: 0.75rem; color: rgba(255,255,255,0.55); margin-top: 0.15rem; }
+        .new-proposal-btn {
+            background: var(--gold); color: white; border: none;
+            padding: 0.75rem 1.5rem; border-radius: 40px;
+            font-weight: 600; font-size: 0.9rem; cursor: pointer;
+            transition: 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .new-proposal-btn:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+        /* ── FILTER BAR ── */
+        .filter-bar { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .filter-tabs { display: flex; background: white; border-radius: 40px; padding: 0.3rem; border: 1px solid var(--border); gap: 0.2rem; }
+        .filter-tab {
+            padding: 0.4rem 1.1rem; border-radius: 30px;
+            font-size: 0.82rem; font-weight: 500; color: var(--gray);
+            cursor: pointer; transition: 0.18s; border: none; background: none;
+        }
+        .filter-tab.active { background: var(--navy); color: white; }
+        .filter-tab:hover:not(.active) { background: var(--light); }
+        .search-box {
+            display: flex; align-items: center; gap: 0.6rem;
+            background: white; border: 1px solid var(--border);
+            border-radius: 40px; padding: 0.5rem 1rem;
+            flex: 1; max-width: 300px;
+        }
+        .search-box i { color: var(--gray); font-size: 0.85rem; }
+        .search-box input { border: none; outline: none; font-size: 0.875rem; color: var(--navy); width: 100%; font-family: 'DM Sans', sans-serif; }
+        .sort-select {
+            background: white; border: 1px solid var(--border);
+            border-radius: 40px; padding: 0.5rem 1rem;
+            font-size: 0.82rem; color: var(--navy);
+            outline: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+        }
+
+        /* ── PROPOSALS GRID ── */
+        .proposals-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.3rem; }
+
+        .proposal-card {
+            background: white; border-radius: 22px;
+            border: 1px solid var(--border);
+            overflow: hidden; transition: 0.25s;
+            cursor: pointer; position: relative;
+        }
+        .proposal-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.09); border-color: var(--gold); }
+
+        .card-image { width: 100%; height: 160px; object-fit: cover; display: block; background: var(--light); }
+        .card-image-placeholder { width: 100%; height: 160px; background: linear-gradient(135deg, var(--navy), var(--blue)); display: flex; align-items: center; justify-content: center; }
+        .card-image-placeholder i { font-size: 3rem; color: rgba(201,144,58,0.4); }
+
+        .card-body { padding: 1.3rem; }
+        .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+        .card-title { font-size: 1rem; font-weight: 600; color: var(--navy); line-height: 1.3; flex: 1; padding-right: 0.5rem; }
+
+        .status-badge { padding: 0.25rem 0.7rem; border-radius: 20px; font-size: 0.68rem; font-weight: 700; flex-shrink: 0; }
+        .status-active   { background: #d1fae5; color: #065f46; }
+        .status-inactive { background: #fee2e2; color: #991b1b; }
+
+        .card-tag { font-size: 0.75rem; color: var(--gold); font-weight: 600; margin-bottom: 0.5rem; }
+        .card-tag i { margin-right: 0.3rem; }
+
+        .card-desc { font-size: 0.8rem; color: var(--gray); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 1rem; }
+
+        .card-meta { display: flex; gap: 1rem; margin-bottom: 1rem; }
+        .meta-item { display: flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; color: var(--gray); }
+        .meta-item i { color: var(--gold); font-size: 0.72rem; }
+        .meta-item strong { color: var(--navy); }
+
+        .impression-bar { background: var(--light); border-radius: 12px; padding: 0.7rem 0.9rem; display: flex; align-items: center; gap: 0.75rem; }
+        .imp-icon { width: 32px; height: 32px; background: var(--gold-dim); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 0.85rem; flex-shrink: 0; }
+        .imp-info { flex: 1; }
+        .imp-label { font-size: 0.68rem; color: var(--gray); }
+        .imp-count { font-family: 'Space Mono', monospace; font-size: 0.95rem; font-weight: 700; color: var(--navy); }
+        .imp-trend { font-size: 0.68rem; font-weight: 600; }
+        .imp-trend.up   { color: var(--success); }
+        .imp-trend.flat { color: var(--gray); }
+
+        .view-graph-btn { background: var(--gold-dim); color: var(--gold); border: none; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: 0.18s; flex-shrink: 0; }
+        .view-graph-btn:hover { background: var(--gold); color: white; }
+
+        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px dashed var(--border); }
+        .price-tag { font-family: 'Space Mono', monospace; font-size: 1.05rem; font-weight: 700; color: var(--navy); }
+        .price-tag span { font-size: 0.7rem; color: var(--gray); font-weight: 400; font-family: 'DM Sans', sans-serif; }
+        .card-actions { display: flex; gap: 0.5rem; }
+        .action-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); background: white; display: flex; align-items: center; justify-content: center; color: var(--gray); cursor: pointer; transition: 0.18s; font-size: 0.8rem; }
+        .action-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+        .action-btn.danger:hover { border-color: var(--danger); color: var(--danger); background: #fee2e2; }
+
+        /* ── MODAL ── */
+        .modal-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(10,22,40,0.7); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal { background: white; border-radius: 28px; width: 100%; max-width: 760px; max-height: 90vh; overflow-y: auto; transform: translateY(20px); transition: transform 0.3s; box-shadow: 0 30px 80px rgba(0,0,0,0.25); }
+        .modal-overlay.open .modal { transform: translateY(0); }
+        .modal-header { padding: 1.5rem 1.8rem 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; position: sticky; top: 0; background: white; z-index: 2; border-radius: 28px 28px 0 0; }
+        .modal-header h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--navy); margin-bottom: 0.2rem; }
+        .modal-header p  { font-size: 0.8rem; color: var(--gray); }
+        .modal-close { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--light); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--gray); font-size: 0.9rem; flex-shrink: 0; transition: 0.18s; }
+        .modal-close:hover { background: var(--danger); color: white; border-color: var(--danger); }
+        .modal-body { padding: 1.5rem 1.8rem; }
+        .modal-stats { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .mstat { flex: 1; min-width: 100px; background: var(--light); border-radius: 16px; padding: 1rem; text-align: center; }
+        .mstat .num { font-family: 'Space Mono', monospace; font-size: 1.5rem; font-weight: 700; color: var(--navy); }
+        .mstat .lbl { font-size: 0.7rem; color: var(--gray); margin-top: 0.2rem; }
+        .mstat.highlight { background: var(--gold-dim); }
+        .mstat.highlight .num { color: var(--gold); }
+        .chart-tabs { display: flex; gap: 0.4rem; margin-bottom: 1.2rem; }
+        .chart-tab { padding: 0.4rem 1rem; border-radius: 30px; font-size: 0.8rem; font-weight: 500; color: var(--gray); cursor: pointer; border: 1px solid var(--border); background: white; transition: 0.18s; }
+        .chart-tab.active { background: var(--navy); color: white; border-color: var(--navy); }
+        .chart-tab:hover:not(.active) { background: var(--light); }
+        .chart-container { position: relative; height: 260px; margin-bottom: 1.5rem; }
+        .modal-proposal-detail { background: var(--light); border-radius: 16px; padding: 1.2rem; margin-bottom: 1.2rem; }
+        .modal-proposal-detail h4 { font-size: 0.85rem; font-weight: 600; color: var(--navy); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+        .modal-proposal-detail h4 i { color: var(--gold); }
+        .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+        .detail-row { display: flex; flex-direction: column; gap: 0.15rem; }
+        .detail-row .dk { font-size: 0.7rem; color: var(--gray); }
+        .detail-row .dv { font-size: 0.85rem; font-weight: 600; color: var(--navy); }
+
+        /* ── EMPTY STATE ── */
+        .empty-proposals { grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; background: white; border-radius: 22px; border: 1px dashed var(--border); }
+        .empty-proposals i { font-size: 3.5rem; color: var(--gold); opacity: 0.4; margin-bottom: 1rem; display: block; }
+        .empty-proposals h3 { font-size: 1.2rem; color: var(--navy); margin-bottom: 0.5rem; }
+        .empty-proposals p { color: var(--gray); font-size: 0.875rem; margin-bottom: 1.5rem; }
+
+        /* ── FOOTER ── */
+        .footer {
+            background: var(--navy); color: white;
+            padding: 3rem 2rem 1.5rem; margin-top: 3rem;
+            border-radius: 30px 30px 0 0;
+        }
+        .footer-content { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+        .footer-section h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 1rem; color: var(--gold); }
+        .footer-section h4 { font-size: 0.9rem; margin-bottom: 1rem; color: white; }
+        .footer-section ul { list-style: none; }
+        .footer-section ul li { margin-bottom: 0.6rem; }
+        .footer-section ul li a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem; transition: 0.2s; }
+        .footer-section ul li a:hover { color: var(--gold); padding-left: 5px; }
+        .social-links { display: flex; gap: 0.6rem; margin-top: 1rem; }
+        .social-links a { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.85rem; text-decoration: none; transition: background 0.2s; }
+        .social-links a:hover { background: var(--gold); }
+        .footer-bottom { text-align: center; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); font-size: 0.8rem; max-width: 1400px; margin: 0 auto; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) { .footer-content { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 768px) {
+            .app { padding: 1rem; }
+            .proposals-grid { grid-template-columns: 1fr; }
+            .page-header-inner { flex-direction: column; }
+            .header-stats { gap: 1.2rem; }
+            .top-nav { overflow-x: auto; border-radius: 20px; }
+            .notif-popup { width: 290px; }
+            .footer-content { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) { .footer-content { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="app">
+
+    <!-- TOP NAV -->
+    <nav class="top-nav">
+        <div class="logo">Contractor<span>Hub</span></div>
+        <div class="nav-divider"></div>
+        <div class="nav-menu">
+            <a href="{% url 'seller' %}" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="{% url 'create_proposal' %}" class="nav-item"><i class="fas fa-file-alt"></i> Proposals</a>
+            <a href="{% url 'my_proposals' %}" class="nav-item active"><i class="fas fa-briefcase"></i> Active Work</a>
+        </div>
+        <div class="right-icons">
+
+            <!-- Help -->
+            <div class="icon-dropdown">
+                <button class="icon-circle" onclick="toggleIconDrop('helpMenu')" title="Help">
+                    <i class="fas fa-question-circle"></i>
+                </button>
+                <div class="icon-drop-menu" id="helpMenu">
+                    <a href="{% url 'faqs' %}"     class="icon-drop-item"><i class="fas fa-question-circle"></i> FAQs</a>
+                    <a href="{% url 'about_us' %}" class="icon-drop-item"><i class="fas fa-info-circle"></i> About Us</a>
+                    <a href="{% url 'privacy' %}"  class="icon-drop-item"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <a href="{% url 'messages_page' %}" class="icon-circle" title="Messages">
+                <i class="far fa-comment-dots"></i>
+            </a>
+
+            <!-- Notifications -->
+            <div class="notif-wrapper">
+                <a href="#" class="icon-circle" id="notifBtn" title="Notifications" onclick="toggleNotif(event)">
+                    <i class="far fa-bell"></i>
+                </a>
+                <div class="notif-popup" id="notifPopup">
+                    <div class="notif-popup-header">
+                        <h4><i class="fas fa-bell"></i> Notifications</h4>
+                        <span>Today</span>
+                    </div>
+                    <div class="notif-item">
+                        <div class="notif-item-icon msg"><i class="far fa-comment-dots"></i></div>
+                        <div class="notif-item-body">
+                            <p><strong>New message</strong> from a client about your proposal</p>
+                            <span>2 min ago</span>
+                        </div>
+                        <div class="notif-unread-dot"></div>
+                    </div>
+                    <div class="notif-item">
+                        <div class="notif-item-icon info"><i class="fas fa-eye"></i></div>
+                        <div class="notif-item-body">
+                            <p>Someone <strong>viewed your proposal</strong></p>
+                            <span>1 hr ago</span>
+                        </div>
+                        <div class="notif-unread-dot"></div>
+                    </div>
+                    <div class="notif-item">
+                        <div class="notif-item-icon msg"><i class="far fa-comment-dots"></i></div>
+                        <div class="notif-item-body">
+                            <p>A client <strong>started a conversation</strong> with you</p>
+                            <span>Yesterday</span>
+                        </div>
+                    </div>
+                    <div class="notif-footer">See all notifications</div>
+                </div>
+            </div>
+
+            <!-- Profile Dropdown -->
+            <div class="profile-dropdown">
+                <div class="avatar-pill" onclick="toggleDropdown()">
+                    {% if profile.profile_photo %}
+                    <img src="{{ profile.profile_photo.url }}" class="avatar-img" alt="">
+                    {% else %}
+                    <div class="avatar">{{ user.name|first|default:user.email|first|upper }}</div>
+                    {% endif %}
+                    {{ user.name|default:"Me"|truncatechars:10 }}
+                    <i class="fas fa-chevron-down" style="font-size:0.55rem;color:#999;margin-left:2px;"></i>
+                </div>
+                <div class="dropdown-menu" id="profileDropdown">
+                    <div class="dropdown-user-header">
+                        {% if profile.profile_photo %}
+                        <img src="{{ profile.profile_photo.url }}" class="dropdown-user-avatar-img" alt="">
+                        {% else %}
+                        <div class="dropdown-user-avatar">{{ user.name|first|default:user.email|first|upper }}</div>
+                        {% endif %}
+                        <div class="dropdown-user-info">
+                            <h4>{{ user.name|default:"Contractor" }}</h4>
+                            <p>{{ profile.title|default:"Contractor" }} • Level {{ profile.level }}</p>
+                        </div>
+                    </div>
+                    <a href="{% url 'seller_profile' %}" class="dropdown-item"><i class="fas fa-user-circle"></i> My Profile</a>
+                    <a href="{% url 'messages_page' %}"  class="dropdown-item"><i class="far fa-comment-dots"></i> Messages</a>
+                    <a href="#" class="dropdown-item"><i class="fas fa-bell"></i> Notifications</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'landing_page' %}?mode=client" class="dropdown-item client-mode">
+                        <i class="fas fa-exchange-alt"></i> Switch to Client
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'account_logout' %}" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                </div>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <div class="page-header-inner">
+            <div>
+                <h1>My Proposals & Gigs</h1>
+                <p>Manage all your bids, track impressions, and monitor performance</p>
+            </div>
+            <div class="header-stats">
+                <div class="hstat">
+                    <div class="num">{{ total_proposals|default:"0" }}</div>
+                    <div class="lbl">Total Proposals</div>
+                </div>
+                <div class="hstat">
+                    <div class="num">{{ active_count|default:"0" }}</div>
+                    <div class="lbl">Active</div>
+                </div>
+                <div class="hstat">
+                    <div class="num">{{ total_impressions|default:"0" }}</div>
+                    <div class="lbl">Total Impressions</div>
+                </div>
+            </div>
+            <a href="{% url 'create_proposal' %}" class="new-proposal-btn">
+                <i class="fas fa-plus"></i> New Proposal
+            </a>
+        </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterProposals('all', this)">All</button>
+            <button class="filter-tab" onclick="filterProposals('active', this)">Active</button>
+            <button class="filter-tab" onclick="filterProposals('inactive', this)">Inactive</button>
+        </div>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search proposals..." oninput="searchProposals(this.value)">
+        </div>
+        <select class="sort-select" onchange="sortProposals(this.value)">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="price_high">Price: High to Low</option>
+            <option value="price_low">Price: Low to High</option>
+            <option value="impressions">Most Impressions</option>
+        </select>
+    </div>
+
+    <!-- PROPOSALS GRID -->
+    <div class="proposals-grid" id="proposalsGrid">
+        {% for proposal in proposals %}
+        <div class="proposal-card"
+             data-status="{% if proposal.is_active %}active{% else %}inactive{% endif %}"
+             data-title="{{ proposal.title|lower }}"
+             data-price="{{ proposal.base_price }}"
+             data-created="{{ proposal.created_at|date:'U' }}"
+             data-impressions="{{ proposal.impressions.count|default:0 }}"
+             onclick="openModal({{ proposal.id }})">
+
+            {% if proposal.portfolio_image %}
+            <img src="{{ proposal.portfolio_image.url }}" class="card-image" alt="{{ proposal.title }}">
+            {% else %}
+            <div class="card-image-placeholder">
+                <i class="fas fa-hard-hat"></i>
+            </div>
+            {% endif %}
+
+            <div class="card-body">
+                <div class="card-top">
+                    <div class="card-title">{{ proposal.title }}</div>
+                    {% if proposal.is_active %}
+                    <span class="status-badge status-active">Active</span>
+                    {% else %}
+                    <span class="status-badge status-inactive">Inactive</span>
+                    {% endif %}
+                </div>
+
+                <div class="card-tag"><i class="fas fa-tag"></i>{{ proposal.work_type }}</div>
+
+                {% if proposal.description %}
+                <p class="card-desc">{{ proposal.description }}</p>
+                {% endif %}
+
+                <div class="card-meta">
+                    {% if proposal.delivery_time %}
+                    <div class="meta-item"><i class="fas fa-clock"></i><span>{{ proposal.delivery_time }}</span></div>
+                    {% endif %}
+                    {% if proposal.search_tag %}
+                    <div class="meta-item"><i class="fas fa-hashtag"></i><span>{{ proposal.search_tag }}</span></div>
+                    {% endif %}
+                    <div class="meta-item"><i class="fas fa-calendar"></i><span>{{ proposal.created_at|date:"M d" }}</span></div>
+                </div>
+
+                <div class="impression-bar" onclick="event.stopPropagation(); openModal({{ proposal.id }})">
+                    <div class="imp-icon"><i class="fas fa-eye"></i></div>
+                    <div class="imp-info">
+                        <div class="imp-label">Total Impressions</div>
+                        <div class="imp-count">{{ proposal.impressions.count|default:"0" }}</div>
+                    </div>
+                    {% with today_count=proposal.impressions.count|default:0 %}
+                    <div class="imp-trend {% if today_count > 0 %}up{% else %}flat{% endif %}">
+                        {% if today_count > 0 %}▲ Active{% else %}— No data{% endif %}
+                    </div>
+                    {% endwith %}
+                    <button class="view-graph-btn"><i class="fas fa-chart-bar"></i> Graph</button>
+                </div>
+
+                <div class="card-footer">
+                    <div class="price-tag">RS {{ proposal.base_price }} <span>/ base price</span></div>
+                    <div class="card-actions" onclick="event.stopPropagation()">
+                        <button class="action-btn" title="Edit" onclick="window.location.href='#'"><i class="fas fa-pen"></i></button>
+                        <button class="action-btn" title="Toggle Status"><i class="fas fa-power-off"></i></button>
+                        <button class="action-btn danger" title="Delete"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-proposals">
+            <i class="fas fa-file-alt"></i>
+            <h3>No proposals yet</h3>
+            <p>Create your first proposal and start getting clients!</p>
+            <a href="{% url 'create_proposal' %}" class="new-proposal-btn">
+                <i class="fas fa-plus"></i> Create Proposal
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div><!-- .app -->
+
+
+<!-- ── IMPRESSION GRAPH MODAL ── -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+    <div class="modal" id="mainModal">
+        <div class="modal-header">
+            <div>
+                <h2 id="modalTitle">Proposal Name</h2>
+                <p id="modalSubtitle">Impression analytics</p>
+            </div>
+            <div class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></div>
+        </div>
+        <div class="modal-body">
+            <div class="modal-stats">
+                <div class="mstat highlight">
+                    <div class="num" id="statTotal">0</div>
+                    <div class="lbl">Total Impressions</div>
+                </div>
+                <div class="mstat">
+                    <div class="num" id="statToday">0</div>
+                    <div class="lbl">Today</div>
+                </div>
+                <div class="mstat">
+                    <div class="num" id="statWeek">0</div>
+                    <div class="lbl">This Week</div>
+                </div>
+                <div class="mstat">
+                    <div class="num" id="statMonth">0</div>
+                    <div class="lbl">This Month</div>
+                </div>
+            </div>
+            <div class="chart-tabs">
+                <button class="chart-tab active" onclick="switchChart('7d', this)">7 Days</button>
+                <button class="chart-tab" onclick="switchChart('30d', this)">30 Days</button>
+                <button class="chart-tab" onclick="switchChart('3m', this)">3 Months</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="impressionChart"></canvas>
+            </div>
+            <div class="modal-proposal-detail">
+                <h4><i class="fas fa-info-circle"></i> Proposal Details</h4>
+                <div class="detail-grid">
+                    <div class="detail-row"><span class="dk">Work Type</span><span class="dv" id="dWorkType">—</span></div>
+                    <div class="detail-row"><span class="dk">Base Price</span><span class="dv" id="dPrice">—</span></div>
+                    <div class="detail-row"><span class="dk">Delivery Time</span><span class="dv" id="dDelivery">—</span></div>
+                    <div class="detail-row"><span class="dk">Search Tag</span><span class="dv" id="dTag">—</span></div>
+                    <div class="detail-row"><span class="dk">Status</span><span class="dv" id="dStatus">—</span></div>
+                    <div class="detail-row"><span class="dk">Created</span><span class="dv" id="dCreated">—</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Contractor<span style="color:var(--gold);">Hub</span></h3>
+            <p style="color:rgba(255,255,255,0.6); font-size:0.85rem; line-height:1.6;">Connecting skilled contractors with quality projects since 2025.</p>
+            <div class="social-links">
+                <a href="https://facebook.com"  target="_blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/"        target="_blank"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://linkedin.com"  target="_blank"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h4>For Contractors</h4>
+            <ul>
+                <li><a href="{% url 'seller' %}">Dashboard</a></li>
+                <li><a href="{% url 'my_proposals' %}">My Proposals</a></li>
+                <li><a href="{% url 'seller_profile' %}">My Profile</a></li>
+                <li><a href="{% url 'messages_page' %}">Messages</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Company</h4>
+            <ul>
+                <li><a href="{% url 'about_us' %}">About Us</a></li>
+                <li><a href="{% url 'faqs' %}">FAQs</a></li>
+                <li><a href="{% url 'privacy' %}">Privacy Policy</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Support</h4>
+            <ul>
+                <li><a href="{% url 'faqs' %}">Help Center</a></li>
+                <li><a href="{% url 'messages_page' %}">Contact Us</a></li>
+                <li><a href="{% url 'landing_page' %}">Home</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; {% now "Y" %} ContractorHub. All rights reserved.</p>
+    </div>
+</footer>
+
+
+<!-- Proposal data JSON for JS -->
+{{ proposals_json|json_script:"proposals-data" }}
+{{ impressions_json|json_script:"impressions-data" }}
+
+<script>
+    const proposalsData   = JSON.parse(document.getElementById('proposals-data').textContent  || '[]');
+    const impressionsData = JSON.parse(document.getElementById('impressions-data').textContent || '{}');
+
+    let currentChart = null;
+    let currentProposalId = null;
+    let currentPeriod = '7d';
+
+    // ── Help dropdown ──
+    function toggleIconDrop(id) {
+        const menu = document.getElementById(id);
+        const wasOpen = menu.classList.contains('show');
+        document.querySelectorAll('.icon-drop-menu').forEach(m => m.classList.remove('show'));
+        if (!wasOpen) menu.classList.add('show');
+    }
+
+    // ── Notification popup ──
+    function toggleNotif(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const popup = document.getElementById('notifPopup');
+        popup.classList.toggle('show');
+    }
+
+    // ── Profile dropdown ──
+    function toggleDropdown() {
+        const dropdown = document.getElementById('profileDropdown');
+        const wasOpen = dropdown.classList.contains('show');
+        document.querySelectorAll('.icon-drop-menu').forEach(m => m.classList.remove('show'));
+        document.getElementById('notifPopup').classList.remove('show');
+        dropdown.classList.toggle('show', !wasOpen);
+    }
+
+    // ── Outside click closes all ──
+    document.addEventListener('click', function(e) {
+        // close icon-drop menus
+        document.querySelectorAll('.icon-drop-menu').forEach(menu => {
+            const parent = menu.closest('.icon-dropdown');
+            if (parent && !parent.contains(e.target)) menu.classList.remove('show');
+        });
+        // close notif popup
+        const notifPopup = document.getElementById('notifPopup');
+        const notifBtn   = document.getElementById('notifBtn');
+        if (notifBtn && !notifBtn.contains(e.target) && !notifPopup.contains(e.target)) {
+            notifPopup.classList.remove('show');
+        }
+        // close profile dropdown
+        const profileDropdown = document.getElementById('profileDropdown');
+        const avatarPill = document.querySelector('.avatar-pill');
+        if (avatarPill && !avatarPill.contains(e.target) && profileDropdown && !profileDropdown.contains(e.target)) {
+            profileDropdown.classList.remove('show');
+        }
+    });
+
+    // ── Modal ──
+    function openModal(proposalId) {
+        currentProposalId = proposalId;
+        currentPeriod = '7d';
+
+        const proposal = proposalsData.find(p => p.id === proposalId);
+        if (!proposal) return;
+
+        document.getElementById('modalTitle').textContent    = proposal.title;
+        document.getElementById('modalSubtitle').textContent = proposal.work_type + ' • ' + (proposal.is_active ? 'Active' : 'Inactive');
+        document.getElementById('dWorkType').textContent  = proposal.work_type  || '—';
+        document.getElementById('dPrice').textContent     = 'RS ' + proposal.base_price;
+        document.getElementById('dDelivery').textContent  = proposal.delivery_time || '—';
+        document.getElementById('dTag').textContent       = proposal.search_tag   || '—';
+        document.getElementById('dStatus').textContent    = proposal.is_active ? '✅ Active' : '❌ Inactive';
+        document.getElementById('dCreated').textContent   = proposal.created_at   || '—';
+
+        const impData = impressionsData[proposalId] || {};
+        document.getElementById('statTotal').textContent = impData.total  || 0;
+        document.getElementById('statToday').textContent = impData.today  || 0;
+        document.getElementById('statWeek').textContent  = impData.week   || 0;
+        document.getElementById('statMonth').textContent = impData.month  || 0;
+
+        document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+        document.querySelector('.chart-tab').classList.add('active');
+
+        renderChart(proposalId, '7d');
+        document.getElementById('modalOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('open');
+        document.body.style.overflow = '';
+        if (currentChart) { currentChart.destroy(); currentChart = null; }
+    }
+
+    function closeModalOutside(e) {
+        if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    function switchChart(period, btn) {
+        currentPeriod = period;
+        document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        renderChart(currentProposalId, period);
+    }
+
+    function renderChart(proposalId, period) {
+        if (currentChart) { currentChart.destroy(); currentChart = null; }
+        const impData = impressionsData[proposalId] || {};
+        const daily   = impData.daily || {};
+        const { labels, values } = buildSeries(daily, period);
+        const ctx = document.getElementById('impressionChart').getContext('2d');
+        const grad = ctx.createLinearGradient(0, 0, 0, 260);
+        grad.addColorStop(0, 'rgba(201,144,58,0.35)');
+        grad.addColorStop(1, 'rgba(201,144,58,0.0)');
+        currentChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Impressions',
+                    data: values,
+                    borderColor: '#c9903a',
+                    backgroundColor: grad,
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#c9903a',
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                    tension: 0.4,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { backgroundColor: '#0a1628', titleColor: '#c9903a', bodyColor: '#fff', cornerRadius: 10, padding: 10, callbacks: { label: ctx => ' ' + ctx.parsed.y + ' impressions' } }
+                },
+                scales: {
+                    x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { family: 'DM Sans', size: 11 }, color: '#64748b' } },
+                    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { family: 'Space Mono', size: 10 }, color: '#64748b', precision: 0 } }
+                }
+            }
+        });
+    }
+
+    function buildSeries(daily, period) {
+        const labels = [], values = [];
+        const today = new Date();
+        let days = period === '7d' ? 7 : period === '30d' ? 30 : 90;
+        for (let i = days - 1; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(today.getDate() - i);
+            const key = d.toISOString().slice(0, 10);
+            if (period === '3m') {
+                if (i % 7 === 0) {
+                    labels.push(d.toLocaleDateString('en', { month: 'short', day: 'numeric' }));
+                    let sum = 0;
+                    for (let j = 0; j < 7; j++) { const wd = new Date(d); wd.setDate(d.getDate() + j); sum += daily[wd.toISOString().slice(0,10)] || 0; }
+                    values.push(sum);
+                }
+            } else {
+                labels.push(d.toLocaleDateString('en', { month: 'short', day: 'numeric' }));
+                values.push(daily[key] || 0);
+            }
+        }
+        return { labels, values };
+    }
+
+    function filterProposals(status, btn) {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.proposal-card').forEach(card => {
+            card.style.display = (status === 'all' || card.dataset.status === status) ? '' : 'none';
+        });
+    }
+
+    function searchProposals(val) {
+        const q = val.toLowerCase();
+        document.querySelectorAll('.proposal-card').forEach(card => {
+            card.style.display = card.dataset.title.includes(q) ? '' : 'none';
+        });
+    }
+
+    function sortProposals(val) {
+        const grid = document.getElementById('proposalsGrid');
+        const cards = [...grid.querySelectorAll('.proposal-card')];
+        cards.sort((a, b) => {
+            if (val === 'newest')      return b.dataset.created - a.dataset.created;
+            if (val === 'oldest')      return a.dataset.created - b.dataset.created;
+            if (val === 'price_high')  return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+            if (val === 'price_low')   return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+            if (val === 'impressions') return parseInt(b.dataset.impressions) - parseInt(a.dataset.impressions);
+            return 0;
+        });
+        cards.forEach(c => grid.appendChild(c));
+    }
+</script>
+</body>
+</html>

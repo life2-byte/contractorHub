@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContractorHub · {{ target_user.name|default:"Profile" }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --navy:     #0a1628;
+            --blue:     #1a3a6b;
+            --gold:     #c9903a;
+            --gold-l:   #e8a84a;
+            --gold-dim: rgba(201,144,58,0.12);
+            --gray:     #64748b;
+            --light:    #f1f5f9;
+            --border:   #e2e8f0;
+            --success:  #10b981;
+            --danger:   #ef4444;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'DM Sans',sans-serif; background:#f0f4fb; color:var(--navy); min-height:100vh; }
+
+        /* TOP NAV */
+        .top-nav {
+            background:white; border-radius:60px; padding:0 1.5rem;
+            margin:1rem 1.5rem; box-shadow:0 4px 20px rgba(0,0,0,0.04);
+            border:1px solid var(--border); display:flex; align-items:center;
+            gap:1.5rem; height:64px; white-space:nowrap; position:relative; z-index:10;
+        }
+        .logo { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--navy); flex-shrink:0; }
+        .logo span { color:var(--gold); }
+        .nav-div { width:1px; height:28px; background:var(--border); flex-shrink:0; }
+        .nav-menu { display:flex; align-items:center; gap:0.2rem; flex:1; }
+        .nav-item { padding:0.45rem 0.9rem; border-radius:40px; font-size:0.85rem; font-weight:500; color:var(--gray); text-decoration:none; display:flex; align-items:center; gap:0.4rem; transition:0.18s; flex-shrink:0; }
+        .nav-item:hover { background:var(--light); color:var(--navy); }
+        .nav-item.active { background:var(--gold-dim); color:var(--gold); font-weight:600; }
+        .nav-right { display:flex; align-items:center; gap:0.5rem; margin-left:auto; flex-shrink:0; }
+        .back-btn { display:flex; align-items:center; gap:0.5rem; background:var(--light); border:none; cursor:pointer; padding:0.5rem 1rem; border-radius:30px; font-size:0.85rem; font-weight:500; color:var(--navy); text-decoration:none; transition:0.18s; }
+        .back-btn:hover { background:var(--gold-dim); color:var(--gold); }
+
+        .page { max-width:1100px; margin:0 auto; padding:0 1.5rem 3rem; }
+
+        /* HERO */
+        .profile-hero { border-radius:24px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.08); margin-bottom:1.5rem; }
+        .cover { height:200px; background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 60%,#2a5298 100%); position:relative; overflow:hidden; }
+        .cover::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(201,144,58,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(201,144,58,0.08) 1px,transparent 1px); background-size:28px 28px; }
+        .cover-photo { width:100%; height:100%; object-fit:cover; }
+        .hero-body { background:white; padding:0 2rem 1.8rem; display:flex; align-items:flex-end; gap:1.5rem; flex-wrap:wrap; }
+        .profile-pic-wrap { margin-top:-55px; flex-shrink:0; }
+        .profile-pic { width:110px; height:110px; border-radius:50%; border:4px solid white; background:linear-gradient(135deg,var(--gold),var(--gold-l)); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:700; color:var(--navy); text-transform:uppercase; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.15); }
+        .profile-pic img { width:100%; height:100%; object-fit:cover; }
+        .hero-info { flex:1; padding-top:1rem; min-width:0; }
+        .hero-name { font-family:'Playfair Display',serif; font-size:1.7rem; font-weight:900; color:var(--navy); margin-bottom:0.25rem; }
+        .hero-title { font-size:0.95rem; color:var(--gray); margin-bottom:0.6rem; }
+        .hero-meta { display:flex; flex-wrap:wrap; gap:1rem; font-size:0.82rem; color:var(--gray); }
+        .hero-meta span { display:flex; align-items:center; gap:0.35rem; }
+        .hero-meta i { color:var(--gold); font-size:0.8rem; }
+        .avail-badge { display:inline-flex; align-items:center; gap:0.4rem; padding:0.3rem 0.9rem; border-radius:20px; font-size:0.78rem; font-weight:600; }
+        .avail-badge.available { background:rgba(16,185,129,0.12); color:var(--success); }
+        .avail-badge.unavailable { background:rgba(100,116,139,0.12); color:var(--gray); }
+        .avail-dot { width:7px; height:7px; border-radius:50%; background:currentColor; }
+        .hero-actions { display:flex; gap:0.8rem; padding-top:1rem; flex-wrap:wrap; align-self:flex-end; }
+        .btn-contact { background:var(--gold); color:white; border:none; padding:0.7rem 1.8rem; border-radius:40px; font-size:0.9rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:0.5rem; text-decoration:none; transition:0.2s; box-shadow:0 4px 15px rgba(201,144,58,0.3); }
+        .btn-contact:hover { background:var(--gold-l); transform:translateY(-2px); }
+        .btn-secondary { background:white; color:var(--navy); border:1.5px solid var(--border); padding:0.7rem 1.5rem; border-radius:40px; font-size:0.9rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:0.5rem; text-decoration:none; transition:0.2s; }
+        .btn-secondary:hover { border-color:var(--gold); color:var(--gold); }
+
+        /* RATING STRIP */
+        .rating-strip { display:flex; gap:1rem; flex-wrap:wrap; background:white; border-radius:16px; border:1px solid var(--border); padding:1rem 1.5rem; margin-bottom:1.5rem; box-shadow:0 2px 10px rgba(0,0,0,0.04); }
+        .rating-item { text-align:center; flex:1; min-width:80px; }
+        .rating-item .val { font-family:'Space Mono',monospace; font-size:1.4rem; font-weight:700; color:var(--navy); display:block; }
+        .rating-item .val.gold { color:var(--gold); }
+        .rating-item .lbl { font-size:0.72rem; color:var(--gray); margin-top:0.1rem; }
+        .rating-sep { width:1px; background:var(--border); align-self:stretch; }
+
+        /* GRID */
+        .main-grid { display:grid; grid-template-columns:1fr 320px; gap:1.5rem; align-items:start; }
+
+        /* CARDS */
+        .card { background:white; border-radius:20px; border:1px solid var(--border); overflow:hidden; margin-bottom:1.5rem; box-shadow:0 2px 10px rgba(0,0,0,0.04); }
+        .card:last-child { margin-bottom:0; }
+        .card-header { padding:1.1rem 1.5rem; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:0.6rem; }
+        .card-header h3 { font-family:'Playfair Display',serif; font-size:1rem; color:var(--navy); display:flex; align-items:center; gap:0.5rem; }
+        .card-header h3 i { color:var(--gold); }
+        .card-body { padding:1.5rem; }
+        .about-text { font-size:0.9rem; line-height:1.7; color:var(--gray); }
+        .skills-wrap { display:flex; flex-wrap:wrap; gap:0.5rem; }
+        .skill-chip { background:var(--gold-dim); color:var(--gold); border:1px solid rgba(201,144,58,0.2); padding:0.4rem 1rem; border-radius:30px; font-size:0.8rem; font-weight:600; }
+
+        /* EXPERIENCE */
+        .exp-item { display:flex; gap:1rem; padding-bottom:1.2rem; margin-bottom:1.2rem; border-bottom:1px solid var(--border); }
+        .exp-item:last-child { border-bottom:none; padding-bottom:0; margin-bottom:0; }
+        .exp-dot { width:38px; height:38px; border-radius:12px; background:var(--gold-dim); display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:0.85rem; flex-shrink:0; }
+        .exp-info { flex:1; }
+        .exp-title { font-weight:700; font-size:0.9rem; color:var(--navy); }
+        .exp-company { font-size:0.82rem; color:var(--gray); margin-bottom:0.2rem; }
+        .exp-date { font-size:0.72rem; color:var(--gray); font-family:'Space Mono',monospace; background:var(--light); padding:0.1rem 0.5rem; border-radius:10px; display:inline-block; }
+        .exp-desc { font-size:0.82rem; color:var(--gray); margin-top:0.4rem; line-height:1.5; }
+
+        /* CERTIFICATES */
+        .cert-item { display:flex; align-items:center; gap:1rem; padding:0.8rem 0; border-bottom:1px solid var(--border); }
+        .cert-item:last-child { border-bottom:none; }
+        .cert-icon { width:40px; height:40px; border-radius:12px; background:rgba(16,185,129,0.1); display:flex; align-items:center; justify-content:center; color:var(--success); font-size:1rem; flex-shrink:0; }
+        .cert-title { font-weight:600; font-size:0.88rem; }
+        .cert-date { font-size:0.72rem; color:var(--gray); }
+
+        /* ══ PROPOSAL MEDIA CARDS ══ */
+        .proposal-media-card {
+            border:1px solid var(--border); border-radius:18px;
+            margin-bottom:1.2rem; overflow:hidden;
+            transition:border-color 0.22s, box-shadow 0.22s;
+        }
+        .proposal-media-card:last-child { margin-bottom:0; }
+        .proposal-media-card:hover { border-color:rgba(201,144,58,0.5); box-shadow:0 6px 22px rgba(201,144,58,0.1); }
+
+        /* Image zone */
+        .prop-img-zone { position:relative; width:100%; height:200px; overflow:hidden; background:var(--navy); }
+        .prop-img-zone img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.35s ease; }
+        .proposal-media-card:hover .prop-img-zone img { transform:scale(1.04); }
+
+        /* Video zone */
+        .prop-video-zone { position:relative; background:#000; }
+        .prop-video-zone video { width:100%; max-height:220px; display:block; }
+
+        /* Placeholder zone */
+        .prop-placeholder-zone {
+            height:82px; background:linear-gradient(135deg,var(--navy),var(--blue));
+            position:relative; overflow:hidden; display:flex; align-items:center; padding:0 1.2rem; gap:0.7rem;
+        }
+        .prop-placeholder-zone::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(201,144,58,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(201,144,58,0.07) 1px,transparent 1px); background-size:20px 20px; }
+        .prop-placeholder-zone .ph-icon { color:var(--gold); font-size:1.4rem; position:relative; z-index:1; }
+        .prop-placeholder-zone .ph-text { color:rgba(255,255,255,0.65); font-size:0.82rem; position:relative; z-index:1; font-weight:500; }
+        .prop-placeholder-zone .ph-doc { margin-left:auto; position:relative; z-index:1; background:rgba(16,185,129,0.85); color:white; padding:0.22rem 0.75rem; border-radius:20px; font-size:0.68rem; font-weight:700; display:flex; align-items:center; gap:0.3rem; }
+
+        /* Media badge overlays */
+        .mbadge {
+            position:absolute; padding:0.22rem 0.7rem; border-radius:30px;
+            font-size:0.68rem; font-weight:700; display:flex; align-items:center;
+            gap:0.3rem; text-decoration:none; backdrop-filter:blur(4px);
+        }
+        .mbadge.tl { top:0.6rem; left:0.6rem; }
+        .mbadge.tr { top:0.6rem; right:0.6rem; }
+        .mbadge.gold-bg { background:rgba(201,144,58,0.92); color:white; }
+        .mbadge.red-bg  { background:rgba(239,68,68,0.92);  color:white; }
+
+        /* Proposal body */
+        .prop-body { padding:1rem 1.2rem; }
+        .prop-title-text { font-weight:700; font-size:0.95rem; color:var(--navy); margin-bottom:0.6rem; line-height:1.3; }
+        .prop-tags { display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:0.9rem; }
+        .ptag { padding:0.22rem 0.65rem; border-radius:30px; font-size:0.71rem; font-weight:600; display:flex; align-items:center; gap:0.3rem; border:1px solid transparent; }
+        .ptag.gold  { background:var(--gold-dim); color:var(--gold);   border-color:rgba(201,144,58,0.2); }
+        .ptag.gray  { background:var(--light);    color:var(--gray);   border-color:var(--border); }
+        .ptag.green { background:rgba(16,185,129,0.08); color:#059669; border-color:rgba(16,185,129,0.2); }
+        .ptag.red   { background:rgba(239,68,68,0.08);  color:#dc2626; border-color:rgba(239,68,68,0.2); }
+
+        .prop-footer { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.6rem; padding-top:0.8rem; border-top:1px solid var(--border); }
+        .prop-price-val { font-family:'Space Mono',monospace; font-weight:700; color:var(--gold); font-size:1.05rem; }
+        .prop-price-val small { font-size:0.7rem; color:var(--gray); font-family:'DM Sans',sans-serif; font-weight:400; margin-left:0.3rem; }
+        .prop-btns { display:flex; gap:0.45rem; align-items:center; flex-wrap:wrap; }
+        .pbtn { padding:0.3rem 0.85rem; border-radius:30px; font-size:0.74rem; font-weight:600; text-decoration:none; display:flex; align-items:center; gap:0.35rem; transition:0.2s; border:1px solid transparent; }
+        .pbtn.doc  { background:rgba(16,185,129,0.1); color:#059669; border-color:rgba(16,185,129,0.25); }
+        .pbtn.doc:hover  { background:rgba(16,185,129,0.2); }
+        .pbtn.vid  { background:rgba(239,68,68,0.08); color:#dc2626; border-color:rgba(239,68,68,0.2); }
+        .pbtn.vid:hover  { background:rgba(239,68,68,0.15); }
+        .pbtn.hire { background:var(--gold); color:white; font-weight:700; border-color:var(--gold); }
+        .pbtn.hire:hover { background:var(--gold-l); transform:translateY(-1px); }
+
+        /* SIDEBAR */
+        .info-item { display:flex; align-items:center; gap:0.8rem; padding:0.7rem 0; border-bottom:1px solid var(--border); font-size:0.85rem; }
+        .info-item:last-child { border-bottom:none; }
+        .info-icon { width:34px; height:34px; border-radius:10px; background:var(--gold-dim); display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:0.8rem; flex-shrink:0; }
+        .info-label { font-size:0.7rem; color:var(--gray); }
+        .info-value { font-weight:600; color:var(--navy); font-size:0.85rem; }
+        .client-type-badge { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(26,58,107,0.08); color:var(--blue); padding:0.3rem 0.9rem; border-radius:20px; font-size:0.78rem; font-weight:600; }
+
+        /* PRIVACY & EMPTY */
+        .privacy-notice { background:var(--light); border:1px solid var(--border); border-radius:14px; padding:1rem 1.2rem; display:flex; align-items:center; gap:0.8rem; font-size:0.82rem; color:var(--gray); margin-bottom:1.5rem; }
+        .privacy-notice i { color:var(--gold); font-size:1rem; flex-shrink:0; }
+        .empty-state { text-align:center; padding:2rem 1rem; color:var(--gray); }
+        .empty-state i { font-size:2rem; color:var(--border); margin-bottom:0.5rem; display:block; }
+        .empty-state p { font-size:0.82rem; }
+
+        /* REVIEWS */
+        .review-item { padding:1rem 0; border-bottom:1px solid var(--border); }
+        .review-item:last-child { border-bottom:none; }
+        .review-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem; }
+        .reviewer-name { font-weight:700; font-size:0.88rem; color:var(--navy); }
+        .review-date { font-size:0.7rem; color:var(--gray); font-family:'Space Mono',monospace; }
+        .review-stars { color:var(--gold); font-size:0.8rem; margin-bottom:0.3rem; }
+        .review-comment { font-size:0.83rem; color:var(--gray); line-height:1.5; }
+        .star-rating-input { display:flex; gap:0.4rem; margin-bottom:1rem; }
+        .star-rating-input input[type="radio"] { display:none; }
+        .star-rating-input label { font-size:1.6rem; color:var(--border); cursor:pointer; transition:color 0.15s; }
+        .review-form textarea { width:100%; border:1px solid var(--border); border-radius:12px; padding:0.8rem 1rem; font-family:'DM Sans',sans-serif; font-size:0.85rem; outline:none; resize:none; transition:border 0.18s; color:var(--navy); }
+        .review-form textarea:focus { border-color:var(--gold); }
+        .review-submit-btn { background:var(--gold); color:white; border:none; padding:0.65rem 1.8rem; border-radius:30px; font-weight:600; font-size:0.88rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; transition:0.2s; margin-top:0.8rem; }
+        .review-submit-btn:hover { background:var(--gold-l); transform:translateY(-1px); }
+        .review-divider { margin:1.2rem 0; border:none; border-top:2px dashed var(--border); }
+        .your-review-label { font-size:0.75rem; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.8rem; }
+
+        @media (max-width:900px) { .main-grid { grid-template-columns:1fr; } }
+        @media (max-width:600px) { .top-nav { margin:0.5rem; border-radius:16px; padding:0 1rem; } .page { padding:0 0.75rem 2rem; } .hero-body { padding:0 1rem 1.2rem; gap:1rem; } .hero-name { font-size:1.3rem; } }
+    </style>
+</head>
+<body>
+
+<nav class="top-nav">
+    <div class="logo">Contractor<span>Hub</span></div>
+    <div class="nav-div"></div>
+    <div class="nav-menu">
+        {% if request.user.user_type == 'contractor' %}
+            <a href="{% url 'seller' %}" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="{% url 'messages_page' %}" class="nav-item"><i class="fas fa-envelope"></i> Messages</a>
+        {% else %}
+            <a href="{% url 'client' %}" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="{% url 'messages_page' %}" class="nav-item"><i class="fas fa-envelope"></i> Messages</a>
+        {% endif %}
+    </div>
+    <div class="nav-right">
+        <a href="javascript:history.back()" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+</nav>
+
+<div class="page">
+
+    <div class="privacy-notice">
+        <i class="fas fa-shield-alt"></i>
+        <span>
+            {% if target_user.user_type == 'contractor' %}
+                You're viewing <strong>{{ target_user.name|default:"this worker" }}</strong>'s public profile. Contact details and private information are hidden.
+            {% else %}
+                You're viewing <strong>{{ target_user.name|default:"this client" }}</strong>'s public profile. Only shared information is visible.
+            {% endif %}
+        </span>
+    </div>
+
+    <!-- ══ CONTRACTOR PROFILE ══ -->
+    {% if target_user.user_type == 'contractor' and seller_profile %}
+
+    <div class="profile-hero">
+        <div class="cover">
+            {% if seller_profile.cover_photo %}<img src="{{ seller_profile.cover_photo.url }}" alt="Cover" class="cover-photo">{% endif %}
+        </div>
+        <div class="hero-body">
+            <div class="profile-pic-wrap">
+                <div class="profile-pic">
+                    {% if seller_profile.profile_photo %}<img src="{{ seller_profile.profile_photo.url }}" alt="{{ target_user.name }}">
+                    {% elif target_user.name %}{{ target_user.name|slice:":2"|upper }}
+                    {% else %}??{% endif %}
+                </div>
+            </div>
+            <div class="hero-info">
+                <div class="hero-name">{{ target_user.name|default:"Worker" }}</div>
+                <div class="hero-title">{{ seller_profile.title|default:"Skilled Contractor" }}</div>
+                <div class="hero-meta">
+                    {% if seller_profile.city %}<span><i class="fas fa-map-marker-alt"></i> {{ seller_profile.city|title }}</span>{% endif %}
+                    {% if seller_profile.language %}<span><i class="fas fa-language"></i> {{ seller_profile.language|title }}</span>{% endif %}
+                    <span><i class="fas fa-layer-group"></i> Level {{ seller_profile.level }}</span>
+                    <span>{% if seller_profile.is_available %}<span class="avail-badge available"><span class="avail-dot"></span> Available Now</span>{% else %}<span class="avail-badge unavailable"><span class="avail-dot"></span> Unavailable</span>{% endif %}</span>
+                </div>
+            </div>
+            <div class="hero-actions">
+                <a href="{% url 'start_conversation' target_user.id %}" class="btn-contact"><i class="fas fa-envelope"></i> Send Message</a>
+                <button class="btn-secondary" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> Go Back</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="rating-strip">
+        <div class="rating-item"><span class="val gold"><i class="fas fa-star"></i> {{ seller_profile.avg_rating|default:"—" }}</span><div class="lbl">Rating</div></div>
+        <div class="rating-sep"></div>
+        <div class="rating-item"><span class="val">{{ seller_profile.proposals.count }}</span><div class="lbl">Proposals</div></div>
+        <div class="rating-sep"></div>
+        <div class="rating-item"><span class="val">{{ seller_profile.experiences.count }}</span><div class="lbl">Experience</div></div>
+        <div class="rating-sep"></div>
+        <div class="rating-item"><span class="val">{{ seller_profile.certificates.count }}</span><div class="lbl">Certificates</div></div>
+        <div class="rating-sep"></div>
+        <div class="rating-item"><span class="val">Lv.{{ seller_profile.level }}</span><div class="lbl">Level</div></div>
+    </div>
+
+    <div class="main-grid">
+        <div>
+
+            {% if seller_profile.about %}
+            <div class="card">
+                <div class="card-header"><h3><i class="fas fa-user"></i> About</h3></div>
+                <div class="card-body"><p class="about-text">{{ seller_profile.about }}</p></div>
+            </div>
+            {% endif %}
+
+            {% if seller_profile.skills %}
+            <div class="card">
+                <div class="card-header"><h3><i class="fas fa-tools"></i> Skills</h3></div>
+                <div class="card-body">
+                    <div class="skills-wrap">{% for skill in seller_profile.get_skills_list %}<span class="skill-chip">{{ skill }}</span>{% endfor %}</div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="card">
+                <div class="card-header"><h3><i class="fas fa-briefcase"></i> Work Experience</h3></div>
+                <div class="card-body">
+                    {% for exp in experiences %}
+                    <div class="exp-item">
+                        <div class="exp-dot"><i class="fas fa-briefcase"></i></div>
+                        <div class="exp-info">
+                            <div class="exp-title">{{ exp.job_title }}</div>
+                            <div class="exp-company">{{ exp.company }}{% if exp.city %} · {{ exp.city }}{% endif %}</div>
+                            <span class="exp-date">{{ exp.start_date|date:"M Y" }} — {% if exp.is_current %}Present{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}</span>
+                            {% if exp.description %}<div class="exp-desc">{{ exp.description }}</div>{% endif %}
+                        </div>
+                    </div>
+                    {% empty %}<div class="empty-state"><i class="fas fa-briefcase"></i><p>No experience added yet</p></div>{% endfor %}
+                </div>
+            </div>
+
+            <!-- ══ ACTIVE PROPOSALS — Media Priority: Image > Video > Placeholder ══ -->
+            {% if active_proposals %}
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-file-alt"></i> Active Proposals</h3>
+                    <span style="font-size:0.78rem; color:var(--gray); margin-left:auto;">
+                        {{ active_proposals|length }} proposal{{ active_proposals|length|pluralize }}
+                    </span>
+                </div>
+                <div class="card-body" style="padding:1rem;">
+                    {% for prop in active_proposals %}
+                    <div class="proposal-media-card">
+
+                        <!-- PRIORITY 1: Portfolio Image -->
+                        {% if prop.portfolio_image %}
+                        <div class="prop-img-zone">
+                            <img src="{{ prop.portfolio_image.url }}" alt="{{ prop.title }}">
+                            <span class="mbadge tl gold-bg"><i class="fas fa-image"></i> Portfolio</span>
+                            {% if prop.video_intro %}
+                            <a href="{{ prop.video_intro.url }}" target="_blank" class="mbadge tr red-bg">
+                                <i class="fas fa-play-circle"></i> Video
+                            </a>
+                            {% endif %}
+                        </div>
+
+                        <!-- PRIORITY 2: Video (only if no image) -->
+                        {% elif prop.video_intro %}
+                        <div class="prop-video-zone">
+                            <video controls preload="metadata">
+                                <source src="{{ prop.video_intro.url }}">
+                            </video>
+                            <span class="mbadge tl red-bg"><i class="fas fa-video"></i> Intro Video</span>
+                        </div>
+
+                        <!-- PRIORITY 3: Placeholder (no media) -->
+                        {% else %}
+                        <div class="prop-placeholder-zone">
+                            <i class="fas fa-hard-hat ph-icon"></i>
+                            <span class="ph-text">{{ prop.work_type }}</span>
+                            {% if prop.doc_portfolio %}
+                            <span class="ph-doc"><i class="fas fa-file-alt"></i> Doc Available</span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Proposal Content -->
+                        <div class="prop-body">
+                            <div class="prop-title-text">{{ prop.title }}</div>
+
+                            <div class="prop-tags">
+                                <span class="ptag gold"><i class="fas fa-tag"></i> {{ prop.work_type }}</span>
+                                {% if prop.delivery_time %}
+                                <span class="ptag gray"><i class="fas fa-clock"></i> {{ prop.delivery_time }}</span>
+                                {% endif %}
+                                {% if prop.search_tag %}
+                                <span class="ptag gray"><i class="fas fa-hashtag"></i> {{ prop.search_tag }}</span>
+                                {% endif %}
+                                {% if prop.doc_portfolio %}
+                                <span class="ptag green"><i class="fas fa-file-alt"></i> Doc Attached</span>
+                                {% endif %}
+                                {% if prop.video_intro %}
+                                <span class="ptag red"><i class="fas fa-video"></i> Video Intro</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="prop-footer">
+                                <div>
+                                    <span class="prop-price-val">Rs {{ prop.base_price }}<small>base price</small></span>
+                                </div>
+                                <div class="prop-btns">
+                                    {% if prop.doc_portfolio %}
+                                    <a href="{{ prop.doc_portfolio.url }}" target="_blank" class="pbtn doc">
+                                        <i class="fas fa-file-download"></i> Doc
+                                    </a>
+                                    {% endif %}
+                                    {% if prop.video_intro and prop.portfolio_image %}
+                                    <a href="{{ prop.video_intro.url }}" target="_blank" class="pbtn vid">
+                                        <i class="fas fa-play-circle"></i> Video
+                                    </a>
+                                    {% endif %}
+                                    <a href="{% url 'start_conversation' target_user.id %}" class="pbtn hire">
+                                        <i class="fas fa-envelope"></i> Hire
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            <!-- ══ END PROPOSALS ══ -->
+
+            <!-- Reviews -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-star"></i> Reviews
+                        {% if reviews %}<span style="font-family:'Space Mono',monospace; font-size:0.78rem; color:var(--gold); margin-left:0.5rem;">{{ reviews|length }} review{{ reviews|length|pluralize }}</span>{% endif %}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% for review in reviews %}
+                    <div class="review-item">
+                        <div class="review-top">
+                            <span class="reviewer-name">{% if review.client.name %}{{ review.client.name }}{% else %}{{ review.client.email }}{% endif %}</span>
+                            <span class="review-date">{{ review.created_at|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="review-stars">
+                            {% for i in "12345" %}{% if forloop.counter <= review.rating %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star"></i>{% endif %}{% endfor %}
+                        </div>
+                        {% if review.comment %}<div class="review-comment">{{ review.comment }}</div>{% endif %}
+                    </div>
+                    {% empty %}<div class="empty-state"><i class="far fa-star"></i><p>No reviews yet. Be the first!</p></div>{% endfor %}
+
+                    {% if request.user != target_user %}
+                    <hr class="review-divider">
+                    <div class="your-review-label"><i class="fas fa-{% if user_review %}edit{% else %}plus{% endif %}"></i> {% if user_review %}Edit Your Review{% else %}Leave a Review{% endif %}</div>
+                    <form method="POST" action="{% url 'submit_review' target_user.id %}" class="review-form">
+                        {% csrf_token %}
+                        <div class="star-rating-input" id="starPicker">
+                            {% for val in "54321" %}
+                            <input type="radio" name="rating" id="star{{ val }}" value="{{ val }}" {% if user_review and user_review.rating == val|add:0 %}checked{% endif %}>
+                            <label for="star{{ val }}" title="{{ val }} stars"><i class="fas fa-star"></i></label>
+                            {% endfor %}
+                        </div>
+                        <textarea name="comment" rows="3" placeholder="Share your experience working with {{ target_user.name|default:'this person' }}...">{% if user_review %}{{ user_review.comment }}{% endif %}</textarea>
+                        <button type="submit" class="review-submit-btn">
+                            <i class="fas fa-paper-plane"></i> {% if user_review %}Update Review{% else %}Submit Review{% endif %}
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SIDEBAR -->
+        <div>
+            <div class="card">
+                <div class="card-header"><h3><i class="fas fa-certificate"></i> Certificates</h3></div>
+                <div class="card-body">
+                    {% for cert in certificates %}
+                    <div class="cert-item">
+                        <div class="cert-icon"><i class="fas fa-award"></i></div>
+                        <div><div class="cert-title">{{ cert.title }}</div><div class="cert-date">{{ cert.uploaded_at|date:"M Y" }}</div></div>
+                    </div>
+                    {% empty %}<div class="empty-state"><i class="fas fa-certificate"></i><p>No certificates yet</p></div>{% endfor %}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h3><i class="fas fa-info-circle"></i> Quick Info</h3></div>
+                <div class="card-body">
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div><div class="info-label">Location</div><div class="info-value">{{ seller_profile.city|default:"Not specified"|title }}</div></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-language"></i></div>
+                        <div><div class="info-label">Language</div><div class="info-value">{{ seller_profile.language|default:"Not specified"|title }}</div></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-layer-group"></i></div>
+                        <div><div class="info-label">Level</div><div class="info-value">{{ level_name }} (Lv.{{ seller_profile.level }})</div></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-calendar"></i></div>
+                        <div><div class="info-label">Member Since</div><div class="info-value">{{ target_user.date_joined|date:"M Y" }}</div></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon"><i class="fas fa-circle" style="color:{% if seller_profile.is_available %}var(--success){% else %}var(--gray){% endif %};font-size:0.5rem;"></i></div>
+                        <div>
+                            <div class="info-label">Status</div>
+                            <div class="info-value" style="color:{% if seller_profile.is_available %}var(--success){% else %}var(--gray){% endif %};">
+                                {% if seller_profile.is_available %}Available{% else %}Not Available{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="background:linear-gradient(135deg,var(--navy),var(--blue)); border:none;">
+                <div class="card-body" style="text-align:center; padding:1.8rem;">
+                    <div style="font-size:2rem; margin-bottom:0.5rem;">💼</div>
+                    <h3 style="color:white; font-family:'Playfair Display',serif; margin-bottom:0.4rem;">Ready to hire?</h3>
+                    <p style="color:rgba(255,255,255,0.6); font-size:0.82rem; margin-bottom:1.2rem;">Start a conversation with {{ target_user.name|default:"this worker" }}</p>
+                    <a href="{% url 'start_conversation' target_user.id %}" class="btn-contact" style="justify-content:center; width:100%;"><i class="fas fa-envelope"></i> Send Message</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ CLIENT PROFILE ══ -->
+    {% elif target_user.user_type == 'client' or client_profile %}
+
+    <div class="profile-hero">
+        <div class="cover"></div>
+        <div class="hero-body">
+            <div class="profile-pic-wrap">
+                <div class="profile-pic">
+                    {% if client_profile and client_profile.profile_photo %}<img src="{{ client_profile.profile_photo.url }}" alt="{{ target_user.name }}">
+                    {% elif target_user.name %}{{ target_user.name|slice:":2"|upper }}
+                    {% else %}??{% endif %}
+                </div>
+            </div>
+            <div class="hero-info">
+                <div class="hero-name">{{ target_user.name|default:"Client" }}</div>
+                <div class="hero-title"><span class="client-type-badge"><i class="fas fa-user-tie"></i> Client</span></div>
+                <div class="hero-meta" style="margin-top:0.5rem;">
+                    {% if client_profile and client_profile.city %}<span><i class="fas fa-map-marker-alt"></i> {{ client_profile.city|title }}</span>{% endif %}
+                    {% if client_profile and client_profile.language %}<span><i class="fas fa-language"></i> {{ client_profile.language|title }}</span>{% endif %}
+                    <span><i class="fas fa-calendar-alt"></i> Member since {{ target_user.date_joined|date:"M Y" }}</span>
+                </div>
+            </div>
+            <div class="hero-actions">
+                <a href="{% url 'start_conversation' target_user.id %}" class="btn-contact"><i class="fas fa-envelope"></i> Send Message</a>
+                <button class="btn-secondary" onclick="window.history.back()"><i class="fas fa-arrow-left"></i> Go Back</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <div>
+            <div class="card">
+                <div class="card-header"><h3><i class="fas fa-user-tie"></i> Client Information</h3></div>
+                <div class="card-body">
+                    <div class="info-item"><div class="info-icon"><i class="fas fa-user"></i></div><div><div class="info-label">Full Name</div><div class="info-value">{{ target_user.name|default:"Not provided" }}</div></div></div>
+                    <div class="info-item"><div class="info-icon"><i class="fas fa-map-marker-alt"></i></div><div><div class="info-label">Location</div><div class="info-value">{% if client_profile and client_profile.city %}{{ client_profile.city|title }}{% else %}Not specified{% endif %}</div></div></div>
+                    <div class="info-item"><div class="info-icon"><i class="fas fa-language"></i></div><div><div class="info-label">Preferred Language</div><div class="info-value">{% if client_profile and client_profile.language %}{{ client_profile.language|title }}{% else %}Not specified{% endif %}</div></div></div>
+                    <div class="info-item"><div class="info-icon"><i class="fas fa-calendar"></i></div><div><div class="info-label">Member Since</div><div class="info-value">{{ target_user.date_joined|date:"F Y" }}</div></div></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-star"></i> Reviews
+                        {% if reviews %}<span style="font-family:'Space Mono',monospace; font-size:0.78rem; color:var(--gold); margin-left:0.5rem;">{{ reviews|length }} review{{ reviews|length|pluralize }}</span>{% endif %}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% for review in reviews %}
+                    <div class="review-item">
+                        <div class="review-top">
+                            <span class="reviewer-name">{% if review.client.name %}{{ review.client.name }}{% else %}{{ review.client.email }}{% endif %}</span>
+                            <span class="review-date">{{ review.created_at|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="review-stars">{% for i in "12345" %}{% if forloop.counter <= review.rating %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star"></i>{% endif %}{% endfor %}</div>
+                        {% if review.comment %}<div class="review-comment">{{ review.comment }}</div>{% endif %}
+                    </div>
+                    {% empty %}<div class="empty-state"><i class="far fa-star"></i><p>No reviews yet.</p></div>{% endfor %}
+
+                    {% if request.user != target_user %}
+                    <hr class="review-divider">
+                    <div class="your-review-label"><i class="fas fa-{% if user_review %}edit{% else %}plus{% endif %}"></i> {% if user_review %}Edit Your Review{% else %}Leave a Review{% endif %}</div>
+                    <form method="POST" action="{% url 'submit_review' target_user.id %}" class="review-form">
+                        {% csrf_token %}
+                        <div class="star-rating-input">
+                            {% for val in "54321" %}
+                            <input type="radio" name="rating" id="cstar{{ val }}" value="{{ val }}" {% if user_review and user_review.rating == val|add:0 %}checked{% endif %}>
+                            <label for="cstar{{ val }}" title="{{ val }} stars"><i class="fas fa-star"></i></label>
+                            {% endfor %}
+                        </div>
+                        <textarea name="comment" rows="3" placeholder="Share your experience with {{ target_user.name|default:'this client' }}...">{% if user_review %}{{ user_review.comment }}{% endif %}</textarea>
+                        <button type="submit" class="review-submit-btn"><i class="fas fa-paper-plane"></i> {% if user_review %}Update Review{% else %}Submit Review{% endif %}</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="card" style="background:linear-gradient(135deg,var(--navy),var(--blue)); border:none;">
+                <div class="card-body" style="text-align:center; padding:1.8rem;">
+                    <div style="font-size:2rem; margin-bottom:0.5rem;">🤝</div>
+                    <h3 style="color:white; font-family:'Playfair Display',serif; margin-bottom:0.4rem;">Interested in working?</h3>
+                    <p style="color:rgba(255,255,255,0.6); font-size:0.82rem; margin-bottom:1.2rem;">Send a message to {{ target_user.name|default:"this client" }}</p>
+                    <a href="{% url 'start_conversation' target_user.id %}" class="btn-contact" style="justify-content:center; width:100%;"><i class="fas fa-envelope"></i> Send Message</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div style="text-align:center; padding:5rem 2rem;">
+        <i class="fas fa-user-slash" style="font-size:4rem; color:var(--border); display:block; margin-bottom:1rem;"></i>
+        <h2 style="margin-bottom:0.5rem;">Profile Not Found</h2>
+        <p style="color:var(--gray);">This user profile doesn't exist or has been removed.</p>
+        <a href="javascript:history.back()" class="btn-contact" style="display:inline-flex; margin-top:1.5rem;"><i class="fas fa-arrow-left"></i> Go Back</a>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+document.querySelectorAll('.star-rating-input').forEach(function(container) {
+    const labels = Array.from(container.querySelectorAll('label'));
+    const inputs = Array.from(container.querySelectorAll('input[type="radio"]'));
+    labels.forEach(function(label, idx) {
+        label.addEventListener('mouseover', function() {
+            labels.forEach(function(l, i) { l.style.color = i <= idx ? 'var(--gold)' : 'var(--border)'; });
+        });
+        label.addEventListener('mouseout', function() {
+            const checked = container.querySelector('input:checked');
+            const checkedIdx = checked ? inputs.indexOf(checked) : -1;
+            labels.forEach(function(l, i) { l.style.color = i <= checkedIdx ? 'var(--gold)' : 'var(--border)'; });
+        });
+        label.addEventListener('click', function() {
+            labels.forEach(function(l, i) { l.style.color = i <= idx ? 'var(--gold)' : 'var(--border)'; });
+        });
+    });
+    const checked = container.querySelector('input:checked');
+    if (checked) {
+        const checkedIdx = inputs.indexOf(checked);
+        labels.forEach(function(l, i) { l.style.color = i <= checkedIdx ? 'var(--gold)' : 'var(--border)'; });
+    }
+});
+</script>
+
+</body>
+</html>

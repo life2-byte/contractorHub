@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContractorHub · {{ user.name }} — Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <style>
+        :root {
+            --navy:#0a1628; --navy-2:#0d1f3c; --blue:#1a3a6b;
+            --gold:#c9903a; --gold-light:#e8a84a; --gold-dim:rgba(201,144,58,0.12);
+            --white:#ffffff; --gray:#64748b; --light:#f1f5f9;
+            --border:#e2e8f0; --success:#10b981; --warning:#f59e0b; --danger:#ef4444;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'DM Sans',sans-serif;background:#f4f7fd;color:var(--navy);min-height:100vh;display:flex;flex-direction:column;}
+        .app{max-width:1400px;margin:0 auto;padding:1.5rem 2rem;flex:1;width:100%;}
+        .top-nav{background:white;border-radius:60px;padding:0 1.5rem;margin-bottom:2rem;box-shadow:0 4px 20px rgba(0,0,0,0.04);border:1px solid var(--border);display:flex;align-items:center;gap:1.5rem;height:64px;white-space:nowrap;}
+        .logo{font-family:'Playfair Display',serif;font-size:1.45rem;font-weight:900;color:var(--navy);flex-shrink:0;}
+        .logo span{color:var(--gold);}
+        .nav-divider{width:1px;height:28px;background:var(--border);flex-shrink:0;}
+        .nav-menu{display:flex;align-items:center;gap:0.25rem;flex:1;}
+        .nav-item{padding:0.5rem 1rem;border-radius:40px;font-size:0.875rem;font-weight:500;color:var(--gray);cursor:pointer;transition:0.18s;display:flex;align-items:center;gap:0.45rem;flex-shrink:0;text-decoration:none;}
+        .nav-item i{font-size:0.8rem;}
+        .nav-item:hover{background:var(--light);color:var(--navy);}
+        .nav-item.active{background:var(--gold-dim);color:var(--gold);font-weight:600;}
+        .right-icons{display:flex;align-items:center;gap:0.5rem;flex-shrink:0;margin-left:auto;}
+        .icon-circle{width:40px;height:40px;border-radius:50%;background:var(--light);display:flex;align-items:center;justify-content:center;color:var(--gray);font-size:1rem;cursor:pointer;position:relative;transition:0.18s;border:none;text-decoration:none;flex-shrink:0;}
+        .icon-circle:hover{background:var(--gold-dim);color:var(--gold);}
+        .icon-dropdown{position:relative;}
+        .icon-drop-menu{position:absolute;top:calc(100% + 10px);right:0;min-width:200px;background:white;border-radius:16px;box-shadow:0 12px 35px rgba(0,0,0,0.12);border:1px solid var(--border);overflow:hidden;display:none;z-index:200;}
+        .icon-drop-menu.show{display:block;animation:sdrop 0.25s ease;}
+        @keyframes sdrop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+        .icon-drop-item{padding:0.75rem 1.1rem;font-size:0.875rem;color:var(--navy);display:flex;align-items:center;gap:0.7rem;text-decoration:none;transition:background 0.15s;}
+        .icon-drop-item i{color:var(--gold);width:16px;}
+        .icon-drop-item:hover{background:var(--light);}
+        .notif-wrapper{position:relative;}
+        .notif-popup{position:absolute;top:calc(100% + 12px);right:0;width:320px;background:white;border-radius:20px;box-shadow:0 12px 35px rgba(0,0,0,0.13);border:1px solid var(--border);overflow:hidden;display:none;z-index:200;}
+        .notif-popup.show{display:block;animation:sdrop 0.25s ease;}
+        .notif-popup-header{padding:0.9rem 1.2rem;border-bottom:1px solid var(--border);background:var(--light);display:flex;align-items:center;justify-content:space-between;}
+        .notif-popup-header h4{font-size:0.9rem;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:0.5rem;}
+        .notif-popup-header h4 i{color:var(--gold);}
+        .notif-popup-header span{font-size:0.7rem;color:var(--gray);}
+        .notif-item{padding:1rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:0.8rem;transition:background 0.15s;cursor:pointer;}
+        .notif-item:last-of-type{border-bottom:none;}
+        .notif-item:hover{background:var(--light);}
+        .notif-item-icon{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.85rem;}
+        .notif-item-icon.msg{background:#d1fae5;color:#065f46;}
+        .notif-item-icon.info{background:var(--gold-dim);color:var(--gold);}
+        .notif-item-body{flex:1;}
+        .notif-item-body p{font-size:0.8rem;color:var(--navy);line-height:1.4;margin-bottom:0.2rem;}
+        .notif-item-body span{font-size:0.68rem;color:var(--gray);font-family:'Space Mono',monospace;}
+        .notif-unread-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);margin-top:5px;flex-shrink:0;}
+        .notif-footer{padding:0.75rem 1.2rem;text-align:center;border-top:1px solid var(--border);font-size:0.78rem;color:var(--gold);font-weight:600;cursor:pointer;}
+        .notif-footer:hover{background:var(--gold-dim);}
+        .profile-dropdown{position:relative;}
+        .avatar-pill{display:flex;align-items:center;gap:0.55rem;background:var(--light);padding:0.25rem 0.75rem 0.25rem 1rem;border-radius:40px;cursor:pointer;font-size:0.875rem;font-weight:500;color:var(--navy);flex-shrink:0;}
+        .avatar-pill:hover{background:#e5e9f0;}
+        .avatar{width:34px;height:34px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;color:var(--navy);}
+        .avatar-img{width:34px;height:34px;border-radius:50%;object-fit:cover;}
+        .dropdown-menu{position:absolute;top:calc(100% + 10px);right:0;width:260px;background:white;border-radius:20px;box-shadow:0 12px 35px rgba(0,0,0,0.12);border:1px solid var(--border);overflow:hidden;display:none;z-index:200;}
+        .dropdown-menu.show{display:block;animation:sdrop 0.25s ease;}
+        .dropdown-user-header{display:flex;align-items:center;gap:0.9rem;padding:1rem 1.1rem;background:var(--light);border-bottom:1px solid var(--border);}
+        .dropdown-user-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#e8b96a);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy);flex-shrink:0;}
+        .dropdown-user-avatar-img{width:44px;height:44px;border-radius:50%;object-fit:cover;}
+        .dropdown-user-info h4{font-size:0.9rem;font-weight:700;color:var(--navy);}
+        .dropdown-user-info p{font-size:0.75rem;color:var(--gray);}
+        .dropdown-item{padding:0.75rem 1.1rem;font-size:0.875rem;color:var(--navy);display:flex;align-items:center;gap:0.7rem;text-decoration:none;transition:background 0.15s;}
+        .dropdown-item i{color:var(--gold);width:16px;}
+        .dropdown-item:hover{background:var(--light);}
+        .dropdown-item.client-mode{background:var(--gold-dim);color:var(--gold);font-weight:600;}
+        .dropdown-item.client-mode:hover{background:rgba(201,144,58,0.2);}
+        .dropdown-divider{height:1px;background:var(--border);margin:0.2rem 0;}
+
+        /* hero */
+        .profile-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);border-radius:30px;padding:0;margin-bottom:0;position:relative;overflow:hidden;height:220px;}
+        .profile-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(201,144,58,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(201,144,58,0.08) 1px,transparent 1px);background-size:35px 35px;}
+        .hero-edit-btn{position:absolute;top:1.2rem;right:1.5rem;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;padding:0.5rem 1.2rem;border-radius:40px;font-size:0.85rem;font-weight:500;cursor:pointer;transition:0.2s;display:flex;align-items:center;gap:0.5rem;z-index:2;backdrop-filter:blur(4px);}
+        .hero-edit-btn:hover{background:rgba(255,255,255,0.25);}
+        .profile-identity-wrap{position:relative;margin-bottom:2rem;}
+        .profile-identity{background:white;border-radius:0 0 28px 28px;padding:0 2.5rem 1.8rem;border:1px solid var(--border);border-top:none;display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;}
+        .identity-left{display:flex;align-items:flex-end;gap:1.5rem;}
+        .profile-big-avatar{width:110px;height:110px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:50%;border:5px solid white;box-shadow:0 8px 25px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;color:var(--navy);margin-top:-55px;flex-shrink:0;position:relative;z-index:2;overflow:hidden;}
+        .profile-big-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+        .identity-info{padding-bottom:0.3rem;}
+        .identity-info h1{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900;color:var(--navy);margin-bottom:0.2rem;}
+        .identity-info .title-badge{display:inline-flex;align-items:center;gap:0.4rem;background:var(--gold-dim);color:var(--gold);padding:0.3rem 0.9rem;border-radius:40px;font-size:0.82rem;font-weight:600;margin-bottom:0.5rem;}
+        .identity-info .meta{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;}
+        .meta-item{display:flex;align-items:center;gap:0.35rem;font-size:0.82rem;color:var(--gray);}
+        .meta-item i{color:var(--gold);font-size:0.75rem;}
+        .identity-actions{display:flex;gap:0.8rem;padding-bottom:0.3rem;flex-wrap:wrap;}
+        .btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);border:none;padding:0.7rem 1.5rem;border-radius:40px;font-weight:700;font-size:0.875rem;cursor:pointer;transition:0.2s;display:flex;align-items:center;gap:0.5rem;box-shadow:0 4px 15px rgba(201,144,58,0.3);}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,144,58,0.4);}
+        .btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--border);padding:0.7rem 1.4rem;border-radius:40px;font-weight:600;font-size:0.875rem;cursor:pointer;transition:0.2s;display:flex;align-items:center;gap:0.5rem;}
+        .btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+
+        /* stats */
+        .quick-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:2rem;}
+        .qs-card{background:white;border-radius:20px;padding:1.4rem 1.5rem;border:1px solid var(--border);display:flex;align-items:center;gap:1rem;transition:0.2s;}
+        .qs-card:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(0,0,0,0.06);}
+        .qs-icon{width:50px;height:50px;border-radius:16px;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1.3rem;flex-shrink:0;}
+        .qs-val{font-size:1.7rem;font-weight:700;color:var(--navy);font-family:'Space Mono',monospace;line-height:1;}
+        .qs-val.empty{font-size:1rem;color:var(--gray);font-family:'DM Sans',sans-serif;font-style:italic;}
+        .qs-label{font-size:0.78rem;color:var(--gray);margin-top:0.2rem;}
+
+        .content-grid{display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start;}
+        .section-card{background:white;border-radius:24px;border:1px solid var(--border);overflow:hidden;margin-bottom:1.5rem;}
+        .section-card:last-child{margin-bottom:0;}
+        .sc-header{padding:1.3rem 1.8rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+        .sc-header h3{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--navy);display:flex;align-items:center;gap:0.6rem;}
+        .sc-header h3 i{color:var(--gold);font-size:1rem;}
+        .sc-body{padding:1.5rem 1.8rem;}
+        .edit-link{color:var(--gold);font-size:0.82rem;font-weight:600;cursor:pointer;text-decoration:none;}
+        .empty-state{text-align:center;padding:2rem 1rem;color:var(--gray);font-size:0.875rem;}
+        .empty-state i{font-size:2rem;color:var(--border);margin-bottom:0.8rem;display:block;}
+        .empty-state p{font-style:italic;}
+        .about-text{font-size:0.9rem;color:var(--gray);line-height:1.7;}
+        .skills-wrap{display:flex;flex-wrap:wrap;gap:0.6rem;}
+        .skill-tag{background:var(--gold-dim);color:var(--gold);padding:0.4rem 1rem;border-radius:40px;font-size:0.8rem;font-weight:600;border:1px solid rgba(201,144,58,0.25);display:flex;align-items:center;gap:0.4rem;}
+        .timeline{position:relative;}
+        .timeline-item{display:flex;gap:1.2rem;padding-bottom:1.5rem;position:relative;}
+        .timeline-item:last-child{padding-bottom:0;}
+        .timeline-item:not(:last-child)::before{content:'';position:absolute;left:19px;top:40px;width:2px;bottom:0;background:var(--border);}
+        .tl-icon{width:40px;height:40px;border-radius:50%;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:0.9rem;flex-shrink:0;border:2px solid rgba(201,144,58,0.3);}
+        .tl-content{flex:1;}
+        .tl-title{font-weight:700;font-size:0.95rem;color:var(--navy);margin-bottom:0.2rem;}
+        .tl-company{font-size:0.82rem;color:var(--gold);font-weight:600;margin-bottom:0.2rem;}
+        .tl-period{font-size:0.75rem;color:var(--gray);margin-bottom:0.5rem;font-family:'Space Mono',monospace;}
+        .tl-desc{font-size:0.82rem;color:var(--gray);line-height:1.6;}
+        .cert-list{display:flex;flex-direction:column;gap:0.8rem;}
+        .cert-item{display:flex;align-items:center;gap:1rem;padding:0.9rem 1rem;border-radius:14px;border:1px solid var(--border);background:var(--light);transition:0.2s;}
+        .cert-item:hover{border-color:var(--gold);background:var(--gold-dim);}
+        .cert-icon{width:40px;height:40px;border-radius:12px;background:var(--gold-dim);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+        .cert-info{flex:1;}
+        .cert-title{font-weight:600;font-size:0.875rem;color:var(--navy);}
+        .cert-date{font-size:0.72rem;color:var(--gray);margin-top:0.15rem;}
+        .cert-view-btn{background:white;color:var(--gold);border:1.5px solid rgba(201,144,58,0.3);padding:0.4rem 0.9rem;border-radius:40px;font-size:0.78rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:0.35rem;transition:0.2s;flex-shrink:0;}
+        .cert-view-btn:hover{background:var(--gold);color:white;}
+
+        /* reviews */
+        .review-summary-box{display:flex;align-items:center;gap:1.8rem;padding:1.3rem 1.5rem;background:var(--gold-dim);border-radius:18px;margin-bottom:1.5rem;border:1px solid rgba(201,144,58,0.22);}
+        .review-big-num{font-family:'Space Mono',monospace;font-size:3.2rem;font-weight:700;color:var(--gold);line-height:1;flex-shrink:0;}
+        .review-summary-meta{flex:1;}
+        .review-stars-row{display:flex;gap:4px;margin-bottom:0.4rem;}
+        .review-stars-row i{font-size:1.15rem;}
+        .review-count-txt{font-size:0.8rem;color:var(--gray);}
+        .review-out{font-size:0.72rem;color:var(--gray);margin-top:0.15rem;}
+        .review-list{display:flex;flex-direction:column;gap:1rem;}
+        .review-card{padding:1.2rem 1.3rem;border:1px solid var(--border);border-radius:16px;background:var(--light);transition:border-color 0.2s;}
+        .review-card:hover{border-color:rgba(201,144,58,0.45);}
+        .review-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem;}
+        .review-user{display:flex;align-items:center;gap:0.85rem;}
+        .review-ava{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy);font-size:0.95rem;flex-shrink:0;overflow:hidden;}
+        .review-ava img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+        .review-name{font-weight:700;font-size:0.9rem;color:var(--navy);}
+        .review-time{font-size:0.7rem;color:var(--gray);font-family:'Space Mono',monospace;margin-top:0.15rem;}
+        .review-rating-stars{display:flex;gap:2px;}
+        .review-rating-stars i{font-size:0.88rem;}
+        .review-text{font-size:0.855rem;color:var(--gray);line-height:1.65;padding-left:3.3rem;}
+
+        /* ══ LOCATION CARD (outside modal) ══ */
+        .location-card{background:white;border-radius:24px;border:1px solid var(--border);overflow:hidden;margin-bottom:1.5rem;}
+        .loc-head{padding:1.2rem 1.8rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.8rem;}
+        .loc-head h3{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--navy);display:flex;align-items:center;gap:0.5rem;}
+        .loc-head h3 i{color:var(--gold);}
+        #locationMap{height:300px;width:100%;display:block;}
+        .map-footer{padding:0.8rem 1.5rem;background:var(--light);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.8rem;}
+        .gps-btn{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);border:none;padding:0.65rem 1.6rem;border-radius:40px;font-size:0.875rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:0.55rem;transition:0.2s;box-shadow:0 4px 15px rgba(201,144,58,0.3);white-space:nowrap;}
+        .gps-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,144,58,0.4);}
+        .gps-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .spin{animation:spin 0.9s linear infinite;}
+        .city-pill{display:none;align-items:center;gap:0.5rem;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:#059669;padding:0.45rem 1rem;border-radius:30px;font-size:0.82rem;font-weight:600;}
+        .city-pill.show{display:flex;}
+        .loc-err{font-size:0.78rem;color:var(--danger);padding:0.5rem 1rem;border-radius:10px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15);display:none;}
+        .loc-err.show{display:block;}
+        .manual-toggle{font-size:0.75rem;color:var(--gray);cursor:pointer;text-decoration:underline;display:block;padding:0.4rem 1.5rem 0.8rem;}
+        .manual-toggle:hover{color:var(--gold);}
+        .manual-fallback{display:none;padding:0 1.5rem 1.2rem;}
+        .manual-fallback.show{display:block;}
+        .manual-fallback select{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:0.7rem 1rem;font-size:0.875rem;font-family:'DM Sans',sans-serif;color:var(--navy);background:white;outline:none;transition:0.2s;}
+        .manual-fallback select:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-dim);}
+
+        /* sidebar */
+        .sidebar-card{background:white;border-radius:24px;border:1px solid var(--border);overflow:hidden;margin-bottom:1.5rem;}
+        .sidebar-card:last-child{margin-bottom:0;}
+        .sidebar-card .sc-header{padding:1.1rem 1.4rem;}
+        .sidebar-card .sc-body{padding:1.2rem 1.4rem;}
+        .verify-item{display:flex;align-items:center;gap:0.8rem;padding:0.65rem 0;border-bottom:1px solid var(--border);}
+        .verify-item:last-child{border-bottom:none;}
+        .verify-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;}
+        .verify-icon.done{background:rgba(16,185,129,0.1);color:var(--success);}
+        .verify-icon.pending{background:rgba(245,158,11,0.1);color:var(--warning);}
+        .verify-label{font-size:0.82rem;font-weight:600;color:var(--navy);}
+        .verify-status{font-size:0.7rem;color:var(--gray);}
+        .verify-check{margin-left:auto;font-size:0.85rem;}
+        .verify-check.done{color:var(--success);}
+        .verify-check.pending{color:var(--warning);}
+        .availability-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+        .avail-label{font-weight:600;font-size:0.875rem;}
+        .avail-sub{font-size:0.75rem;color:var(--gray);}
+        .toggle{width:46px;height:26px;border-radius:13px;background:var(--border);position:relative;cursor:pointer;transition:0.3s;flex-shrink:0;}
+        .toggle.on{background:var(--gold);}
+        .toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:white;transition:0.3s;box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+        .toggle.on::after{left:calc(100% - 23px);}
+        .avail-types{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.8rem;}
+        .avail-type{display:flex;align-items:center;gap:0.6rem;font-size:0.8rem;color:var(--gray);}
+        .avail-dot{width:8px;height:8px;border-radius:50%;}
+        .level-big{text-align:center;margin-bottom:1rem;}
+        .level-badge{display:inline-block;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);padding:0.3rem 1.2rem;border-radius:40px;font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;}
+        .level-big .xp-text{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--gray);}
+        .progress-bar{height:10px;background:var(--light);border-radius:10px;overflow:hidden;margin:0.6rem 0;}
+        .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:10px;}
+        .level-milestones{display:flex;justify-content:space-between;margin-top:1rem;}
+        .milestone{text-align:center;opacity:0.4;}
+        .milestone.reached{opacity:1;}
+        .milestone-icon{width:34px;height:34px;border-radius:50%;background:var(--gold-dim);border:2px solid rgba(201,144,58,0.3);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:0.8rem;margin:0 auto 0.3rem;}
+        .milestone.reached .milestone-icon{background:var(--gold);color:white;border-color:var(--gold);}
+        .milestone-label{font-size:0.65rem;color:var(--gray);}
+
+        /* modal */
+        .modal-overlay{position:fixed;inset:0;background:rgba(10,22,40,0.6);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity 0.25s ease;}
+        .modal-overlay.open{opacity:1;pointer-events:all;}
+        .modal{background:white;border-radius:28px;width:100%;max-width:520px;box-shadow:0 25px 60px rgba(0,0,0,0.2);transform:translateY(20px) scale(0.97);transition:transform 0.25s ease;max-height:90vh;overflow-y:auto;}
+        .modal-overlay.open .modal{transform:translateY(0) scale(1);}
+        .modal-header{background:linear-gradient(135deg,var(--navy),var(--blue));padding:1.4rem 1.8rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2;overflow:hidden;}
+        .modal-header::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(201,144,58,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(201,144,58,0.08) 1px,transparent 1px);background-size:25px 25px;}
+        .modal-header h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:white;position:relative;z-index:1;display:flex;align-items:center;gap:0.6rem;}
+        .modal-header h3 i{color:var(--gold);}
+        .modal-close{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:0.2s;position:relative;z-index:1;}
+        .modal-close:hover{background:rgba(255,255,255,0.3);}
+        .modal-body{padding:1.8rem;}
+        .avatar-upload-wrap{display:flex;align-items:center;gap:1.2rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
+        .avatar-preview{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--navy);flex-shrink:0;overflow:hidden;border:3px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+        .avatar-preview img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+        .avatar-upload-info h4{font-size:0.9rem;font-weight:700;margin-bottom:0.3rem;}
+        .avatar-upload-info p{font-size:0.75rem;color:var(--gray);margin-bottom:0.7rem;}
+        .btn-upload{background:var(--gold-dim);color:var(--gold);border:1.5px solid rgba(201,144,58,0.3);padding:0.45rem 1.1rem;border-radius:40px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:0.2s;display:inline-flex;align-items:center;gap:0.4rem;}
+        .btn-upload:hover{background:var(--gold);color:white;}
+        #photoInput{display:none;}
+        .modal-field{margin-bottom:1.1rem;}
+        .modal-label{display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;font-weight:600;color:var(--navy);margin-bottom:0.4rem;}
+        .modal-label i{color:var(--gold);font-size:0.72rem;}
+        .modal-input,.modal-select{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:0.7rem 1rem;font-size:0.875rem;font-family:'DM Sans',sans-serif;color:var(--navy);outline:none;transition:0.2s;background:white;}
+        .modal-input:focus,.modal-select:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-dim);}
+        .modal-input::placeholder{color:#b0bec5;}
+        .tag-options{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;}
+        .tag-pill{border:1.5px solid var(--border);border-radius:40px;padding:0.4rem 0.9rem;font-size:0.78rem;font-weight:600;color:var(--gray);cursor:pointer;transition:0.18s;display:flex;align-items:center;gap:0.35rem;}
+        .tag-pill:hover,.tag-pill.selected{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+        .modal-footer{padding:1.2rem 1.8rem;border-top:1px solid var(--border);display:flex;align-items:center;gap:0.8rem;justify-content:flex-end;position:sticky;bottom:0;background:white;z-index:2;}
+        .btn-modal-save{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);border:none;padding:0.75rem 1.8rem;border-radius:40px;font-weight:700;font-size:0.875rem;cursor:pointer;transition:0.2s;display:flex;align-items:center;gap:0.5rem;box-shadow:0 4px 15px rgba(201,144,58,0.25);}
+        .btn-modal-save:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,144,58,0.35);}
+        .btn-modal-cancel{background:transparent;color:var(--gray);border:1.5px solid var(--border);padding:0.75rem 1.4rem;border-radius:40px;font-weight:600;font-size:0.875rem;cursor:pointer;transition:0.2s;}
+        .btn-modal-cancel:hover{border-color:var(--navy);color:var(--navy);}
+        .cert-upload-area{border:2px dashed var(--border);border-radius:16px;padding:2rem;text-align:center;cursor:pointer;transition:0.2s;background:var(--light);}
+        .cert-upload-area:hover{border-color:var(--gold);background:var(--gold-dim);}
+
+        .footer{background:var(--navy);color:white;padding:3rem 2rem 1.5rem;margin-top:3rem;border-radius:30px 30px 0 0;width:100%;}
+        .footer-content{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2rem;}
+        .footer-section h3{font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:1rem;color:var(--gold);}
+        .footer-section h4{font-size:0.9rem;margin-bottom:1rem;color:white;}
+        .footer-section ul{list-style:none;}
+        .footer-section ul li{margin-bottom:0.6rem;}
+        .footer-section ul li a{color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.85rem;transition:0.2s;}
+        .footer-section ul li a:hover{color:var(--gold);padding-left:5px;}
+        .social-links{display:flex;gap:0.6rem;margin-top:1rem;}
+        .social-links a{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:white;font-size:0.85rem;text-decoration:none;transition:background 0.2s;}
+        .social-links a:hover{background:var(--gold);}
+        .footer-bottom{text-align:center;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);font-size:0.8rem;max-width:1400px;margin:0 auto;}
+
+        @media(max-width:1024px){.content-grid{grid-template-columns:1fr;}.quick-stats{grid-template-columns:repeat(2,1fr);}.footer-content{grid-template-columns:1fr 1fr;}}
+        @media(max-width:768px){.app{padding:1rem;}.top-nav{padding:0 1rem;overflow-x:auto;border-radius:20px;}.quick-stats{grid-template-columns:repeat(2,1fr);}.profile-identity{flex-direction:column;align-items:flex-start;}.identity-actions{width:100%;}.btn-primary,.btn-outline{flex:1;justify-content:center;}.notif-popup{width:290px;}.footer-content{grid-template-columns:1fr 1fr;}}
+        @media(max-width:480px){.quick-stats{grid-template-columns:1fr 1fr;}.footer-content{grid-template-columns:1fr;}}
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <!-- TOP NAV -->
+    <nav class="top-nav">
+        <div class="logo">Contractor<span>Hub</span></div>
+        <div class="nav-divider"></div>
+        <div class="nav-menu">
+            <a href="{% url 'seller' %}"          class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="{% url 'create_proposal' %}"  class="nav-item"><i class="fas fa-file-alt"></i> Proposals</a>
+            <a href="{% url 'my_proposals' %}"     class="nav-item"><i class="fas fa-briefcase"></i> Active Work</a>
+        </div>
+        <div class="right-icons">
+            <div class="icon-dropdown">
+                <button class="icon-circle" onclick="toggleIconDrop('helpMenu')" title="Help"><i class="fas fa-question-circle"></i></button>
+                <div class="icon-drop-menu" id="helpMenu">
+                    <a href="{% url 'faqs' %}"     class="icon-drop-item"><i class="fas fa-question-circle"></i> FAQs</a>
+                    <a href="{% url 'about_us' %}" class="icon-drop-item"><i class="fas fa-info-circle"></i> About Us</a>
+                    <a href="{% url 'privacy' %}"  class="icon-drop-item"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+                </div>
+            </div>
+            <a href="{% url 'messages_page' %}" class="icon-circle" title="Messages"><i class="far fa-comment-dots"></i></a>
+            <div class="notif-wrapper">
+                <a href="#" class="icon-circle" id="notifBtn" title="Notifications" onclick="toggleNotif(event)"><i class="far fa-bell"></i></a>
+                <div class="notif-popup" id="notifPopup">
+                    <div class="notif-popup-header"><h4><i class="fas fa-bell"></i> Notifications</h4><span>Today</span></div>
+                    <div class="notif-item"><div class="notif-item-icon msg"><i class="far fa-comment-dots"></i></div><div class="notif-item-body"><p><strong>New message</strong> from a client</p><span>2 min ago</span></div><div class="notif-unread-dot"></div></div>
+                    <div class="notif-item"><div class="notif-item-icon info"><i class="fas fa-eye"></i></div><div class="notif-item-body"><p>Someone <strong>viewed your proposal</strong></p><span>1 hr ago</span></div><div class="notif-unread-dot"></div></div>
+                    <div class="notif-footer">See all notifications</div>
+                </div>
+            </div>
+            <div class="profile-dropdown">
+                <div class="avatar-pill" onclick="toggleDropdown()">
+                    {% if profile.profile_photo %}<img src="{{ profile.profile_photo.url }}" class="avatar-img" alt="">{% else %}<div class="avatar">{{ user.name|first|default:user.email|first|upper }}</div>{% endif %}
+                    {{ user.name|default:"Me"|truncatechars:10 }}
+                    <i class="fas fa-chevron-down" style="font-size:0.55rem;color:#999;margin-left:2px;"></i>
+                </div>
+                <div class="dropdown-menu" id="profileDropdown">
+                    <div class="dropdown-user-header">
+                        {% if profile.profile_photo %}<img src="{{ profile.profile_photo.url }}" class="dropdown-user-avatar-img" alt="">{% else %}<div class="dropdown-user-avatar">{{ user.name|first|default:user.email|first|upper }}</div>{% endif %}
+                        <div class="dropdown-user-info"><h4>{{ user.name|default:"Contractor" }}</h4><p>{{ profile.title|default:"Contractor" }} · Level {{ profile.level }}</p></div>
+                    </div>
+                    <a href="{% url 'seller_profile' %}" class="dropdown-item"><i class="fas fa-user-circle"></i> My Profile</a>
+                    <a href="{% url 'messages_page' %}"  class="dropdown-item"><i class="far fa-comment-dots"></i> Messages</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'landing_page' %}?mode=client" class="dropdown-item client-mode"><i class="fas fa-exchange-alt"></i> Switch to Client</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'account_logout' %}" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="profile-identity-wrap">
+        <div class="profile-hero" {% if profile.cover_photo %}style="background-image:url('{{ profile.cover_photo.url }}');background-size:cover;background-position:center;"{% endif %}>
+            <button class="hero-edit-btn" onclick="document.getElementById('coverInput').click()"><i class="fas fa-camera"></i> Edit Cover</button>
+            <form method="POST" enctype="multipart/form-data" id="coverForm" action="{% url 'seller_profile' %}">
+                {% csrf_token %}
+                <input type="file" id="coverInput" name="cover_photo" accept="image/*" style="display:none" onchange="document.getElementById('coverForm').submit()">
+            </form>
+        </div>
+        <div class="profile-identity">
+            <div class="identity-left">
+                <div class="profile-big-avatar">
+                    {% if profile.profile_photo %}<img src="{{ profile.profile_photo.url }}" alt="{{ user.name }}">{% else %}{{ user.name|slice:":1"|upper }}{% endif %}
+                </div>
+                <div class="identity-info">
+                    <h1>{{ user.name }}</h1>
+                    <div class="title-badge"><i class="fas fa-hard-hat"></i>{{ profile.title|default:"Add Your Title" }}</div>
+                    <div class="meta">
+                        <span class="meta-item"><i class="fas fa-map-marker-alt"></i><span id="heroCity">{% if profile.city %}{{ profile.city }}, Pakistan{% else %}City not set{% endif %}</span></span>
+                        <span class="meta-item"><i class="fas fa-clock"></i>Member since {{ user.date_joined|date:"Y" }}</span>
+                        {% if profile.is_available %}<span class="meta-item"><i class="fas fa-check-circle" style="color:var(--success);"></i>Available for Work</span>{% else %}<span class="meta-item"><i class="fas fa-times-circle" style="color:var(--danger);"></i>Not Available</span>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="identity-actions">
+                <button class="btn-primary" onclick="openModal()"><i class="fas fa-pen"></i> Edit Profile</button>
+                <button class="btn-outline"><i class="fas fa-share-alt"></i> Share</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK STATS -->
+    <div class="quick-stats">
+        <div class="qs-card"><div class="qs-icon"><i class="fas fa-briefcase"></i></div><div><div class="qs-val">{{ jobs_count|default:"0" }}</div><div class="qs-label">Jobs Completed</div></div></div>
+        <div class="qs-card"><div class="qs-icon"><i class="fas fa-coins"></i></div><div>{% if total_earned %}<div class="qs-val">Rs {{ total_earned }}</div>{% else %}<div class="qs-val empty">—</div>{% endif %}<div class="qs-label">Total Earned</div></div></div>
+        <div class="qs-card"><div class="qs-icon"><i class="fas fa-star"></i></div><div>{% if avg_rating %}<div class="qs-val">{{ avg_rating }}/5</div>{% else %}<div class="qs-val empty">No ratings</div>{% endif %}<div class="qs-label">Avg Rating</div></div></div>
+        <div class="qs-card"><div class="qs-icon"><i class="fas fa-bolt"></i></div><div>{% if profile.get_total_experience %}<div class="qs-val">{{ profile.get_total_experience }} yrs</div>{% else %}<div class="qs-val empty">Not set</div>{% endif %}<div class="qs-label">Experience</div></div></div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="content-grid">
+    <div class="left-col">
+
+        <!-- About -->
+        <div class="section-card">
+            <div class="sc-header"><h3><i class="fas fa-user"></i> About Me</h3><a class="edit-link" onclick="openModal()"><i class="fas fa-pen"></i> Edit</a></div>
+            <div class="sc-body">{% if profile.about %}<p class="about-text">{{ profile.about|linebreaksbr }}</p>{% else %}<div class="empty-state"><i class="fas fa-user-edit"></i><p>Apne baare mein kuch likhein</p></div>{% endif %}</div>
+        </div>
+
+        <!-- Skills -->
+        <div class="section-card">
+            <div class="sc-header"><h3><i class="fas fa-tools"></i> Skills & Expertise</h3><a class="edit-link" onclick="openModal()"><i class="fas fa-pen"></i> Edit</a></div>
+            <div class="sc-body">{% if profile.skills %}<div class="skills-wrap">{% for skill in profile.get_skills_list %}<span class="skill-tag"><i class="fas fa-tools"></i> {{ skill }}</span>{% endfor %}</div>{% else %}<div class="empty-state"><i class="fas fa-tools"></i><p>Koi skill add nahi ki abhi tak</p></div>{% endif %}</div>
+        </div>
+
+        <!-- ══ LOCATION CARD (outside modal) ══ -->
+        <div class="location-card">
+            <div class="loc-head">
+                <h3><i class="fas fa-map-marker-alt"></i> My Location</h3>
+                <div class="city-pill" id="cityPill">
+                    <i class="fas fa-check-circle"></i>
+                    <span id="cityName">{% if profile.city %}{{ profile.city }}{% endif %}</span>
+                </div>
+            </div>
+
+            <!-- map always visible -->
+            <div id="locationMap"></div>
+
+            <!-- footer: button + save form -->
+            <div class="map-footer">
+                <button type="button" class="gps-btn" id="gpsBtn" onclick="detectLocation()">
+                    <i class="fas fa-location-arrow" id="gpsIcon"></i>
+                    <span id="gpsBtnText">Add Location</span>
+                </button>
+                <div class="loc-err" id="locErr"></div>
+            </div>
+
+            <!-- hidden form to save city -->
+            <form method="POST" action="{% url 'seller_profile' %}" id="locationForm" style="display:none;">
+                {% csrf_token %}
+                <input type="hidden" name="city" id="cityHidden" value="{{ profile.city|default:'' }}">
+                <input type="hidden" name="location_only" value="1">
+            </form>
+
+            <span class="manual-toggle" onclick="toggleManual()"><i class="fas fa-edit" style="margin-right:3px;"></i>Manually city select karein</span>
+            <div class="manual-fallback" id="manualFallback">
+                <select onchange="setManualCity(this.value)">
+                    <option value="">-- Apna shehar chunein --</option>
+                    <optgroup label="Punjab">
+                        <option value="Lahore" {% if profile.city == 'Lahore' %}selected{% endif %}>Lahore</option>
+                        <option value="Faisalabad" {% if profile.city == 'Faisalabad' %}selected{% endif %}>Faisalabad</option>
+                        <option value="Rawalpindi" {% if profile.city == 'Rawalpindi' %}selected{% endif %}>Rawalpindi</option>
+                        <option value="Gujranwala" {% if profile.city == 'Gujranwala' %}selected{% endif %}>Gujranwala</option>
+                        <option value="Multan" {% if profile.city == 'Multan' %}selected{% endif %}>Multan</option>
+                        <option value="Sialkot" {% if profile.city == 'Sialkot' %}selected{% endif %}>Sialkot</option>
+                    </optgroup>
+                    <optgroup label="Sindh">
+                        <option value="Karachi" {% if profile.city == 'Karachi' %}selected{% endif %}>Karachi</option>
+                        <option value="Hyderabad" {% if profile.city == 'Hyderabad' %}selected{% endif %}>Hyderabad</option>
+                    </optgroup>
+                    <optgroup label="KPK">
+                        <option value="Peshawar" {% if profile.city == 'Peshawar' %}selected{% endif %}>Peshawar</option>
+                        <option value="Abbottabad" {% if profile.city == 'Abbottabad' %}selected{% endif %}>Abbottabad</option>
+                    </optgroup>
+                    <optgroup label="Balochistan">
+                        <option value="Quetta" {% if profile.city == 'Quetta' %}selected{% endif %}>Quetta</option>
+                    </optgroup>
+                    <optgroup label="Islamabad">
+                        <option value="Islamabad" {% if profile.city == 'Islamabad' %}selected{% endif %}>Islamabad</option>
+                    </optgroup>
+                </select>
+            </div>
+        </div>
+
+        <!-- Experience -->
+        <div class="section-card">
+            <div class="sc-header"><h3><i class="fas fa-history"></i> Work Experience</h3><a class="edit-link" onclick="openExpModal()"><i class="fas fa-plus"></i> Add</a></div>
+            <div class="sc-body">{% if experiences %}<div class="timeline">{% for exp in experiences %}<div class="timeline-item"><div class="tl-icon"><i class="fas fa-briefcase"></i></div><div class="tl-content"><div class="tl-title">{{ exp.job_title }}</div><div class="tl-company">{{ exp.company }}{% if exp.city %} · {{ exp.city }}{% endif %}</div><div class="tl-period">{{ exp.start_date|date:"M Y" }} — {% if exp.is_current %}Present{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}</div>{% if exp.description %}<div class="tl-desc">{{ exp.description }}</div>{% endif %}</div></div>{% endfor %}</div>{% else %}<div class="empty-state"><i class="fas fa-briefcase"></i><p>Koi experience add nahi ki abhi tak</p></div>{% endif %}</div>
+        </div>
+
+        <!-- Certificates -->
+        <div class="section-card">
+            <div class="sc-header"><h3><i class="fas fa-certificate"></i> Certificates</h3><a class="edit-link" onclick="openCertModal()"><i class="fas fa-plus"></i> Add</a></div>
+            <div class="sc-body">{% if certificates %}<div class="cert-list">{% for cert in certificates %}<div class="cert-item"><div class="cert-icon"><i class="fas fa-file-alt"></i></div><div class="cert-info"><div class="cert-title">{{ cert.title }}</div><div class="cert-date">Uploaded {{ cert.uploaded_at|date:"M d, Y" }}</div></div><a href="{{ cert.file.url }}" target="_blank" class="cert-view-btn"><i class="fas fa-eye"></i> View</a></div>{% endfor %}</div>{% else %}<div class="empty-state"><i class="fas fa-certificate"></i><p>Koi certificate add nahi</p></div>{% endif %}</div>
+        </div>
+
+        <!-- Reviews -->
+        <div class="section-card">
+            <div class="sc-header">
+                <h3><i class="fas fa-star"></i> Client Reviews</h3>
+                <span style="font-size:0.82rem;color:var(--gray);">{{ reviews_count|default:"0" }} review{{ reviews_count|pluralize }}{% if avg_rating %} · <i class="fas fa-star" style="color:var(--gold);font-size:0.75rem;"></i> {{ avg_rating }}/5{% endif %}</span>
+            </div>
+            <div class="sc-body">
+                {% if reviews %}
+                <div class="review-summary-box">
+                    <div class="review-big-num">{{ avg_rating }}</div>
+                    <div class="review-summary-meta">
+                        <div class="review-stars-row">{% for i in "12345" %}{% if forloop.counter <= avg_rating %}<i class="fas fa-star" style="color:var(--gold);"></i>{% else %}<i class="far fa-star" style="color:var(--border);"></i>{% endif %}{% endfor %}</div>
+                        <div class="review-count-txt">{{ reviews_count }} review{{ reviews_count|pluralize }}</div>
+                        <div class="review-out">out of 5.0</div>
+                    </div>
+                </div>
+                <div class="review-list">
+                {% for review in reviews %}
+                <div class="review-card">
+                    <div class="review-card-header">
+                        <div class="review-user">
+                            <div class="review-ava">{% if review.client.client_profile.profile_photo %}<img src="{{ review.client.client_profile.profile_photo.url }}" alt="">{% else %}{{ review.client.name|slice:":1"|upper }}{% endif %}</div>
+                            <div><div class="review-name">{{ review.client.name|default:"Anonymous" }}</div><div class="review-time">{{ review.created_at|date:"M d, Y" }}</div></div>
+                        </div>
+                        <div class="review-rating-stars">{% for i in "12345" %}{% if forloop.counter <= review.rating %}<i class="fas fa-star" style="color:var(--gold);"></i>{% else %}<i class="far fa-star" style="color:var(--border);"></i>{% endif %}{% endfor %}</div>
+                    </div>
+                    {% if review.comment %}<p class="review-text">{{ review.comment }}</p>{% endif %}
+                </div>
+                {% endfor %}
+                </div>
+                {% else %}<div class="empty-state"><i class="fas fa-star"></i><p>Abhi tak koi review nahi</p></div>{% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="right-col">
+        <div class="sidebar-card">
+            <div class="sc-header"><h3><i class="fas fa-calendar-check"></i> Availability</h3></div>
+            <div class="sc-body">
+                <div class="availability-row">
+                    <div><div class="avail-label">Available for Work</div><div class="avail-sub" id="availSubText">{% if profile.is_available %}Currently accepting projects{% else %}Not accepting projects{% endif %}</div></div>
+                    <div class="toggle {% if profile.is_available %}on{% endif %}" onclick="toggleAvailability(this)"></div>
+                </div>
+                <div class="avail-types">
+                    <div class="avail-type"><div class="avail-dot" style="background:var(--gold);"></div> Full-time Projects</div>
+                    <div class="avail-type"><div class="avail-dot" style="background:var(--success);"></div> Part-time / Weekends</div>
+                    <div class="avail-type"><div class="avail-dot" style="background:#3b82f6;"></div> Emergency / Urgent Jobs</div>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-card">
+            <div class="sc-header"><h3><i class="fas fa-medal"></i> Level & XP</h3></div>
+            <div class="sc-body">
+                <div class="level-big">
+                    <div class="level-badge">⭐ Level {{ profile.level }} {% if profile.level <= 2 %}— Beginner{% elif profile.level <= 4 %}— Skilled{% elif profile.level <= 6 %}— Expert{% elif profile.level <= 8 %}— Master{% else %}— Legend{% endif %}</div>
+                    <div class="xp-text">Level {{ profile.level }} / 10</div>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:{{ profile.level|floatformat:0 }}0%;"></div></div>
+                <div class="level-milestones">
+                    <div class="milestone {% if profile.level >= 1 %}reached{% endif %}"><div class="milestone-icon"><i class="fas fa-seedling"></i></div><div class="milestone-label">Beginner</div></div>
+                    <div class="milestone {% if profile.level >= 3 %}reached{% endif %}"><div class="milestone-icon"><i class="fas fa-hammer"></i></div><div class="milestone-label">Skilled</div></div>
+                    <div class="milestone {% if profile.level >= 5 %}reached{% endif %}"><div class="milestone-icon"><i class="fas fa-hard-hat"></i></div><div class="milestone-label">Expert</div></div>
+                    <div class="milestone {% if profile.level >= 7 %}reached{% endif %}"><div class="milestone-icon"><i class="fas fa-crown"></i></div><div class="milestone-label">Master</div></div>
+                    <div class="milestone {% if profile.level >= 9 %}reached{% endif %}"><div class="milestone-icon"><i class="fas fa-gem"></i></div><div class="milestone-label">Legend</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-card">
+            <div class="sc-header"><h3><i class="fas fa-shield-alt"></i> Verification</h3></div>
+            <div class="sc-body">
+                <div class="verify-item"><div class="verify-icon done"><i class="fas fa-envelope"></i></div><div><div class="verify-label">Email Verified</div><div class="verify-status">{{ user.email }}</div></div><i class="fas fa-check-circle verify-check done"></i></div>
+                <div class="verify-item"><div class="verify-icon {% if user.phone %}done{% else %}pending{% endif %}"><i class="fas fa-phone"></i></div><div><div class="verify-label">Phone</div><div class="verify-status">{{ user.phone|default:"Not added" }}</div></div><i class="fas {% if user.phone %}fa-check-circle verify-check done{% else %}fa-clock verify-check pending{% endif %}"></i></div>
+                <div class="verify-item"><div class="verify-icon pending"><i class="fas fa-id-card"></i></div><div><div class="verify-label">CNIC</div><div class="verify-status">Not verified yet</div></div><i class="fas fa-clock verify-check pending"></i></div>
+            </div>
+        </div>
+        <div class="sidebar-card">
+            <div class="sc-header"><h3><i class="fas fa-address-book"></i> Contact Info</h3></div>
+            <div class="sc-body">
+                <div class="verify-item"><div class="verify-icon done"><i class="fas fa-phone"></i></div><div><div class="verify-label">{{ user.phone|default:"Phone not added" }}</div><div class="verify-status">Call or WhatsApp</div></div></div>
+                <div class="verify-item"><div class="verify-icon done" style="background:rgba(26,58,107,0.1);color:var(--blue);"><i class="fas fa-envelope"></i></div><div><div class="verify-label">{{ user.email }}</div><div class="verify-status">Response within 2 hrs</div></div></div>
+                <div class="verify-item"><div class="verify-icon done" style="background:rgba(16,185,129,0.1);color:var(--success);"><i class="fas fa-map-marker-alt"></i></div><div><div class="verify-label" id="sidebarCity">{% if profile.city %}{{ profile.city }}, Pakistan{% else %}Location not set{% endif %}</div><div class="verify-status">{% if profile.city %}Serves all {{ profile.city }} zones{% else %}Set location below{% endif %}</div></div></div>
+                <button class="btn-primary" style="width:100%;margin-top:1rem;justify-content:center;"><i class="fas fa-paper-plane"></i> Send Message</button>
+            </div>
+        </div>
+    </div>
+    </div><!-- content-grid -->
+
+</div><!-- .app -->
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section"><h3>Contractor<span style="color:var(--gold);">Hub</span></h3><p style="color:rgba(255,255,255,0.6);font-size:0.85rem;line-height:1.6;">Connecting skilled contractors with quality projects since 2025.</p><div class="social-links"><a href="#"><i class="fab fa-facebook-f"></i></a><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-whatsapp"></i></a><a href="#"><i class="fab fa-linkedin-in"></i></a></div></div>
+        <div class="footer-section"><h4>For Contractors</h4><ul><li><a href="{% url 'seller' %}">Dashboard</a></li><li><a href="{% url 'my_proposals' %}">My Proposals</a></li><li><a href="{% url 'seller_profile' %}">My Profile</a></li><li><a href="{% url 'messages_page' %}">Messages</a></li></ul></div>
+        <div class="footer-section"><h4>Company</h4><ul><li><a href="{% url 'about_us' %}">About Us</a></li><li><a href="{% url 'faqs' %}">FAQs</a></li><li><a href="{% url 'privacy' %}">Privacy Policy</a></li></ul></div>
+        <div class="footer-section"><h4>Support</h4><ul><li><a href="{% url 'faqs' %}">Help Center</a></li><li><a href="{% url 'messages_page' %}">Contact Us</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>&copy; {% now "Y" %} ContractorHub. All rights reserved.</p></div>
+</footer>
+
+<!-- EDIT PROFILE MODAL (no city field — managed by map below) -->
+<div class="modal-overlay" id="editModal" onclick="closeOnOverlay(event)">
+    <div class="modal">
+        <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Profile</h3><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
+        <form method="POST" action="{% url 'seller_profile' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="avatar-upload-wrap">
+                    <div class="avatar-preview" id="avatarPreview">
+                        {% if profile.profile_photo %}<img id="avatarImg" src="{{ profile.profile_photo.url }}">{% else %}<span id="avatarInitial">{{ user.name|slice:":1"|upper }}</span><img id="avatarImg" src="" style="display:none;">{% endif %}
+                    </div>
+                    <div class="avatar-upload-info"><h4>Profile Photo</h4><p>JPG, PNG — max 2MB</p><label class="btn-upload" for="photoInput"><i class="fas fa-camera"></i> Change Photo</label><input type="file" id="photoInput" name="profile_photo" accept="image/*" onchange="previewPhoto(event)"></div>
+                </div>
+                <div class="modal-field"><label class="modal-label"><i class="fas fa-user"></i> Full Name</label><input type="text" class="modal-input" name="name" value="{{ user.name }}"></div>
+                <div class="modal-field">
+                    <label class="modal-label"><i class="fas fa-hard-hat"></i> Title / Tag</label>
+                    <div class="tag-options">
+                        <div class="tag-pill {% if profile.title == 'Master Contractor' %}selected{% endif %}" onclick="selectTag(this)"><i class="fas fa-hard-hat"></i> Master Contractor</div>
+                        <div class="tag-pill {% if profile.title == 'General Contractor' %}selected{% endif %}" onclick="selectTag(this)"><i class="fas fa-tools"></i> General Contractor</div>
+                        <div class="tag-pill {% if profile.title == 'Plumber' %}selected{% endif %}" onclick="selectTag(this)"><i class="fas fa-faucet"></i> Plumber</div>
+                        <div class="tag-pill {% if profile.title == 'Electrician' %}selected{% endif %}" onclick="selectTag(this)"><i class="fas fa-bolt"></i> Electrician</div>
+                        <div class="tag-pill {% if profile.title == 'Painter' %}selected{% endif %}" onclick="selectTag(this)"><i class="fas fa-paint-roller"></i> Painter</div>
+                        <div class="tag-pill {% if profile.title == 'Tiling Expert' %}selected{% endif %}" onclick="selectTag(this)"><i class="fas fa-layer-group"></i> Tiling Expert</div>
+                        <div class="tag-pill {% if profile.title == 'Carpenter' %}selected{% endif %}" onclick="selectTag(this)"><i class="fas fa-door-open"></i> Carpenter</div>
+                        <div class="tag-pill {% if profile.title == 'Civil Engineer' %}selected{% endif %}" onclick="selectTag(this)"><i class="fas fa-building"></i> Civil Engineer</div>
+                    </div>
+                    <input type="hidden" name="title" id="selectedTag" value="{{ profile.title }}">
+                </div>
+                <div class="modal-field"><label class="modal-label"><i class="fas fa-align-left"></i> About Me</label><textarea class="modal-input" name="about" rows="4" placeholder="Apne baare mein likhein...">{{ profile.about }}</textarea></div>
+                <div class="modal-field"><label class="modal-label"><i class="fas fa-tools"></i> Skills <span style="color:var(--gray);font-weight:400;">(comma separated)</span></label><input type="text" class="modal-input" name="skills" placeholder="Plumbing, Electrical, Tiling" value="{{ profile.skills }}"></div>
+            </div>
+            <div class="modal-footer"><button type="button" class="btn-modal-cancel" onclick="closeModal()">Cancel</button><button type="submit" class="btn-modal-save"><i class="fas fa-save"></i> Save Changes</button></div>
+        </form>
+    </div>
+</div>
+
+<!-- EXPERIENCE MODAL -->
+<div class="modal-overlay" id="expModal" onclick="closeOnOverlayExp(event)">
+    <div class="modal">
+        <div class="modal-header"><h3><i class="fas fa-briefcase"></i> Add Work Experience</h3><button class="modal-close" onclick="closeExpModal()"><i class="fas fa-times"></i></button></div>
+        <form method="POST" action="{% url 'add_experience' %}">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="modal-field"><label class="modal-label"><i class="fas fa-hard-hat"></i> Job Title</label><input type="text" class="modal-input" name="job_title" placeholder="e.g. Master Contractor, Plumber" required></div>
+                <div class="modal-field"><label class="modal-label"><i class="fas fa-building"></i> Company / Employer</label><input type="text" class="modal-input" name="company" placeholder="e.g. Arif & Sons Construction" required></div>
+                <div class="modal-field"><label class="modal-label"><i class="fas fa-map-marker-alt"></i> City</label><input type="text" class="modal-input" name="city" placeholder="e.g. Lahore"></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+                    <div class="modal-field"><label class="modal-label"><i class="fas fa-calendar"></i> Start Date</label><input type="month" class="modal-input" name="start_date" required></div>
+                    <div class="modal-field"><label class="modal-label"><i class="fas fa-calendar-check"></i> End Date</label><input type="month" class="modal-input" name="end_date" id="endDateInput"></div>
+                </div>
+                <div class="modal-field" style="display:flex;align-items:center;gap:0.8rem;"><input type="checkbox" name="is_current" id="isCurrentCheck" style="width:16px;height:16px;accent-color:var(--gold);" onchange="toggleCurrentJob(this)"><label for="isCurrentCheck" style="font-size:0.85rem;font-weight:600;color:var(--navy);cursor:pointer;">Main abhi bhi yahan kaam kar raha hun</label></div>
+                <div class="modal-field"><label class="modal-label"><i class="fas fa-align-left"></i> Description</label><textarea class="modal-input" name="description" rows="3" placeholder="Apna kaam describe karein..."></textarea></div>
+            </div>
+            <div class="modal-footer"><button type="button" class="btn-modal-cancel" onclick="closeExpModal()">Cancel</button><button type="submit" class="btn-modal-save"><i class="fas fa-save"></i> Add Experience</button></div>
+        </form>
+    </div>
+</div>
+
+<!-- CERTIFICATE MODAL -->
+<div class="modal-overlay" id="certModal" onclick="closeOnOverlayCert(event)">
+    <div class="modal">
+        <div class="modal-header"><h3><i class="fas fa-certificate"></i> Add Certificate</h3><button class="modal-close" onclick="closeCertModal()"><i class="fas fa-times"></i></button></div>
+        <form method="POST" action="{% url 'add_certificate' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="modal-field"><label class="modal-label"><i class="fas fa-certificate"></i> Certificate Title</label><input type="text" class="modal-input" name="title" placeholder="e.g. Electrical Safety Certificate" required></div>
+                <div class="modal-field">
+                    <label class="modal-label"><i class="fas fa-upload"></i> File Upload</label>
+                    <div class="cert-upload-area" onclick="document.getElementById('certFileInput').click()">
+                        <i class="fas fa-cloud-upload-alt" style="font-size:2rem;color:var(--gold);margin-bottom:0.5rem;"></i>
+                        <p style="font-weight:600;font-size:0.875rem;color:var(--navy);">Click to upload</p>
+                        <p style="font-size:0.75rem;color:var(--gray);">PDF, JPG, PNG — max 5MB</p>
+                        <p id="certFileName" style="font-size:0.8rem;color:var(--gold);margin-top:0.5rem;display:none;"></p>
+                    </div>
+                    <input type="file" id="certFileInput" name="file" accept=".pdf,.jpg,.jpeg,.png" required style="display:none" onchange="showCertFileName(this)">
+                </div>
+            </div>
+            <div class="modal-footer"><button type="button" class="btn-modal-cancel" onclick="closeCertModal()">Cancel</button><button type="submit" class="btn-modal-save"><i class="fas fa-upload"></i> Upload Certificate</button></div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+// ── NAV ──
+function toggleIconDrop(id){const m=document.getElementById(id);const w=m.classList.contains('show');document.querySelectorAll('.icon-drop-menu,.dropdown-menu').forEach(x=>x.classList.remove('show'));document.getElementById('notifPopup').classList.remove('show');if(!w)m.classList.add('show');}
+function toggleNotif(e){e.preventDefault();e.stopPropagation();const p=document.getElementById('notifPopup');const w=p.classList.contains('show');document.querySelectorAll('.icon-drop-menu,.dropdown-menu').forEach(x=>x.classList.remove('show'));p.classList.toggle('show',!w);}
+function toggleDropdown(){const m=document.getElementById('profileDropdown');const w=m.classList.contains('show');document.querySelectorAll('.icon-drop-menu').forEach(x=>x.classList.remove('show'));document.getElementById('notifPopup').classList.remove('show');m.classList.toggle('show',!w);}
+document.addEventListener('click',function(e){document.querySelectorAll('.icon-drop-menu').forEach(m=>{if(!m.closest('.icon-dropdown').contains(e.target))m.classList.remove('show');});const np=document.getElementById('notifPopup');const nb=document.getElementById('notifBtn');if(nb&&!nb.contains(e.target)&&!np.contains(e.target))np.classList.remove('show');const pd=document.getElementById('profileDropdown');const ap=document.querySelector('.avatar-pill');if(ap&&!ap.contains(e.target)&&pd&&!pd.contains(e.target))pd.classList.remove('show');});
+
+// ── MODALS ──
+function openModal(){document.getElementById('editModal').classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(){document.getElementById('editModal').classList.remove('open');document.body.style.overflow='';}
+function closeOnOverlay(e){if(e.target===document.getElementById('editModal'))closeModal();}
+function openExpModal(){document.getElementById('expModal').classList.add('open');document.body.style.overflow='hidden';}
+function closeExpModal(){document.getElementById('expModal').classList.remove('open');document.body.style.overflow='';}
+function closeOnOverlayExp(e){if(e.target===document.getElementById('expModal'))closeExpModal();}
+function openCertModal(){document.getElementById('certModal').classList.add('open');document.body.style.overflow='hidden';}
+function closeCertModal(){document.getElementById('certModal').classList.remove('open');document.body.style.overflow='';}
+function closeOnOverlayCert(e){if(e.target===document.getElementById('certModal'))closeCertModal();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeExpModal();closeCertModal();}});
+
+function toggleCurrentJob(cb){const i=document.getElementById('endDateInput');i.disabled=cb.checked;i.style.opacity=cb.checked?'0.4':'1';if(cb.checked)i.value='';}
+function showCertFileName(i){const n=document.getElementById('certFileName');if(i.files[0]){n.textContent='✓ '+i.files[0].name;n.style.display='block';}}
+function previewPhoto(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){const img=document.getElementById('avatarImg');const ini=document.getElementById('avatarInitial');img.src=ev.target.result;img.style.display='block';if(ini)ini.style.display='none';};r.readAsDataURL(f);}
+function selectTag(el){document.querySelectorAll('.tag-pill').forEach(p=>p.classList.remove('selected'));el.classList.add('selected');document.getElementById('selectedTag').value=el.innerText.trim();}
+function toggleAvailability(el){el.classList.toggle('on');const isAv=el.classList.contains('on');document.getElementById('availSubText').textContent=isAv?'Currently accepting projects':'Not accepting projects';const f=document.createElement('form');f.method='POST';f.action="{% url 'seller_profile' %}";f.innerHTML=`{% csrf_token %}<input name="is_available" value="${isAv?'on':'off'}"><input name="availability_only" value="1">`;document.body.appendChild(f);f.submit();}
+
+// ════════════════════════════════
+// MAP + GPS — same as client_profile
+// ════════════════════════════════
+let map, marker;
+const CITY_COORDS={'Lahore':[31.5204,74.3587],'Karachi':[24.8607,67.0011],'Islamabad':[33.6844,73.0479],'Rawalpindi':[33.5651,73.0169],'Faisalabad':[31.4504,73.1350],'Multan':[30.1575,71.5249],'Peshawar':[34.0150,71.5805],'Quetta':[30.1798,66.9750],'Gujranwala':[32.1614,74.1883],'Sialkot':[32.4945,74.5229],'Hyderabad':[25.3960,68.3578],'Sukkur':[27.7052,68.8574],'Abbottabad':[34.1463,73.2117]};
+
+const goldIcon=()=>L.divIcon({html:`<div style="width:28px;height:28px;background:linear-gradient(135deg,#c9903a,#e8a84a);border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2.5px solid white;box-shadow:0 3px 12px rgba(201,144,58,0.55);"></div>`,iconSize:[28,28],iconAnchor:[14,28],className:''});
+
+function initMap(){
+    map=L.map('locationMap',{zoomControl:true}).setView([30.3753,69.3451],6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(map);
+    const saved='{{ profile.city|default:"" }}';
+    if(saved){const c=CITY_COORDS[saved];if(c)placePin(c[0],c[1],saved,false);document.getElementById('cityPill').classList.add('show');}
+    map.on('click',async function(e){placePin(e.latlng.lat,e.latlng.lng,null,true);const city=await reverseGeocode(e.latlng.lat,e.latlng.lng);saveCity(city,e.latlng.lat,e.latlng.lng);});
+}
+
+function placePin(lat,lon,label,animate){
+    if(marker)map.removeLayer(marker);
+    marker=L.marker([lat,lon],{icon:goldIcon(),draggable:true}).addTo(map);
+    if(animate)map.flyTo([lat,lon],13,{duration:1.2});else map.setView([lat,lon],13);
+    if(label)marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${label}</b>`).openPopup();
+    marker.on('dragend',async function(e){const pos=e.target.getLatLng();const city=await reverseGeocode(pos.lat,pos.lng);saveCity(city,pos.lat,pos.lng);marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${city}</b>`).openPopup();});
+}
+
+function saveCity(city,lat,lon){
+    document.getElementById('cityHidden').value=city;
+    document.getElementById('cityName').textContent=city;
+    document.getElementById('cityPill').classList.add('show');
+    document.getElementById('heroCity').textContent=city+', Pakistan';
+    document.getElementById('sidebarCity').textContent=city+', Pakistan';
+    document.getElementById('locErr').className='loc-err';
+    document.getElementById('gpsBtnText').textContent='Update Location';
+    document.getElementById('gpsIcon').className='fas fa-check';
+    setTimeout(()=>{document.getElementById('gpsIcon').className='fas fa-location-arrow';},2000);
+    // Auto-save to DB
+    document.getElementById('locationForm').submit();
+}
+
+async function detectLocation(){
+    if(!navigator.geolocation){showErr('GPS support nahi hai. Map pe click karein.');return;}
+    const btn=document.getElementById('gpsBtn');const icon=document.getElementById('gpsIcon');const txt=document.getElementById('gpsBtnText');
+    btn.disabled=true;icon.className='fas fa-spinner spin';txt.textContent='Locating…';
+    navigator.geolocation.getCurrentPosition(
+        async pos=>{const{latitude:lat,longitude:lon}=pos.coords;placePin(lat,lon,null,true);const city=await reverseGeocode(lat,lon);saveCity(city,lat,lon);marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${city}</b>`).openPopup();btn.disabled=false;txt.textContent='Update Location';},
+        err=>{btn.disabled=false;icon.className='fas fa-location-arrow';txt.textContent='Add Location';const msgs={1:'Permission denied. Settings mein location allow karein ya map pe click karein.',2:'Location unavailable.',3:'Timeout. Dobara try karein.'};showErr(msgs[err.code]||'Location detect nahi hui.');toggleManual();},
+        {enableHighAccuracy:true,timeout:10000,maximumAge:0}
+    );
+}
+
+function showErr(msg){const e=document.getElementById('locErr');e.textContent='⚠ '+msg;e.className='loc-err show';}
+
+async function reverseGeocode(lat,lon){try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,{headers:{'Accept-Language':'en'}});const d=await r.json();const a=d.address||{};return a.city||a.town||a.county||a.state_district||a.state||'Unknown';}catch{return 'Unknown';}}
+
+function toggleManual(){document.getElementById('manualFallback').classList.toggle('show');}
+function setManualCity(val){if(!val)return;const c=CITY_COORDS[val];if(c){placePin(c[0],c[1],val,true);saveCity(val,c[0],c[1]);marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${val}</b>`).openPopup();}else{saveCity(val,0,0);}document.getElementById('manualFallback').classList.remove('show');}
+
+window.addEventListener('DOMContentLoaded',()=>{
+    initMap();
+    if(document.getElementById('cityHidden').value)document.getElementById('cityPill').classList.add('show');
+});
+</script>
+
+
+<!-- ══ AI BUBBLE ══ -->
+<!-- ╔════════════════════════════════════════════════════════╗
+     ║  ContractorHub AI Bubble — paste before </body>        ║
+     ║  Works on client.html, seller.html, and any other page ║
+     ╚════════════════════════════════════════════════════════╝ -->
+
+<style>
+/* ═══════════════════════════════
+   AI BUBBLE STYLES
+═══════════════════════════════ */
+#ai-bubble-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(201,144,58,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9000;
+    transition: transform 0.25s, box-shadow 0.25s;
+    color: #0a1628;
+    font-size: 1.4rem;
+}
+#ai-bubble-btn:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(201,144,58,0.6);
+}
+#ai-bubble-btn .ai-notif {
+    position: absolute;
+    top: -2px; right: -2px;
+    width: 16px; height: 16px;
+    background: #10b981;
+    border-radius: 50%;
+    border: 2px solid white;
+    font-size: 0.5rem;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700;
+}
+
+/* Chat window */
+#ai-chat-window {
+    position: fixed;
+    bottom: 6.5rem;
+    right: 2rem;
+    width: 380px;
+    max-height: 560px;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(10,22,40,0.18);
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    z-index: 9001;
+    overflow: hidden;
+    transform: scale(0.85) translateY(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.28s cubic-bezier(.34,1.56,.64,1), opacity 0.22s ease;
+    transform-origin: bottom right;
+}
+#ai-chat-window.open {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Header */
+.ai-header {
+    background: linear-gradient(135deg, #0a1628, #1a3a6b);
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.ai-header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+        linear-gradient(rgba(201,144,58,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,144,58,0.08) 1px, transparent 1px);
+    background-size: 22px 22px;
+}
+.ai-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+    position: relative; z-index: 1;
+    box-shadow: 0 3px 10px rgba(201,144,58,0.4);
+}
+.ai-header-info { flex: 1; position: relative; z-index: 1; }
+.ai-header-info h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem; font-weight: 700; color: white;
+    margin-bottom: 0.1rem;
+}
+.ai-header-info p {
+    font-size: 0.68rem; color: rgba(255,255,255,0.55);
+    display: flex; align-items: center; gap: 0.35rem;
+}
+.ai-online-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%; background: #10b981;
+    display: inline-block;
+}
+.ai-close-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%; background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white; cursor: pointer; font-size: 0.8rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.18s; position: relative; z-index: 1;
+}
+.ai-close-btn:hover { background: rgba(255,255,255,0.25); }
+
+/* Role pill */
+.ai-role-pill {
+    font-size: 0.62rem; font-weight: 700;
+    padding: 0.18rem 0.55rem; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    margin-top: 0.2rem; display: inline-block;
+}
+.ai-role-pill.client { background: rgba(59,130,246,0.25); color: #93c5fd; }
+.ai-role-pill.seller { background: rgba(201,144,58,0.25); color: #e8a84a; }
+
+/* Messages area */
+.ai-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    scroll-behavior: smooth;
+}
+.ai-messages::-webkit-scrollbar { width: 4px; }
+.ai-messages::-webkit-scrollbar-track { background: transparent; }
+.ai-messages::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+
+/* Message bubbles */
+.ai-msg {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    animation: msgIn 0.2s ease;
+}
+@keyframes msgIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.ai-msg.user { flex-direction: row-reverse; }
+
+.ai-msg-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; flex-shrink: 0; color: #0a1628; font-weight: 700;
+}
+.ai-msg-avatar.user-av {
+    background: linear-gradient(135deg, #1a3a6b, #0a1628);
+    color: white;
+}
+.ai-msg-bubble {
+    max-width: 80%;
+    padding: 0.65rem 0.9rem;
+    border-radius: 18px;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: #0a1628;
+}
+.ai-msg.ai .ai-msg-bubble {
+    background: #f1f5f9;
+    border-radius: 18px 18px 18px 4px;
+}
+.ai-msg.user .ai-msg-bubble {
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    color: #0a1628;
+    font-weight: 500;
+    border-radius: 18px 18px 4px 18px;
+}
+
+/* Typing indicator */
+.ai-typing {
+    display: flex; gap: 4px;
+    padding: 0.65rem 0.9rem;
+    background: #f1f5f9;
+    border-radius: 18px 18px 18px 4px;
+    width: fit-content;
+}
+.ai-typing span {
+    width: 7px; height: 7px;
+    background: #94a3b8;
+    border-radius: 50%;
+    animation: typingDot 1.2s infinite;
+}
+.ai-typing span:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingDot {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Suggestion chips */
+.ai-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.3rem;
+}
+.ai-chip {
+    background: rgba(201,144,58,0.1);
+    border: 1px solid rgba(201,144,58,0.3);
+    color: #c9903a;
+    padding: 0.3rem 0.75rem;
+    border-radius: 40px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.18s;
+    white-space: nowrap;
+}
+.ai-chip:hover {
+    background: #c9903a;
+    color: white;
+}
+
+/* Input area */
+.ai-input-wrap {
+    padding: 0.75rem;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    flex-shrink: 0;
+    background: white;
+}
+.ai-input {
+    flex: 1;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 0.6rem 1rem;
+    font-size: 0.82rem;
+    font-family: 'DM Sans', sans-serif;
+    color: #0a1628;
+    outline: none;
+    resize: none;
+    max-height: 100px;
+    transition: 0.2s;
+    line-height: 1.4;
+}
+.ai-input:focus { border-color: #c9903a; box-shadow: 0 0 0 3px rgba(201,144,58,0.1); }
+.ai-input::placeholder { color: #94a3b8; }
+.ai-send-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c9903a, #e8a84a);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #0a1628; font-size: 0.9rem;
+    transition: 0.2s; flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(201,144,58,0.3);
+}
+.ai-send-btn:hover { transform: scale(1.1); }
+.ai-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* Powered by */
+.ai-powered {
+    text-align: center;
+    font-size: 0.62rem;
+    color: #94a3b8;
+    padding: 0.3rem;
+    border-top: 1px solid #f1f5f9;
+    flex-shrink: 0;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    #ai-chat-window {
+        width: calc(100vw - 1.5rem);
+        right: 0.75rem;
+        bottom: 5.5rem;
+        max-height: 70vh;
+    }
+    #ai-bubble-btn { bottom: 1.2rem; right: 1.2rem; width: 54px; height: 54px; }
+}
+</style>
+
+<!-- ── BUBBLE BUTTON ── -->
+<button id="ai-bubble-btn" onclick="toggleAIBubble()" title="AI Assistant">
+    <i class="fas fa-robot"></i>
+    <div class="ai-notif">AI</div>
+</button>
+
+<!-- ── CHAT WINDOW ── -->
+<div id="ai-chat-window">
+
+    <!-- Header -->
+    <div class="ai-header">
+        <div class="ai-avatar">🤖</div>
+        <div class="ai-header-info">
+            <h4>ContractorHub AI</h4>
+            <p><span class="ai-online-dot"></span> Online — <span id="aiRoleLabel">Loading...</span></p>
+            <div class="ai-role-pill" id="aiRolePill">...</div>
+        </div>
+        <button class="ai-close-btn" onclick="toggleAIBubble()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Messages -->
+    <div class="ai-messages" id="aiMessages">
+        <!-- messages inject here -->
+    </div>
+
+    <!-- Input -->
+    <div class="ai-input-wrap">
+        <textarea
+            class="ai-input"
+            id="aiInput"
+            placeholder="Message likhein..."
+            rows="1"
+            onkeydown="aiInputKeydown(event)"
+            oninput="aiAutoResize(this)"
+        ></textarea>
+        <button class="ai-send-btn" id="aiSendBtn" onclick="aiSend()">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+
+    <div class="ai-powered">Powered by Groq · llama-3.3-70b · ContractorHub AI</div>
+</div>
+
+
+<script>
+// ════════════════════════════════════════
+// ContractorHub AI Bubble — JS
+// ════════════════════════════════════════
+
+let aiOpen       = false;
+let aiRole       = null;      // 'client' | 'seller'
+let aiContext    = null;      // context data from server
+let aiHistory    = [];        // conversation history [{role, content}]
+let aiInitialized = false;
+
+// ── Suggestion chips per role ──
+const CLIENT_CHIPS = [
+    'Electrician chahiye Lahore mein',
+    'Plumber — budget 3000',
+    'Painter ghar ke liye',
+    'Best rated contractor kaun?',
+];
+const SELLER_CHIPS = [
+    'Meri profile improve karo',
+    'Photo mein kya daalu?',
+    'Video tips chahiye',
+    'Document kaise upload karein?',
+    'Price kaise set karoon?',
+];
+
+// ── Toggle window ──
+function toggleAIBubble() {
+    aiOpen = !aiOpen;
+    const win = document.getElementById('ai-chat-window');
+    win.classList.toggle('open', aiOpen);
+
+    if (aiOpen && !aiInitialized) {
+        initAI();
+    }
+    if (aiOpen) {
+        setTimeout(() => document.getElementById('aiInput').focus(), 300);
+    }
+}
+
+// ── Initialize: fetch context + show welcome ──
+async function initAI() {
+    aiInitialized = true;
+    addTypingIndicator();
+
+    try {
+        const resp = await fetch('/ai-context/', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        const data = await resp.json();
+        aiRole    = data.role;
+        aiContext = data.context;
+
+        removeTypingIndicator();
+
+        // Update header
+        const isClient = aiRole === 'client';
+        document.getElementById('aiRoleLabel').textContent = isClient ? 'Client Mode' : 'Seller Coach';
+        const pill = document.getElementById('aiRolePill');
+        pill.textContent = isClient ? '🔍 Find Workers' : '🛠 Profile Coach';
+        pill.className = `ai-role-pill ${aiRole}`;
+
+        // Show welcome message
+        addAIMessage(data.welcome);
+
+        // Show suggestion chips
+        const chips = isClient ? CLIENT_CHIPS : SELLER_CHIPS;
+        addChips(chips);
+
+    } catch (err) {
+        removeTypingIndicator();
+        addAIMessage('⚠ Kuch masla aa gaya. Page refresh karein aur dobara try karein.');
+    }
+}
+
+// ── Send message ──
+async function aiSend() {
+    const input = document.getElementById('aiInput');
+    const msg   = input.value.trim();
+    if (!msg) return;
+
+    input.value  = '';
+    input.style.height = 'auto';
+
+    addUserMessage(msg);
+    document.getElementById('aiSendBtn').disabled = true;
+    addTypingIndicator();
+
+    try {
+        const resp = await fetch('/ai-chat/', {
+            method:  'POST',
+            headers: {
+                'Content-Type':  'application/json',
+                'X-CSRFToken':   getCookie('csrftoken'),
+            },
+            body: JSON.stringify({
+                message: msg,
+                history: aiHistory,
+            }),
+        });
+
+        const data = await resp.json();
+        removeTypingIndicator();
+        document.getElementById('aiSendBtn').disabled = false;
+
+        if (data.error) {
+            addAIMessage('⚠ Error: ' + data.error);
+        } else {
+            addAIMessage(data.reply);
+            // Save to history
+            aiHistory.push({ role: 'user',      content: msg });
+            aiHistory.push({ role: 'assistant', content: data.reply });
+            // Trim history
+            if (aiHistory.length > 16) aiHistory = aiHistory.slice(-16);
+        }
+
+    } catch (err) {
+        removeTypingIndicator();
+        document.getElementById('aiSendBtn').disabled = false;
+        addAIMessage('⚠ Network error. Internet check karein.');
+    }
+}
+
+// ── DOM helpers ──
+function addUserMessage(text) {
+    const msgs = document.getElementById('aiMessages');
+    const el = document.createElement('div');
+    el.className = 'ai-msg user';
+    el.innerHTML = `
+        <div class="ai-msg-avatar user-av">U</div>
+        <div class="ai-msg-bubble">${escHtml(text)}</div>
+    `;
+    msgs.appendChild(el);
+    scrollAI();
+}
+
+function addAIMessage(text) {
+    const msgs = document.getElementById('aiMessages');
+    const el = document.createElement('div');
+    el.className = 'ai-msg ai';
+    // Convert basic markdown-style formatting
+    const formatted = formatAIText(text);
+    el.innerHTML = `
+        <div class="ai-msg-avatar">🤖</div>
+        <div class="ai-msg-bubble">${formatted}</div>
+    `;
+    msgs.appendChild(el);
+    scrollAI();
+}
+
+function addChips(chips) {
+    const msgs = document.getElementById('aiMessages');
+    const el = document.createElement('div');
+    el.className = 'ai-chips';
+    el.style.paddingLeft = '38px';
+    chips.forEach(chip => {
+        const btn = document.createElement('button');
+        btn.className = 'ai-chip';
+        btn.textContent = chip;
+        btn.onclick = () => {
+            document.getElementById('aiInput').value = chip;
+            el.remove();
+            aiSend();
+        };
+        el.appendChild(btn);
+    });
+    msgs.appendChild(el);
+    scrollAI();
+}
+
+function addTypingIndicator() {
+    const msgs = document.getElementById('aiMessages');
+    const el = document.createElement('div');
+    el.className = 'ai-msg ai';
+    el.id = 'aiTyping';
+    el.innerHTML = `
+        <div class="ai-msg-avatar">🤖</div>
+        <div class="ai-typing"><span></span><span></span><span></span></div>
+    `;
+    msgs.appendChild(el);
+    scrollAI();
+}
+
+function removeTypingIndicator() {
+    const el = document.getElementById('aiTyping');
+    if (el) el.remove();
+}
+
+function scrollAI() {
+    const msgs = document.getElementById('aiMessages');
+    setTimeout(() => msgs.scrollTop = msgs.scrollHeight, 50);
+}
+
+// ── Text formatting (basic markdown) ──
+function formatAIText(text) {
+    return escHtml(text)
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/•\s/g, '• ')
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>');
+}
+
+function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Input helpers ──
+function aiInputKeydown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        aiSend();
+    }
+}
+function aiAutoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+// ── CSRF helper ──
+function getCookie(name) {
+    let val = null;
+    document.cookie.split(';').forEach(c => {
+        const [k, v] = c.trim().split('=');
+        if (k === name) val = decodeURIComponent(v);
+    });
+    return val;
+}
+</script>
+
+</body>
+</html>

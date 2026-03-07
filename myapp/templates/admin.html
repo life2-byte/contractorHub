@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel · ContractorHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --navy: #0a1628;
+            --navy-2: #0d1f3c;
+            --blue: #1a3a6b;
+            --gold: #c9903a;
+            --gold-light: #e8a84a;
+            --gold-dim: rgba(201,144,58,0.12);
+            --gold-border: rgba(201,144,58,0.25);
+            --white: #ffffff;
+            --gray: #64748b;
+            --light: #f1f5f9;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --success-bg: rgba(16,185,129,0.1);
+            --danger: #ef4444;
+            --danger-bg: rgba(239,68,68,0.1);
+            --warning: #f59e0b;
+            --warning-bg: rgba(245,158,11,0.1);
+            --sidebar-w: 260px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f0f4fb;
+            color: var(--navy);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--navy);
+            min-height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            padding: 1.8rem 1.5rem 1.2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .sidebar-logo h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: white;
+        }
+
+        .sidebar-logo h1 span { color: var(--gold); }
+
+        .sidebar-logo p {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.35);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: 0.2rem;
+        }
+
+        .sidebar-section {
+            padding: 1.2rem 1rem 0.5rem;
+        }
+
+        .sidebar-section-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: rgba(255,255,255,0.25);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 0 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: rgba(255,255,255,0.55);
+            font-size: 0.88rem;
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+            text-decoration: none;
+        }
+
+        .nav-item i { width: 18px; font-size: 0.9rem; }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.85);
+        }
+
+        .nav-item.active {
+            background: var(--gold-dim);
+            color: var(--gold);
+            border: 1px solid var(--gold-border);
+        }
+
+        .nav-item .badge {
+            margin-left: auto;
+            background: var(--danger);
+            color: white;
+            font-size: 0.65rem;
+            padding: 0.1rem 0.5rem;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .nav-item .badge.gold { background: var(--gold); }
+        .nav-item .badge.green { background: var(--success); }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 1.2rem 1rem;
+            border-top: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.7rem 0.8rem;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            cursor: pointer;
+        }
+
+        .admin-avatar {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--navy);
+            flex-shrink: 0;
+        }
+
+        .admin-info h4 {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .admin-info p {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.35);
+        }
+
+        /* ── MAIN ── */
+        .main {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* TOP BAR */
+        .topbar {
+            background: white;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-left h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .topbar-left p {
+            font-size: 0.78rem;
+            color: var(--gray);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .topbar-search {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--light);
+            border-radius: 30px;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .topbar-search i { color: var(--gray); font-size: 0.85rem; }
+        .topbar-search input { border: none; background: none; outline: none; font-size: 0.85rem; width: 180px; }
+
+        .topbar-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            cursor: pointer;
+            position: relative;
+            transition: 0.2s;
+        }
+
+        .topbar-icon:hover { background: var(--gold-dim); color: var(--gold); }
+
+        .topbar-dot {
+            position: absolute;
+            top: 8px; right: 9px;
+            width: 7px; height: 7px;
+            background: var(--danger);
+            border-radius: 50%;
+            border: 1.5px solid white;
+        }
+
+        /* PAGE CONTENT */
+        .page { display: none; padding: 2rem; }
+        .page.active { display: block; }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            transition: 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 3px;
+            background: var(--gold);
+            transform: scaleX(0);
+            transition: 0.3s;
+        }
+
+        .stat-card:hover::after { transform: scaleX(1); }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 45px; height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .stat-icon.gold { background: var(--gold-dim); color: var(--gold); }
+        .stat-icon.green { background: var(--success-bg); color: var(--success); }
+        .stat-icon.red { background: var(--danger-bg); color: var(--danger); }
+        .stat-icon.blue { background: rgba(26,58,107,0.1); color: var(--blue); }
+
+        .stat-change {
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .stat-change.up { color: var(--success); }
+        .stat-change.down { color: var(--danger); }
+
+        .stat-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-label {
+            font-size: 0.82rem;
+            color: var(--gray);
+        }
+
+        /* GRID 2 COL */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .grid-3-1 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* CARD */
+        .card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .card-header p { font-size: 0.75rem; color: var(--gray); }
+
+        .card-action {
+            font-size: 0.78rem;
+            color: var(--gold);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* TABLE */
+        .table-wrap { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            padding: 0.8rem 1.5rem;
+            text-align: left;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--gray);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: var(--light);
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background: #fafbff; }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .user-cell .av {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--navy);
+            flex-shrink: 0;
+        }
+
+        .user-cell .av.blue { background: linear-gradient(135deg, var(--navy), var(--blue)); color: white; }
+        .user-cell strong { display: block; font-size: 0.875rem; }
+        .user-cell span { font-size: 0.75rem; color: var(--gray); }
+
+        /* BADGES */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.25rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .badge.success { background: var(--success-bg); color: var(--success); }
+        .badge.danger { background: var(--danger-bg); color: var(--danger); }
+        .badge.warning { background: var(--warning-bg); color: var(--warning); }
+        .badge.gold { background: var(--gold-dim); color: var(--gold); }
+        .badge.gray { background: var(--light); color: var(--gray); }
+
+        /* ACTION BTNS */
+        .action-btns { display: flex; gap: 0.4rem; }
+
+        .btn-icon {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+
+        .btn-icon.view { background: rgba(26,58,107,0.08); color: var(--blue); }
+        .btn-icon.edit { background: var(--gold-dim); color: var(--gold); }
+        .btn-icon.del { background: var(--danger-bg); color: var(--danger); }
+        .btn-icon:hover { opacity: 0.75; transform: scale(1.1); }
+
+        /* MINI STATS */
+        .mini-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .mini-stat {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mini-stat:last-child { border-bottom: none; }
+
+        .mini-stat-left {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .mini-stat-icon {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .mini-stat-label { font-size: 0.85rem; font-weight: 600; }
+        .mini-stat-sub { font-size: 0.72rem; color: var(--gray); }
+
+        .mini-stat-val {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        /* CHART PLACEHOLDER */
+        .chart-area {
+            padding: 1.5rem;
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
+
+        .bar-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .bar {
+            width: 100%;
+            border-radius: 6px 6px 0 0;
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .bar:hover { opacity: 0.8; }
+
+        .bar.gold { background: var(--gold); }
+        .bar.navy { background: var(--navy); opacity: 0.15; }
+
+        .bar-label {
+            font-size: 0.65rem;
+            color: var(--gray);
+            white-space: nowrap;
+        }
+
+        /* ACTIVITY FEED */
+        .activity-feed { padding: 0.5rem 0; }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.9rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            transition: 0.2s;
+        }
+
+        .activity-item:last-child { border-bottom: none; }
+        .activity-item:hover { background: #fafbff; }
+
+        .activity-dot {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        .activity-text { flex: 1; }
+        .activity-text p { font-size: 0.85rem; line-height: 1.5; }
+        .activity-text p strong { color: var(--navy); }
+        .activity-time { font-size: 0.72rem; color: var(--gray); margin-top: 0.2rem; }
+
+        /* PENDING CARD */
+        .pending-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .pending-item:last-child { border-bottom: none; }
+
+        .pending-info { flex: 1; }
+        .pending-info strong { display: block; font-size: 0.85rem; }
+        .pending-info span { font-size: 0.75rem; color: var(--gray); }
+
+        .pending-actions { display: flex; gap: 0.5rem; }
+
+        .btn-sm {
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-sm.approve { background: var(--success-bg); color: var(--success); }
+        .btn-sm.reject { background: var(--danger-bg); color: var(--danger); }
+        .btn-sm.approve:hover { background: var(--success); color: white; }
+        .btn-sm.reject:hover { background: var(--danger); color: white; }
+
+        /* PAGE HEADER */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .page-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+        }
+
+        .btn-gold {
+            background: var(--gold);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: 0.2s;
+        }
+
+        .btn-gold:hover { background: var(--gold-light); }
+
+        /* FILTERS ROW */
+        .filters-row {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            color: var(--navy);
+            background: white;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .filter-search {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .filter-search i { color: var(--gray); font-size: 0.85rem; }
+        .filter-search input { border: none; outline: none; font-size: 0.85rem; width: 100%; }
+
+        /* DONUT PLACEHOLDER */
+        .donut-wrap {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .donut {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--gold) 0% 45%,
+                var(--navy) 45% 72%,
+                var(--success) 72% 88%,
+                var(--danger) 88% 100%
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .donut::after {
+            content: '';
+            position: absolute;
+            width: 70px; height: 70px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .donut-legend { flex: 1; }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.6rem;
+            font-size: 0.82rem;
+        }
+
+        .legend-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .legend-item span { color: var(--gray); margin-left: auto; font-weight: 600; }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 2rem; right: 2rem;
+            background: var(--navy);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast i { color: var(--gold); }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h1>Contractor<span>Hub</span></h1>
+            <p>Admin Panel</p>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Main</div>
+            <a class="nav-item active" onclick="showPage('dashboard', this)">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a class="nav-item" onclick="showPage('analytics', this)">
+                <i class="fas fa-chart-line"></i> Analytics
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Users</div>
+            <a class="nav-item" onclick="showPage('users', this)">
+                <i class="fas fa-users"></i> All Users
+                <span class="badge gold">12.4K</span>
+            </a>
+            <a class="nav-item" onclick="showPage('workers', this)">
+                <i class="fas fa-hard-hat"></i> Workers
+            </a>
+            <a class="nav-item" onclick="showPage('clients', this)">
+                <i class="fas fa-briefcase"></i> Clients
+            </a>
+            <a class="nav-item" onclick="showPage('verifications', this)">
+                <i class="fas fa-id-card"></i> Verifications
+                <span class="badge">14</span>
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Platform</div>
+            <a class="nav-item" onclick="showPage('jobs', this)">
+                <i class="fas fa-clipboard-list"></i> Jobs
+            </a>
+            <a class="nav-item" onclick="showPage('payments', this)">
+                <i class="fas fa-wallet"></i> Payments
+            </a>
+            <a class="nav-item" onclick="showPage('disputes', this)">
+                <i class="fas fa-balance-scale"></i> Disputes
+                <span class="badge">7</span>
+            </a>
+            <a class="nav-item" onclick="showPage('reports', this)">
+                <i class="fas fa-flag"></i> Reports
+                <span class="badge">3</span>
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">System</div>
+            <a class="nav-item" onclick="showPage('settings', this)">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+            <a class="nav-item" onclick="showPage('logs', this)">
+                <i class="fas fa-terminal"></i> Activity Logs
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="admin-avatar">SA</div>
+                <div class="admin-info">
+                    <h4>Super Admin</h4>
+                    <p>admin@contractorhub.pk</p>
+                </div>
+                <i class="fas fa-chevron-right" style="color:rgba(255,255,255,0.2); font-size:0.7rem; margin-left:auto;"></i>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h2 id="pageTitle">Dashboard Overview</h2>
+                <p id="pageSubtitle">Welcome back, Super Admin · <span id="currentDate"></span></p>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search anything...">
+                </div>
+                <div class="topbar-icon">
+                    <i class="fas fa-bell"></i>
+                    <span class="topbar-dot"></span>
+                </div>
+                <div class="topbar-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── DASHBOARD PAGE ── -->
+        <div class="page active" id="page-dashboard">
+
+            <!-- STATS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon gold"><i class="fas fa-users"></i></div>
+                        <span class="stat-change up"><i class="fas fa-arrow-up"></i> 12%</span>
+                    </div>
+                    <div class="stat-num">12,480</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                        <span class="stat-change up"><i class="fas fa-arrow-up"></i> 8%</span>
+                    </div>
+                    <div class="stat-num">3,241</div>
+                    <div class="stat-label">Jobs Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon gold"><i class="fas fa-wallet"></i></div>
+                        <span class="stat-change up"><i class="fas fa-arrow-up"></i> 23%</span>
+                    </div>
+                    <div class="stat-num">Rs 4.2M</div>
+                    <div class="stat-label">Revenue (This Month)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon red"><i class="fas fa-exclamation-triangle"></i></div>
+                        <span class="stat-change down"><i class="fas fa-arrow-down"></i> 3%</span>
+                    </div>
+                    <div class="stat-num">7</div>
+                    <div class="stat-label">Open Disputes</div>
+                </div>
+            </div>
+
+            <div class="grid-3-1">
+                <!-- REVENUE CHART -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Revenue Overview</h3>
+                            <p>Monthly revenue — 2026</p>
+                        </div>
+                        <select class="filter-select" style="border:none; font-size:0.8rem; color:var(--gray);">
+                            <option>Last 6 months</option>
+                            <option>Last 12 months</option>
+                        </select>
+                    </div>
+                    <div class="chart-area">
+                        <div class="bar-group">
+                            <div class="bar gold" style="height:60px;" title="Jan: Rs 2.1M"></div>
+                            <div class="bar-label">Jan</div>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar gold" style="height:90px;" title="Feb: Rs 2.8M"></div>
+                            <div class="bar-label">Feb</div>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar gold" style="height:75px;" title="Mar: Rs 2.5M"></div>
+                            <div class="bar-label">Mar</div>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar gold" style="height:110px;" title="Apr: Rs 3.2M"></div>
+                            <div class="bar-label">Apr</div>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar gold" style="height:130px;" title="May: Rs 3.8M"></div>
+                            <div class="bar-label">May</div>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar gold" style="height:160px;" title="Jun: Rs 4.2M"></div>
+                            <div class="bar-label">Jun</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USER BREAKDOWN -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3>User Types</h3>
+                            <p>Platform breakdown</p>
+                        </div>
+                    </div>
+                    <div class="donut-wrap">
+                        <div class="donut"></div>
+                        <div class="donut-legend">
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background:var(--gold)"></div>
+                                Workers <span>45%</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background:var(--navy)"></div>
+                                Clients <span>27%</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background:var(--success)"></div>
+                                Both <span>16%</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background:var(--danger)"></div>
+                                Inactive <span>12%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <!-- RECENT USERS -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Recent Signups</h3>
+                            <p>Latest registered users</p>
+                        </div>
+                        <span class="card-action" onclick="showPage('users', document.querySelector('[onclick*=users]'))">View All</span>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><div class="user-cell"><div class="av">AK</div><div><strong>Ahmad Khan</strong><span>ahmad@email.com</span></div></div></td>
+                                    <td><span class="badge gold">Worker</span></td>
+                                    <td><span class="badge success"><i class="fas fa-circle" style="font-size:0.5rem"></i> Active</span></td>
+                                    <td><div class="action-btns"><button class="btn-icon view" onclick="showToast('Viewing Ahmad Khan')"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del"><i class="fas fa-trash"></i></button></div></td>
+                                </tr>
+                                <tr>
+                                    <td><div class="user-cell"><div class="av blue">SR</div><div><strong>Sara Raza</strong><span>sara@email.com</span></div></div></td>
+                                    <td><span class="badge gray">Client</span></td>
+                                    <td><span class="badge success"><i class="fas fa-circle" style="font-size:0.5rem"></i> Active</span></td>
+                                    <td><div class="action-btns"><button class="btn-icon view" onclick="showToast('Viewing Sara Raza')"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del"><i class="fas fa-trash"></i></button></div></td>
+                                </tr>
+                                <tr>
+                                    <td><div class="user-cell"><div class="av">UM</div><div><strong>Usman Malik</strong><span>usman@email.com</span></div></div></td>
+                                    <td><span class="badge gold">Worker</span></td>
+                                    <td><span class="badge warning"><i class="fas fa-circle" style="font-size:0.5rem"></i> Pending</span></td>
+                                    <td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del"><i class="fas fa-trash"></i></button></div></td>
+                                </tr>
+                                <tr>
+                                    <td><div class="user-cell"><div class="av blue">ZA</div><div><strong>Zara Ahmed</strong><span>zara@email.com</span></div></div></td>
+                                    <td><span class="badge gray">Client</span></td>
+                                    <td><span class="badge danger"><i class="fas fa-circle" style="font-size:0.5rem"></i> Suspended</span></td>
+                                    <td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del"><i class="fas fa-trash"></i></button></div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ACTIVITY + PENDING -->
+                <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                    <!-- PENDING VERIFICATIONS -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div><h3>Pending Verifications</h3><p>Workers awaiting CNIC check</p></div>
+                            <span class="badge danger">14 pending</span>
+                        </div>
+                        <div>
+                            <div class="pending-item">
+                                <div class="user-cell" style="flex:1">
+                                    <div class="av">MR</div>
+                                    <div><strong>Muhammad Rafiq</strong><span>Painter · Lahore</span></div>
+                                </div>
+                                <div class="pending-actions">
+                                    <button class="btn-sm approve" onclick="showToast('✓ Muhammad Rafiq approved!')">Approve</button>
+                                    <button class="btn-sm reject" onclick="showToast('✗ Request rejected')">Reject</button>
+                                </div>
+                            </div>
+                            <div class="pending-item">
+                                <div class="user-cell" style="flex:1">
+                                    <div class="av">AH</div>
+                                    <div><strong>Ali Hassan</strong><span>Electrician · Karachi</span></div>
+                                </div>
+                                <div class="pending-actions">
+                                    <button class="btn-sm approve" onclick="showToast('✓ Ali Hassan approved!')">Approve</button>
+                                    <button class="btn-sm reject" onclick="showToast('✗ Request rejected')">Reject</button>
+                                </div>
+                            </div>
+                            <div class="pending-item">
+                                <div class="user-cell" style="flex:1">
+                                    <div class="av">SK</div>
+                                    <div><strong>Sajid Khan</strong><span>Plumber · Islamabad</span></div>
+                                </div>
+                                <div class="pending-actions">
+                                    <button class="btn-sm approve" onclick="showToast('✓ Sajid Khan approved!')">Approve</button>
+                                    <button class="btn-sm reject" onclick="showToast('✗ Request rejected')">Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PLATFORM STATS -->
+                    <div class="card">
+                        <div class="card-header"><h3>Platform Health</h3></div>
+                        <div class="mini-stats">
+                            <div class="mini-stat">
+                                <div class="mini-stat-left">
+                                    <div class="mini-stat-icon gold-dim" style="background:var(--gold-dim); color:var(--gold)"><i class="fas fa-star"></i></div>
+                                    <div><div class="mini-stat-label">Avg Rating</div><div class="mini-stat-sub">Across all workers</div></div>
+                                </div>
+                                <div class="mini-stat-val" style="color:var(--gold)">4.7 ★</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-left">
+                                    <div class="mini-stat-icon" style="background:var(--success-bg); color:var(--success)"><i class="fas fa-check"></i></div>
+                                    <div><div class="mini-stat-label">Completion Rate</div><div class="mini-stat-sub">Jobs finished on time</div></div>
+                                </div>
+                                <div class="mini-stat-val" style="color:var(--success)">94%</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-left">
+                                    <div class="mini-stat-icon" style="background:var(--danger-bg); color:var(--danger)"><i class="fas fa-times"></i></div>
+                                    <div><div class="mini-stat-label">Dispute Rate</div><div class="mini-stat-sub">Out of all jobs</div></div>
+                                </div>
+                                <div class="mini-stat-val" style="color:var(--danger)">2.1%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── USERS PAGE ── -->
+        <div class="page" id="page-users">
+            <div class="page-header">
+                <h2>All Users</h2>
+                <button class="btn-gold"><i class="fas fa-plus"></i> Add User</button>
+            </div>
+            <div class="filters-row">
+                <div class="filter-search"><i class="fas fa-search"></i><input type="text" placeholder="Search users..."></div>
+                <select class="filter-select"><option>All Types</option><option>Workers</option><option>Clients</option></select>
+                <select class="filter-select"><option>All Status</option><option>Active</option><option>Pending</option><option>Suspended</option></select>
+                <select class="filter-select"><option>All Cities</option><option>Lahore</option><option>Karachi</option><option>Islamabad</option></select>
+            </div>
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>User</th><th>Type</th><th>City</th><th>Joined</th><th>Jobs</th><th>Rating</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><div class="user-cell"><div class="av">AK</div><div><strong>Ahmad Khan</strong><span>+92-300-1234567</span></div></div></td><td><span class="badge gold">Worker</span></td><td>Lahore</td><td>Jan 15, 2026</td><td>23</td><td>⭐ 4.9</td><td><span class="badge success">Active</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del" onclick="showToast('User suspended!')"><i class="fas fa-ban"></i></button></div></td></tr>
+                            <tr><td><div class="user-cell"><div class="av blue">SR</div><div><strong>Sara Raza</strong><span>+92-321-7654321</span></div></div></td><td><span class="badge gray">Client</span></td><td>Karachi</td><td>Jan 18, 2026</td><td>8</td><td>—</td><td><span class="badge success">Active</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del" onclick="showToast('User suspended!')"><i class="fas fa-ban"></i></button></div></td></tr>
+                            <tr><td><div class="user-cell"><div class="av">UM</div><div><strong>Usman Malik</strong><span>+92-333-9876543</span></div></div></td><td><span class="badge gold">Worker</span></td><td>Islamabad</td><td>Feb 1, 2026</td><td>0</td><td>—</td><td><span class="badge warning">Pending</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del" onclick="showToast('User suspended!')"><i class="fas fa-ban"></i></button></div></td></tr>
+                            <tr><td><div class="user-cell"><div class="av blue">ZA</div><div><strong>Zara Ahmed</strong><span>+92-345-5551234</span></div></div></td><td><span class="badge gray">Client</span></td><td>Lahore</td><td>Feb 10, 2026</td><td>2</td><td>—</td><td><span class="badge danger">Suspended</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del"><i class="fas fa-trash"></i></button></div></td></tr>
+                            <tr><td><div class="user-cell"><div class="av">MR</div><div><strong>Muhammad Rafiq</strong><span>+92-300-1111222</span></div></div></td><td><span class="badge gold">Worker</span></td><td>Faisalabad</td><td>Feb 14, 2026</td><td>15</td><td>⭐ 4.7</td><td><span class="badge success">Active</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del" onclick="showToast('User suspended!')"><i class="fas fa-ban"></i></button></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── JOBS PAGE ── -->
+        <div class="page" id="page-jobs">
+            <div class="page-header">
+                <h2>All Jobs</h2>
+                <button class="btn-gold"><i class="fas fa-download"></i> Export</button>
+            </div>
+            <div class="filters-row">
+                <div class="filter-search"><i class="fas fa-search"></i><input type="text" placeholder="Search jobs..."></div>
+                <select class="filter-select"><option>All Status</option><option>Active</option><option>Completed</option><option>Cancelled</option><option>Disputed</option></select>
+                <select class="filter-select"><option>All Categories</option><option>Painting</option><option>Electrical</option><option>Plumbing</option></select>
+            </div>
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>Job</th><th>Client</th><th>Worker</th><th>Amount</th><th>Posted</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>House Painting - 3 Rooms</strong><br><small style="color:var(--gray)">Painting · Lahore</small></td><td>Sara Raza</td><td>Ahmad Khan</td><td style="font-family:'Space Mono',monospace; font-weight:700;">Rs 12,000</td><td>Feb 20, 2026</td><td><span class="badge success">Completed</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button></div></td></tr>
+                            <tr><td><strong>Solar Panel Installation</strong><br><small style="color:var(--gray)">Electrical · Karachi</small></td><td>Zara Ahmed</td><td>Ali Hassan</td><td style="font-family:'Space Mono',monospace; font-weight:700;">Rs 45,000</td><td>Feb 22, 2026</td><td><span class="badge gold">Active</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button></div></td></tr>
+                            <tr><td><strong>Bathroom Pipe Repair</strong><br><small style="color:var(--gray)">Plumbing · Islamabad</small></td><td>Usman Malik</td><td>Sajid Khan</td><td style="font-family:'Space Mono',monospace; font-weight:700;">Rs 5,500</td><td>Feb 24, 2026</td><td><span class="badge danger">Disputed</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button></div></td></tr>
+                            <tr><td><strong>Wood Door Installation</strong><br><small style="color:var(--gray)">Carpentry · Lahore</small></td><td>Ahmad Khan</td><td>Naeem Abbas</td><td style="font-family:'Space Mono',monospace; font-weight:700;">Rs 18,000</td><td>Feb 26, 2026</td><td><span class="badge warning">Pending</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── PAYMENTS PAGE ── -->
+        <div class="page" id="page-payments">
+            <div class="page-header">
+                <h2>Payments</h2>
+                <button class="btn-gold"><i class="fas fa-download"></i> Export CSV</button>
+            </div>
+            <div class="stats-grid" style="grid-template-columns: repeat(3,1fr);">
+                <div class="stat-card"><div class="stat-top"><div class="stat-icon gold"><i class="fas fa-money-bill"></i></div><span class="stat-change up">↑ 23%</span></div><div class="stat-num">Rs 4.2M</div><div class="stat-label">Total Revenue</div></div>
+                <div class="stat-card"><div class="stat-top"><div class="stat-icon green"><i class="fas fa-check"></i></div></div><div class="stat-num">Rs 3.8M</div><div class="stat-label">Paid Out to Workers</div></div>
+                <div class="stat-card"><div class="stat-top"><div class="stat-icon blue"><i class="fas fa-clock"></i></div></div><div class="stat-num">Rs 380K</div><div class="stat-label">Pending Payout</div></div>
+            </div>
+            <div class="card">
+                <div class="card-header"><h3>Recent Transactions</h3></div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Transaction ID</th><th>From</th><th>To</th><th>Amount</th><th>Fee</th><th>Method</th><th>Date</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr><td><code style="font-size:0.75rem; color:var(--gold)">#TXN-00421</code></td><td>Sara Raza</td><td>Ahmad Khan</td><td style="font-weight:700;">Rs 12,000</td><td>Rs 1,800</td><td>JazzCash</td><td>Feb 20, 2026</td><td><span class="badge success">Completed</span></td></tr>
+                            <tr><td><code style="font-size:0.75rem; color:var(--gold)">#TXN-00420</code></td><td>Zara Ahmed</td><td>Ali Hassan</td><td style="font-weight:700;">Rs 45,000</td><td>Rs 6,750</td><td>Bank Transfer</td><td>Feb 22, 2026</td><td><span class="badge warning">Pending</span></td></tr>
+                            <tr><td><code style="font-size:0.75rem; color:var(--gold)">#TXN-00419</code></td><td>Usman Malik</td><td>Sajid Khan</td><td style="font-weight:700;">Rs 5,500</td><td>Rs 825</td><td>EasyPaisa</td><td>Feb 24, 2026</td><td><span class="badge danger">On Hold</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── DISPUTES PAGE ── -->
+        <div class="page" id="page-disputes">
+            <div class="page-header">
+                <h2>Disputes</h2>
+                <span class="badge danger" style="font-size:0.85rem; padding:0.4rem 1rem;">7 Open</span>
+            </div>
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Dispute ID</th><th>Job</th><th>Client</th><th>Worker</th><th>Amount</th><th>Raised</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr><td><code style="color:var(--danger); font-size:0.75rem">#DSP-007</code></td><td>Bathroom Repair</td><td>Usman Malik</td><td>Sajid Khan</td><td style="font-weight:700;">Rs 5,500</td><td>Feb 25</td><td><span class="badge danger">Open</span></td><td><div class="action-btns"><button class="btn-icon view" onclick="showToast('Dispute details opened')"><i class="fas fa-eye"></i></button><button class="btn-sm approve" style="font-size:0.72rem; padding:0.3rem 0.6rem;" onclick="showToast('Resolved in client favor')">Resolve</button></div></td></tr>
+                            <tr><td><code style="color:var(--warning); font-size:0.75rem">#DSP-006</code></td><td>Wall Plastering</td><td>Bilal Awan</td><td>Tariq Shah</td><td style="font-weight:700;">Rs 8,200</td><td>Feb 23</td><td><span class="badge warning">Reviewing</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button></div></td></tr>
+                            <tr><td><code style="color:var(--success); font-size:0.75rem">#DSP-005</code></td><td>AC Installation</td><td>Hira Baig</td><td>Kamran Ali</td><td style="font-weight:700;">Rs 15,000</td><td>Feb 20</td><td><span class="badge success">Resolved</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── VERIFICATIONS PAGE ── -->
+        <div class="page" id="page-verifications">
+            <div class="page-header">
+                <h2>Verifications</h2>
+                <span class="badge danger" style="font-size:0.85rem; padding:0.4rem 1rem;">14 Pending</span>
+            </div>
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Worker</th><th>Skill</th><th>City</th><th>Submitted</th><th>Documents</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr><td><div class="user-cell"><div class="av">MR</div><div><strong>Muhammad Rafiq</strong><span>+92-300-1111</span></div></div></td><td>Painter</td><td>Lahore</td><td>Feb 26, 2026</td><td><span class="badge success"><i class="fas fa-check"></i> CNIC + Selfie</span></td><td><div class="action-btns"><button class="btn-sm approve" onclick="showToast('✓ Verified successfully!')">Approve</button><button class="btn-sm reject" onclick="showToast('✗ Rejected')">Reject</button></div></td></tr>
+                            <tr><td><div class="user-cell"><div class="av">AH</div><div><strong>Ali Hassan</strong><span>+92-333-2222</span></div></div></td><td>Electrician</td><td>Karachi</td><td>Feb 27, 2026</td><td><span class="badge warning"><i class="fas fa-clock"></i> CNIC Only</span></td><td><div class="action-btns"><button class="btn-sm approve" onclick="showToast('✓ Verified successfully!')">Approve</button><button class="btn-sm reject" onclick="showToast('✗ Rejected')">Reject</button></div></td></tr>
+                            <tr><td><div class="user-cell"><div class="av">SK</div><div><strong>Sajid Khan</strong><span>+92-321-3333</span></div></div></td><td>Plumber</td><td>Islamabad</td><td>Feb 27, 2026</td><td><span class="badge success"><i class="fas fa-check"></i> CNIC + Selfie</span></td><td><div class="action-btns"><button class="btn-sm approve" onclick="showToast('✓ Verified successfully!')">Approve</button><button class="btn-sm reject" onclick="showToast('✗ Rejected')">Reject</button></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── REPORTS PAGE ── -->
+        <div class="page" id="page-reports">
+            <div class="page-header"><h2>User Reports</h2></div>
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Reported User</th><th>Reported By</th><th>Reason</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr><td><div class="user-cell"><div class="av blue">ZA</div><div><strong>Zara Ahmed</strong><span>Client</span></div></div></td><td>Ahmad Khan</td><td>Fraudulent payment</td><td>Feb 25, 2026</td><td><span class="badge danger">Urgent</span></td><td><div class="action-btns"><button class="btn-icon view" onclick="showToast('Report opened')"><i class="fas fa-eye"></i></button><button class="btn-sm reject" onclick="showToast('Account suspended!')">Suspend</button></div></td></tr>
+                            <tr><td><div class="user-cell"><div class="av">XX</div><div><strong>Unknown Worker</strong><span>Worker</span></div></div></td><td>Sara Raza</td><td>No-show for job</td><td>Feb 26, 2026</td><td><span class="badge warning">Reviewing</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── SETTINGS PAGE ── -->
+        <div class="page" id="page-settings">
+            <div class="page-header"><h2>Platform Settings</h2></div>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><h3>Fee Configuration</h3></div>
+                    <div style="padding:1.5rem; display:flex; flex-direction:column; gap:1.2rem;">
+                        <div>
+                            <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:0.4rem;">Worker Service Fee (%)</label>
+                            <input type="number" value="10" style="width:100%; padding:0.7rem 1rem; border:1px solid var(--border); border-radius:10px; font-size:0.9rem; outline:none;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:0.4rem;">Client Processing Fee (%)</label>
+                            <input type="number" value="5" style="width:100%; padding:0.7rem 1rem; border:1px solid var(--border); border-radius:10px; font-size:0.9rem; outline:none;">
+                        </div>
+                        <div>
+                            <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:0.4rem;">Payout Delay (days)</label>
+                            <input type="number" value="3" style="width:100%; padding:0.7rem 1rem; border:1px solid var(--border); border-radius:10px; font-size:0.9rem; outline:none;">
+                        </div>
+                        <button class="btn-gold" onclick="showToast('Settings saved!')" style="align-self:flex-start;"><i class="fas fa-save"></i> Save Changes</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header"><h3>Platform Toggles</h3></div>
+                    <div style="padding:1.5rem; display:flex; flex-direction:column; gap:1rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div><div style="font-size:0.88rem; font-weight:600;">New Registrations</div><div style="font-size:0.75rem; color:var(--gray);">Allow new user signups</div></div>
+                            <label style="position:relative; width:44px; height:24px; cursor:pointer;"><input type="checkbox" checked style="opacity:0; width:0; height:0;"><span style="position:absolute; inset:0; background:var(--gold); border-radius:24px;"><span style="position:absolute; top:3px; left:3px; width:18px; height:18px; background:white; border-radius:50%; transition:0.2s; transform:translateX(20px);"></span></span></label>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div><div style="font-size:0.88rem; font-weight:600;">Job Posting</div><div style="font-size:0.75rem; color:var(--gray);">Allow clients to post jobs</div></div>
+                            <label style="position:relative; width:44px; height:24px; cursor:pointer;"><input type="checkbox" checked style="opacity:0; width:0; height:0;"><span style="position:absolute; inset:0; background:var(--gold); border-radius:24px;"><span style="position:absolute; top:3px; left:3px; width:18px; height:18px; background:white; border-radius:50%; transition:0.2s; transform:translateX(20px);"></span></span></label>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div><div style="font-size:0.88rem; font-weight:600;">Maintenance Mode</div><div style="font-size:0.75rem; color:var(--gray);">Take platform offline</div></div>
+                            <label style="position:relative; width:44px; height:24px; cursor:pointer;"><input type="checkbox" style="opacity:0; width:0; height:0;"><span style="position:absolute; inset:0; background:var(--border); border-radius:24px;"><span style="position:absolute; top:3px; left:3px; width:18px; height:18px; background:white; border-radius:50%; transition:0.2s;"></span></span></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── OTHER PAGES (analytics, workers, clients, logs) ── -->
+        <div class="page" id="page-analytics">
+            <div class="page-header"><h2>Analytics</h2></div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-top"><div class="stat-icon gold"><i class="fas fa-eye"></i></div><span class="stat-change up">↑ 18%</span></div><div class="stat-num">142K</div><div class="stat-label">Page Views</div></div>
+                <div class="stat-card"><div class="stat-top"><div class="stat-icon green"><i class="fas fa-user-plus"></i></div><span class="stat-change up">↑ 12%</span></div><div class="stat-num">1,240</div><div class="stat-label">New Signups</div></div>
+                <div class="stat-card"><div class="stat-top"><div class="stat-icon blue"><i class="fas fa-mouse-pointer"></i></div></div><div class="stat-num">68%</div><div class="stat-label">Conversion Rate</div></div>
+                <div class="stat-card"><div class="stat-top"><div class="stat-icon gold"><i class="fas fa-clock"></i></div></div><div class="stat-num">4m 32s</div><div class="stat-label">Avg Session</div></div>
+            </div>
+            <div class="card"><div class="card-header"><h3>Traffic Overview</h3></div><div class="chart-area">
+                <div class="bar-group"><div class="bar gold" style="height:80px"></div><div class="bar-label">Mon</div></div>
+                <div class="bar-group"><div class="bar gold" style="height:120px"></div><div class="bar-label">Tue</div></div>
+                <div class="bar-group"><div class="bar gold" style="height:100px"></div><div class="bar-label">Wed</div></div>
+                <div class="bar-group"><div class="bar gold" style="height:150px"></div><div class="bar-label">Thu</div></div>
+                <div class="bar-group"><div class="bar gold" style="height:170px"></div><div class="bar-label">Fri</div></div>
+                <div class="bar-group"><div class="bar gold" style="height:130px"></div><div class="bar-label">Sat</div></div>
+                <div class="bar-group"><div class="bar gold" style="height:90px"></div><div class="bar-label">Sun</div></div>
+            </div></div>
+        </div>
+
+        <div class="page" id="page-workers">
+            <div class="page-header"><h2>Workers</h2><button class="btn-gold"><i class="fas fa-download"></i> Export</button></div>
+            <div class="card"><div class="card-header"><h3>All Verified Workers</h3></div>
+            <div class="table-wrap"><table><thead><tr><th>Worker</th><th>Skills</th><th>City</th><th>Rate/hr</th><th>Rating</th><th>Jobs Done</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                <tr><td><div class="user-cell"><div class="av">MR</div><div><strong>Muhammad Rafiq</strong><span>12 yrs exp</span></div></div></td><td>Painting, Texture</td><td>Lahore</td><td>Rs 800</td><td>⭐ 4.9</td><td>42</td><td><span class="badge success">Active</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon del" onclick="showToast('Worker suspended!')"><i class="fas fa-ban"></i></button></div></td></tr>
+                <tr><td><div class="user-cell"><div class="av">AH</div><div><strong>Ali Hassan</strong><span>8 yrs exp</span></div></div></td><td>Wiring, Solar</td><td>Karachi</td><td>Rs 600</td><td>⭐ 4.8</td><td>28</td><td><span class="badge success">Active</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon del" onclick="showToast('Worker suspended!')"><i class="fas fa-ban"></i></button></div></td></tr>
+            </tbody></table></div></div>
+        </div>
+
+        <div class="page" id="page-clients">
+            <div class="page-header"><h2>Clients</h2><button class="btn-gold"><i class="fas fa-download"></i> Export</button></div>
+            <div class="card"><div class="card-header"><h3>All Clients</h3></div>
+            <div class="table-wrap"><table><thead><tr><th>Client</th><th>City</th><th>Total Spent</th><th>Jobs Posted</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                <tr><td><div class="user-cell"><div class="av blue">SR</div><div><strong>Sara Raza</strong><span>sara@email.com</span></div></div></td><td>Karachi</td><td style="font-weight:700;">Rs 58,000</td><td>8</td><td>Jan 18, 2026</td><td><span class="badge success">Active</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon del" onclick="showToast('Client suspended!')"><i class="fas fa-ban"></i></button></div></td></tr>
+                <tr><td><div class="user-cell"><div class="av blue">ZA</div><div><strong>Zara Ahmed</strong><span>zara@email.com</span></div></div></td><td>Lahore</td><td style="font-weight:700;">Rs 12,500</td><td>2</td><td>Feb 10, 2026</td><td><span class="badge danger">Suspended</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon del"><i class="fas fa-trash"></i></button></div></td></tr>
+            </tbody></table></div></div>
+        </div>
+
+        <div class="page" id="page-logs">
+            <div class="page-header"><h2>Activity Logs</h2></div>
+            <div class="card">
+                <div class="activity-feed">
+                    <div class="activity-item"><div class="activity-dot" style="background:var(--success-bg); color:var(--success)"><i class="fas fa-user-plus"></i></div><div class="activity-text"><p><strong>New user registered</strong> — Ahmad Khan (Worker, Lahore)</p><div class="activity-time">2 minutes ago</div></div></div>
+                    <div class="activity-item"><div class="activity-dot" style="background:var(--gold-dim); color:var(--gold)"><i class="fas fa-id-card"></i></div><div class="activity-text"><p><strong>Verification approved</strong> — Muhammad Rafiq verified by Admin</p><div class="activity-time">15 minutes ago</div></div></div>
+                    <div class="activity-item"><div class="activity-dot" style="background:var(--danger-bg); color:var(--danger)"><i class="fas fa-flag"></i></div><div class="activity-text"><p><strong>Dispute raised</strong> — Job #1042 disputed by Usman Malik</p><div class="activity-time">1 hour ago</div></div></div>
+                    <div class="activity-item"><div class="activity-dot" style="background:var(--success-bg); color:var(--success)"><i class="fas fa-wallet"></i></div><div class="activity-text"><p><strong>Payment processed</strong> — Rs 12,000 released to Ahmad Khan</p><div class="activity-time">2 hours ago</div></div></div>
+                    <div class="activity-item"><div class="activity-dot" style="background:var(--danger-bg); color:var(--danger)"><i class="fas fa-ban"></i></div><div class="activity-text"><p><strong>Account suspended</strong> — Zara Ahmed suspended for ToS violation</p><div class="activity-time">3 hours ago</div></div></div>
+                    <div class="activity-item"><div class="activity-dot" style="background:var(--gold-dim); color:var(--gold)"><i class="fas fa-briefcase"></i></div><div class="activity-text"><p><strong>New job posted</strong> — Solar Installation (Rs 45,000) by Sara Raza</p><div class="activity-time">5 hours ago</div></div></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg">Action completed!</span>
+    </div>
+
+    <script>
+        // Set date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-PK', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+        const pageTitles = {
+            dashboard: ['Dashboard Overview', 'Platform summary at a glance'],
+            analytics: ['Analytics', 'Traffic and user engagement data'],
+            users: ['All Users', 'Manage platform users'],
+            workers: ['Workers', 'All registered workers'],
+            clients: ['Clients', 'All registered clients'],
+            verifications: ['Verifications', 'Pending CNIC verification requests'],
+            jobs: ['Jobs', 'All platform jobs'],
+            payments: ['Payments', 'Transaction history and revenue'],
+            disputes: ['Disputes', 'Open and resolved disputes'],
+            reports: ['User Reports', 'Flagged users and incidents'],
+            settings: ['Settings', 'Platform configuration'],
+            logs: ['Activity Logs', 'Recent admin and system activity'],
+        };
+
+        function showPage(pageId, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById('page-' + pageId).classList.add('active');
+            if (el) el.classList.add('active');
+
+            const titles = pageTitles[pageId] || [pageId, ''];
+            document.getElementById('pageTitle').textContent = titles[0];
+            document.getElementById('pageSubtitle').textContent = titles[1];
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>

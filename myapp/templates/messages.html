@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContractorHub · Messages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --navy:      #0a1628;
+            --navy-2:    #0d1f3c;
+            --blue:      #1a3a6b;
+            --gold:      #c9903a;
+            --gold-l:    #e8a84a;
+            --gold-dim:  rgba(201,144,58,0.12);
+            --gray:      #64748b;
+            --light:     #f1f5f9;
+            --border:    #e2e8f0;
+            --success:   #10b981;
+            --danger:    #ef4444;
+            --white:     #ffffff;
+            --sidebar-w: 340px;
+            --nav-h:     64px;
+            --chat-h:    calc(100vh - var(--nav-h) - 3rem);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f4f7fd;
+            color: var(--navy);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ══ TOP NAV ══ */
+        .top-nav {
+            background: white;
+            border-radius: 60px;
+            padding: 0 1.5rem;
+            margin: 1rem 1.5rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+            display: flex; align-items: center; gap: 1.5rem;
+            height: var(--nav-h);
+            white-space: nowrap;
+            position: relative; z-index: 10;
+        }
+        .logo { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--navy); flex-shrink:0; }
+        .logo span { color:var(--gold); }
+        .nav-div { width:1px; height:28px; background:var(--border); flex-shrink:0; }
+        .nav-menu { display:flex; align-items:center; gap:0.2rem; flex:1; overflow:hidden; }
+        .nav-item {
+            padding:0.45rem 0.9rem; border-radius:40px;
+            font-size:0.85rem; font-weight:500; color:var(--gray);
+            text-decoration:none; display:flex; align-items:center; gap:0.4rem;
+            transition:0.18s; flex-shrink:0;
+        }
+        .nav-item i { font-size:0.78rem; }
+        .nav-item:hover { background:var(--light); color:var(--navy); }
+        .nav-item.active { background:var(--gold-dim); color:var(--gold); font-weight:600; }
+        .nav-right { display:flex; align-items:center; gap:0.5rem; margin-left:auto; flex-shrink:0; }
+        .icon-btn {
+            width:38px; height:38px; border-radius:50%;
+            background:var(--light); border:none; cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            color:var(--gray); font-size:0.9rem; transition:0.18s; text-decoration:none;
+        }
+        .icon-btn:hover { background:var(--gold-dim); color:var(--gold); }
+        .avatar-pill {
+            display:flex; align-items:center; gap:0.5rem;
+            background:var(--light); padding:0.2rem 0.8rem 0.2rem 0.9rem;
+            border-radius:40px; cursor:pointer; font-size:0.85rem;
+            font-weight:500; color:var(--navy); text-decoration:none;
+        }
+        .avatar-pill:hover { background:var(--gold-dim); }
+        .av {
+            width:32px; height:32px;
+            background:linear-gradient(135deg,var(--gold),var(--gold-l));
+            border-radius:50%; display:flex; align-items:center; justify-content:center;
+            font-weight:700; font-size:0.72rem; color:var(--navy); flex-shrink:0;
+            overflow: hidden;
+        }
+        .av img { width:32px; height:32px; border-radius:50%; object-fit:cover; }
+
+        /* ══ CHAT LAYOUT ══ */
+        .chat-layout {
+            display: flex;
+            height: var(--chat-h);
+            margin: 1rem 1.5rem;
+            background: white;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+        }
+
+        /* ── LEFT SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            background: var(--white);
+        }
+        .sidebar-header {
+            padding: 1.2rem 1.3rem 0.8rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .sidebar-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem; color: var(--navy); margin-bottom: 0.75rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .unread-pill {
+            background: var(--gold); color: white;
+            font-size: 0.68rem; font-weight: 700;
+            padding: 0.15rem 0.55rem; border-radius: 20px;
+        }
+        .sidebar-search {
+            display: flex; align-items: center; gap: 0.6rem;
+            background: var(--light); border-radius: 12px; padding: 0.55rem 0.9rem;
+        }
+        .sidebar-search i { color: var(--gray); font-size: 0.8rem; flex-shrink:0; }
+        .sidebar-search input {
+            border: none; background: none; outline: none;
+            font-size: 0.85rem; color: var(--navy); width: 100%;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        /* Filter tabs */
+        .conv-tabs {
+            display: flex; padding: 0.6rem 1.3rem 0;
+            gap: 0.4rem; border-bottom: 1px solid var(--border);
+        }
+        .conv-tab {
+            padding: 0.35rem 0.9rem; border-radius: 20px;
+            font-size: 0.78rem; font-weight: 500; color: var(--gray);
+            cursor: pointer; border: none; background: none; transition: 0.15s;
+        }
+        .conv-tab.active { background: var(--navy); color: white; }
+        .conv-tab:hover:not(.active) { background: var(--light); }
+
+        /* Conversation list */
+        .conv-list { flex: 1; overflow-y: auto; }
+        .conv-list::-webkit-scrollbar { width: 4px; }
+        .conv-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        .conv-item {
+            display: flex; align-items: center; gap: 0.85rem;
+            padding: 0.9rem 1.3rem; cursor: pointer;
+            transition: background 0.15s; position: relative;
+            border-bottom: 1px solid rgba(226,232,240,0.5);
+        }
+        .conv-item:hover { background: var(--light); }
+        .conv-item.active { background: var(--gold-dim); border-left: 3px solid var(--gold); }
+        .conv-item.unread .conv-name { font-weight: 700; }
+        .conv-item.unread .conv-preview { color: var(--navy); font-weight: 500; }
+
+        .conv-avatar {
+            width: 46px; height: 46px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--navy), var(--blue));
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.9rem; color: white; flex-shrink: 0;
+            position: relative; overflow: hidden;
+        }
+        .conv-avatar img { width:46px; height:46px; border-radius:50%; object-fit:cover; }
+        .online-dot {
+            position: absolute; bottom: 1px; right: 1px;
+            width: 11px; height: 11px; border-radius: 50%;
+            background: var(--success); border: 2px solid white;
+        }
+        .offline-dot {
+            position: absolute; bottom: 1px; right: 1px;
+            width: 11px; height: 11px; border-radius: 50%;
+            background: var(--gray); border: 2px solid white;
+        }
+
+        .conv-info { flex: 1; min-width: 0; }
+        .conv-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem; }
+        .conv-name { font-size: 0.9rem; font-weight: 600; color: var(--navy); }
+        .conv-time { font-size: 0.68rem; color: var(--gray); font-family: 'Space Mono', monospace; flex-shrink:0; }
+        .conv-preview { font-size: 0.78rem; color: var(--gray); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .unread-count {
+            background: var(--gold); color: white;
+            width: 20px; height: 20px; border-radius: 50%;
+            font-size: 0.65rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* ── RIGHT CHAT AREA ── */
+        .chat-area {
+            flex: 1; display: flex; flex-direction: column;
+            background: #fafbfd; position: relative;
+        }
+
+        /* Chat header */
+        .chat-header {
+            padding: 1rem 1.5rem;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 1rem;
+            flex-shrink: 0;
+        }
+        .chat-header-avatar {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--navy), var(--blue));
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.9rem; color: white; flex-shrink: 0;
+            position: relative; overflow: hidden;
+        }
+        .chat-header-avatar img { width:44px; height:44px; border-radius:50%; object-fit:cover; }
+        .chat-header-info { flex: 1; }
+        .chat-header-info h3 { font-size: 1rem; font-weight: 600; color: var(--navy); }
+        .chat-header-info p { font-size: 0.75rem; color: var(--gray); display: flex; align-items: center; gap: 0.4rem; }
+        .status-dot { width: 7px; height: 7px; border-radius: 50%; }
+        .status-dot.online  { background: var(--success); }
+        .status-dot.offline { background: var(--gray); }
+        .chat-header-actions { display: flex; gap: 0.5rem; }
+        .hdr-btn {
+            width: 36px; height: 36px; border-radius: 50%;
+            border: 1px solid var(--border); background: white;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gray); cursor: pointer; transition: 0.18s; font-size: 0.85rem;
+        }
+        .hdr-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+        /* Chat messages area */
+        .chat-messages {
+            flex: 1; overflow-y: auto;
+            padding: 1.2rem 1.5rem;
+            display: flex; flex-direction: column; gap: 0.6rem;
+        }
+        .chat-messages::-webkit-scrollbar { width: 4px; }
+        .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        /* Date divider */
+        .date-divider { display: flex; align-items: center; gap: 0.75rem; margin: 0.5rem 0; }
+        .date-divider::before, .date-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .date-divider span {
+            font-size: 0.7rem; color: var(--gray); font-weight: 500;
+            background: #fafbfd; padding: 0.2rem 0.75rem;
+            border-radius: 20px; border: 1px solid var(--border);
+        }
+
+        /* Message bubbles */
+        .msg-row {
+            display: flex; gap: 0.6rem; align-items: flex-end;
+            animation: msgIn 0.2s ease;
+        }
+        @keyframes msgIn {
+            from { opacity:0; transform: translateY(6px); }
+            to   { opacity:1; transform: translateY(0); }
+        }
+        .msg-row.mine { flex-direction: row-reverse; }
+
+        .msg-avatar {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--navy), var(--blue));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.65rem; font-weight: 700; color: white; flex-shrink: 0;
+            overflow: hidden;
+        }
+        .msg-avatar img { width:30px; height:30px; border-radius:50%; object-fit:cover; }
+
+        .msg-bubble {
+            max-width: 65%; min-width: 80px; padding: 0.75rem 1.1rem;
+            border-radius: 18px 18px 18px 5px;
+            background: white; color: var(--navy);
+            font-size: 0.875rem; line-height: 1.5;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--border);
+            word-break: break-word;
+        }
+        .msg-row.mine .msg-bubble {
+            background: linear-gradient(135deg, var(--navy), var(--blue));
+            color: white; border-radius: 18px 18px 5px 18px;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(10,22,40,0.2);
+        }
+        .msg-time {
+            font-size: 0.65rem; color: var(--gray);
+            margin-top: 0.3rem; text-align: right;
+            font-family: 'Space Mono', monospace;
+        }
+        .msg-row.mine .msg-time { color: rgba(255,255,255,0.6); }
+
+        /* Proposal card in chat */
+        .proposal-card-msg {
+            background: var(--gold-dim);
+            border: 1px solid rgba(201,144,58,0.3);
+            border-radius: 14px; padding: 0.85rem 1rem; margin-top: 0.4rem;
+        }
+        .proposal-card-msg .pc-label { font-size: 0.65rem; font-weight: 700; color: var(--gold); margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .proposal-card-msg .pc-title { font-size: 0.875rem; font-weight: 600; color: var(--navy); margin-bottom: 0.2rem; }
+        .proposal-card-msg .pc-price { font-size: 0.78rem; color: var(--gray); font-family: 'Space Mono', monospace; }
+
+        /* Typing indicator */
+        .typing-indicator { display: none; align-items: center; gap: 0.6rem; padding: 0.4rem 0; }
+        .typing-indicator.show { display: flex; }
+        .typing-dots { display: flex; gap: 3px; }
+        .typing-dots span {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--gray); animation: typingDot 1.2s infinite;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingDot {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30%            { transform: translateY(-4px); opacity: 1; }
+        }
+        .typing-text { font-size: 0.75rem; color: var(--gray); font-style: italic; }
+
+        /* Chat input */
+        .chat-input-area {
+            padding: 0.9rem 1.5rem;
+            background: white;
+            border-top: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .proposal-attach-preview {
+            background: var(--gold-dim); border: 1px solid rgba(201,144,58,0.3);
+            border-radius: 12px; padding: 0.6rem 1rem;
+            margin-bottom: 0.6rem; display: none;
+            align-items: center; justify-content: space-between;
+        }
+        .proposal-attach-preview.show { display: flex; }
+        .pa-info { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; }
+        .pa-info i { color: var(--gold); }
+        .pa-remove { cursor: pointer; color: var(--gray); font-size: 0.8rem; transition: 0.15s; }
+        .pa-remove:hover { color: var(--danger); }
+
+        .input-row { display: flex; align-items: center; gap: 0.6rem; }
+        .input-actions { display: flex; gap: 0.4rem; }
+        .input-action-btn {
+            width: 38px; height: 38px; border-radius: 50%;
+            border: 1px solid var(--border); background: white;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gray); cursor: pointer; transition: 0.18s; font-size: 0.85rem; flex-shrink: 0;
+        }
+        .input-action-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+        .input-action-btn.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+        .msg-input-wrap {
+            flex: 1; background: var(--light); border-radius: 24px;
+            padding: 0.6rem 1.2rem;
+            display: flex; align-items: center; gap: 0.5rem;
+            border: 1px solid transparent; transition: border 0.18s;
+        }
+        .msg-input-wrap:focus-within { border-color: var(--gold); background: white; }
+        .msg-input {
+            flex: 1; border: none; background: none; outline: none;
+            font-size: 0.9rem; color: var(--navy);
+            font-family: 'DM Sans', sans-serif; resize: none;
+            max-height: 80px; line-height: 1.4;
+        }
+        .msg-input::placeholder { color: var(--gray); }
+
+        .send-btn {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: var(--navy); color: white; border: none;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s; font-size: 0.9rem; flex-shrink: 0;
+        }
+        .send-btn:hover { background: var(--gold); transform: scale(1.05); }
+        .send-btn:active { transform: scale(0.95); }
+
+        /* Proposal picker */
+        .proposal-picker {
+            position: absolute; bottom: calc(100% + 8px); left: 0;
+            background: white; border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+            width: 300px; max-height: 250px; overflow-y: auto;
+            display: none; z-index: 10;
+        }
+        .proposal-picker.open { display: block; animation: slideUp 0.2s ease; }
+        @keyframes slideUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+        .pp-header { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.8rem; font-weight: 600; color: var(--navy); }
+        .pp-item { padding: 0.75rem 1rem; cursor: pointer; transition: 0.15s; border-bottom: 1px solid rgba(226,232,240,0.5); }
+        .pp-item:hover { background: var(--light); }
+        .pp-item .pp-title { font-size: 0.85rem; font-weight: 600; color: var(--navy); margin-bottom: 0.15rem; }
+        .pp-item .pp-price { font-size: 0.75rem; color: var(--gold); font-family: 'Space Mono', monospace; }
+
+        /* Empty states */
+        .no-chat {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 1rem; color: var(--gray);
+        }
+        .no-chat-icon {
+            width: 80px; height: 80px; border-radius: 50%; background: var(--gold-dim);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; color: var(--gold);
+        }
+        .no-chat h3 { font-size: 1.1rem; color: var(--navy); }
+        .no-chat p  { font-size: 0.85rem; text-align: center; max-width: 280px; }
+
+        .empty-inbox {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 0.6rem; padding: 2rem; text-align: center;
+        }
+        .empty-inbox i { font-size: 2.5rem; color: var(--gold); opacity: 0.35; }
+        .empty-inbox p { font-size: 0.82rem; color: var(--gray); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            :root { --sidebar-w: 100%; }
+            .chat-layout { margin: 0.5rem; border-radius: 16px; }
+            .sidebar { display: none; }
+            .sidebar.mobile-show { display: flex; position: absolute; z-index: 5; width: 100%; height: 100%; }
+            .top-nav { margin: 0.5rem; overflow-x: auto; border-radius: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══ TOP NAV ══ -->
+<nav class="top-nav">
+    <div class="logo">Contractor<span>Hub</span></div>
+    <div class="nav-div"></div>
+
+    <div class="nav-menu">
+        {% if user.user_type == 'contractor' %}
+            <a href="{% url 'seller' %}"       class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="{% url 'my_proposals' %}"  class="nav-item"><i class="fas fa-file-alt"></i> Proposals</a>
+            <a href="#"                         class="nav-item"><i class="fas fa-briefcase"></i> Active Work</a>
+        {% else %}
+            <a href="{% url 'client' %}"        class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="{% url 'client' %}?tab=find" class="nav-item"><i class="fas fa-search"></i> Find Workers</a>
+            <a href="{% url 'client_profile' %}" class="nav-item"><i class="fas fa-user"></i> Profile</a>
+        {% endif %}
+        <a href="{% url 'messages_page' %}" class="nav-item active">
+            <i class="fas fa-envelope"></i> Messages
+            {% if total_unread > 0 %}
+            <span style="background:var(--gold);color:white;padding:0.1rem 0.45rem;border-radius:12px;font-size:0.65rem;font-weight:700;">{{ total_unread }}</span>
+            {% endif %}
+        </a>
+    </div>
+
+    <div class="nav-right">
+        <a href="{% url 'faqs' %}" class="icon-btn" title="Help"><i class="fas fa-question-circle"></i></a>
+        <button class="icon-btn" title="Notifications"><i class="far fa-bell"></i></button>
+
+        <!-- Profile pill — works for both client and contractor -->
+        {% if user.user_type == 'contractor' %}
+            <a href="{% url 'seller_profile' %}" class="avatar-pill">
+                <div class="av">
+                    {% if profile and profile.profile_photo %}
+                        <img src="{{ profile.profile_photo.url }}" alt="">
+                    {% elif user.name %}
+                        {{ user.name|slice:":1"|upper }}
+                    {% elif user.email %}
+                        {{ user.email|slice:":1"|upper }}
+                    {% else %}
+                        ?
+                    {% endif %}
+                </div>
+                {% if user.name %}{{ user.name|truncatechars:10 }}{% else %}Me{% endif %}
+            </a>
+        {% else %}
+            <a href="{% url 'client_profile' %}" class="avatar-pill">
+                <div class="av">
+                    {% if user.name %}
+                        {{ user.name|slice:":1"|upper }}
+                    {% elif user.email %}
+                        {{ user.email|slice:":1"|upper }}
+                    {% else %}
+                        ?
+                    {% endif %}
+                </div>
+                {% if user.name %}{{ user.name|truncatechars:10 }}{% else %}Me{% endif %}
+            </a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- ══ CHAT LAYOUT ══ -->
+<div class="chat-layout">
+
+    <!-- ── LEFT SIDEBAR ── -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>
+                Messages
+                {% if total_unread > 0 %}
+                <span class="unread-pill">{{ total_unread }} New</span>
+                {% endif %}
+            </h2>
+            <div class="sidebar-search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search conversations..." id="convSearch" oninput="searchConv(this.value)">
+            </div>
+        </div>
+
+        <div class="conv-tabs">
+            <button class="conv-tab active" onclick="filterConv('all',this)">All</button>
+            <button class="conv-tab" onclick="filterConv('unread',this)">Unread</button>
+            <button class="conv-tab" onclick="filterConv('clients',this)">Clients</button>
+        </div>
+
+        <div class="conv-list" id="convList">
+            {% for conv in conversations %}
+            <div class="conv-item {% if conv.unread_count > 0 %}unread{% endif %} {% if active_conv and active_conv.id == conv.id %}active{% endif %}"
+                 onclick="loadConversation({{ conv.id }})"
+                 data-name="{% if conv.other_user.name %}{{ conv.other_user.name|lower }}{% else %}{% endif %}"
+                 data-type="client">
+
+                <!-- ✅ FIX 1: conv avatar — safe initials, no |first on None -->
+                <div class="conv-avatar">
+                    {% if conv.other_user_profile_photo %}
+                        <img src="{{ conv.other_user_profile_photo }}" alt="">
+                    {% elif conv.other_user.name %}
+                        {{ conv.other_user.name|slice:":1"|upper }}
+                    {% elif conv.other_user.email %}
+                        {{ conv.other_user.email|slice:":1"|upper }}
+                    {% else %}
+                        ?
+                    {% endif %}
+                    {% if conv.is_online %}
+                        <span class="online-dot"></span>
+                    {% else %}
+                        <span class="offline-dot"></span>
+                    {% endif %}
+                </div>
+
+                <div class="conv-info">
+                    <div class="conv-top">
+                        <span class="conv-name">{{ conv.other_user.name|default:conv.other_user.email }}</span>
+                        <span class="conv-time">{{ conv.last_message_time|timesince|truncatechars:8 }}</span>
+                    </div>
+                    <div class="conv-preview">
+                        {% if conv.last_message %}
+                            {% if conv.last_message.sender == user %}You: {% endif %}
+                            {{ conv.last_message.content|truncatechars:40 }}
+                        {% else %}
+                            No messages yet
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if conv.unread_count > 0 %}
+                <div class="unread-count">{{ conv.unread_count }}</div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="empty-inbox">
+                <i class="far fa-comments"></i>
+                <p>No conversations yet.<br>Messages will appear here.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ── RIGHT CHAT AREA ── -->
+    <div class="chat-area" id="chatArea">
+
+        {% if active_conv %}
+
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <!-- ✅ FIX 2: chat header avatar — safe initials -->
+            <div class="chat-header-avatar">
+                {% if active_conv.other_user_profile_photo %}
+                    <img src="{{ active_conv.other_user_profile_photo }}" alt="">
+                {% elif active_conv.other_user.name %}
+                    {{ active_conv.other_user.name|slice:":1"|upper }}
+                {% elif active_conv.other_user.email %}
+                    {{ active_conv.other_user.email|slice:":1"|upper }}
+                {% else %}
+                    ?
+                {% endif %}
+                {% if active_conv.is_online %}
+                <span class="online-dot"></span>
+                {% endif %}
+            </div>
+            <div class="chat-header-info">
+                <h3>{{ active_conv.other_user.name|default:active_conv.other_user.email }}</h3>
+                <p>
+                    <span class="status-dot {% if active_conv.is_online %}online{% else %}offline{% endif %}"></span>
+                    {% if active_conv.is_online %}Online{% else %}Last seen {{ active_conv.last_seen|timesince }} ago{% endif %}
+                </p>
+            </div>
+            <div class="chat-header-actions">
+                {% if active_conv.other_user.id %}
+                <a href="{% url 'view_profile' active_conv.other_user.id %}" class="hdr-btn" title="View Profile">
+                    <i class="fas fa-user"></i>
+                </a>
+                {% else %}
+                <button class="hdr-btn" title="Profile not available" disabled>
+                    <i class="fas fa-user"></i>
+                </button>
+                {% endif %}
+                <button class="hdr-btn" title="Archive"><i class="fas fa-archive"></i></button>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="chat-messages" id="chatMessages">
+
+            {% regroup messages by created_at|date:"Y-m-d" as messages_by_day %}
+            {% for day in messages_by_day %}
+
+            <div class="date-divider">
+                <span>{{ day.grouper|date:"F j, Y" }}</span>
+            </div>
+
+            {% for msg in day.list %}
+            <div class="msg-row {% if msg.sender == user %}mine{% endif %}">
+
+                <!-- ✅ FIX 3: other user avatar in bubble — safe initials -->
+                {% if msg.sender != user %}
+                <div class="msg-avatar">
+                    {% if active_conv.other_user_profile_photo %}
+                        <img src="{{ active_conv.other_user_profile_photo }}" alt="">
+                    {% elif msg.sender.name %}
+                        {{ msg.sender.name|slice:":1"|upper }}
+                    {% elif msg.sender.email %}
+                        {{ msg.sender.email|slice:":1"|upper }}
+                    {% else %}
+                        ?
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div>
+                    <div class="msg-bubble">
+                        {{ msg.content }}
+                        {% if msg.proposal %}
+                        <div class="proposal-card-msg">
+                            <div class="pc-label"><i class="fas fa-file-alt"></i> Attached Proposal</div>
+                            <div class="pc-title">{{ msg.proposal.title }}</div>
+                            <div class="pc-price">RS {{ msg.proposal.base_price }} · {{ msg.proposal.work_type }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="msg-time">
+                        {{ msg.created_at|time:"g:i A" }}
+                        {% if msg.sender == user %}
+                            {% if msg.is_read %}
+                                <i class="fas fa-check-double" style="color:var(--gold);"></i>
+                            {% else %}
+                                <i class="fas fa-check"></i>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- ✅ FIX 4: current user avatar in bubble — safe initials -->
+                {% if msg.sender == user %}
+                <div class="msg-avatar">
+                    {% if profile and profile.profile_photo %}
+                        <img src="{{ profile.profile_photo.url }}" alt="">
+                    {% elif user.name %}
+                        {{ user.name|slice:":1"|upper }}
+                    {% elif user.email %}
+                        {{ user.email|slice:":1"|upper }}
+                    {% else %}
+                        ?
+                    {% endif %}
+                </div>
+                {% endif %}
+
+            </div>
+            {% endfor %}
+            {% endfor %}
+
+            <!-- ✅ FIX 5: typing indicator — safe initials -->
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="msg-avatar">
+                    {% if active_conv.other_user.name %}
+                        {{ active_conv.other_user.name|slice:":1"|upper }}
+                    {% elif active_conv.other_user.email %}
+                        {{ active_conv.other_user.email|slice:":1"|upper }}
+                    {% else %}
+                        ?
+                    {% endif %}
+                </div>
+                <div>
+                    <div class="msg-bubble" style="padding:0.6rem 1rem;">
+                        <div class="typing-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <div class="typing-text">typing...</div>
+                </div>
+            </div>
+
+        </div><!-- chat-messages -->
+
+        <!-- Input Area -->
+        <div class="chat-input-area">
+            <form method="POST" action="{% url 'send_message' active_conv.id %}" id="msgForm">
+                {% csrf_token %}
+                <input type="hidden" name="proposal_id" id="attachedProposalId" value="">
+
+                <div class="proposal-attach-preview" id="proposalPreview">
+                    <div class="pa-info">
+                        <i class="fas fa-file-alt"></i>
+                        <span id="proposalPreviewTitle">Proposal</span>
+                    </div>
+                    <span class="pa-remove" onclick="removeProposal()"><i class="fas fa-times"></i></span>
+                </div>
+
+                <div class="input-row">
+                    <div class="input-actions" style="position:relative;">
+                        <button type="button" class="input-action-btn" id="proposalBtn" onclick="toggleProposalPicker()" title="Attach Proposal">
+                            <i class="fas fa-file-alt"></i>
+                        </button>
+                        <div class="proposal-picker" id="proposalPicker">
+                            <div class="pp-header"><i class="fas fa-file-alt" style="color:var(--gold);"></i> Your Proposals</div>
+                            {% for proposal in my_proposals %}
+                            <div class="pp-item" onclick="attachProposal({{ proposal.id }}, '{{ proposal.title }}')">
+                                <div class="pp-title">{{ proposal.title }}</div>
+                                <div class="pp-price">RS {{ proposal.base_price }} · {{ proposal.work_type }}</div>
+                            </div>
+                            {% empty %}
+                            <div style="padding:1rem; font-size:0.8rem; color:var(--gray); text-align:center;">No proposals yet</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="msg-input-wrap">
+                        <textarea class="msg-input" name="content" id="msgInput"
+                            placeholder="Type a message..."
+                            rows="1"
+                            oninput="autoResize(this)"
+                            onkeydown="handleEnter(event)"></textarea>
+                    </div>
+
+                    <button type="submit" class="send-btn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </form>
+        </div>
+
+        {% else %}
+        <!-- No conversation selected -->
+        <div class="no-chat">
+            <div class="no-chat-icon"><i class="far fa-comments"></i></div>
+            <h3>Select a conversation</h3>
+            <p>Choose a conversation from the left to start messaging</p>
+        </div>
+        {% endif %}
+
+    </div><!-- chat-area -->
+</div><!-- chat-layout -->
+
+<script>
+    const chatMsgs = document.getElementById('chatMessages');
+    if (chatMsgs) chatMsgs.scrollTop = chatMsgs.scrollHeight;
+
+    function autoResize(el) {
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 80) + 'px';
+    }
+
+    function handleEnter(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            const input = document.getElementById('msgInput');
+            if (input && input.value.trim()) {
+                document.getElementById('msgForm').submit();
+            }
+        }
+    }
+
+    function toggleProposalPicker() {
+        document.getElementById('proposalPicker').classList.toggle('open');
+        document.getElementById('proposalBtn').classList.toggle('active');
+    }
+
+    function attachProposal(id, title) {
+        document.getElementById('attachedProposalId').value = id;
+        document.getElementById('proposalPreviewTitle').textContent = title;
+        document.getElementById('proposalPreview').classList.add('show');
+        document.getElementById('proposalPicker').classList.remove('open');
+        document.getElementById('proposalBtn').classList.add('active');
+    }
+
+    function removeProposal() {
+        document.getElementById('attachedProposalId').value = '';
+        document.getElementById('proposalPreview').classList.remove('show');
+        document.getElementById('proposalBtn').classList.remove('active');
+    }
+
+    document.addEventListener('click', function(e) {
+        const picker = document.getElementById('proposalPicker');
+        const btn = document.getElementById('proposalBtn');
+        if (picker && btn && !btn.contains(e.target) && !picker.contains(e.target)) {
+            picker.classList.remove('open');
+            btn.classList.remove('active');
+        }
+    });
+
+    function loadConversation(convId) {
+        window.location.href = '{% url "messages_page" %}?conv=' + convId;
+    }
+
+    function searchConv(val) {
+        const q = val.toLowerCase();
+        document.querySelectorAll('.conv-item').forEach(item => {
+            const name = item.dataset.name || '';
+            item.style.display = name.includes(q) ? '' : 'none';
+        });
+    }
+
+    function filterConv(type, btn) {
+        document.querySelectorAll('.conv-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.conv-item').forEach(item => {
+            if (type === 'all')    { item.style.display = ''; return; }
+            if (type === 'unread') { item.style.display = item.classList.contains('unread') ? '' : 'none'; return; }
+            if (type === 'clients'){ item.style.display = item.dataset.type === 'client'    ? '' : 'none'; return; }
+        });
+    }
+
+    {% if active_conv %}
+    // ── Track if user is actively typing ──
+    let userIsTyping = false;
+    let typingTimeout = null;
+
+    const msgInputEl = document.getElementById('msgInput');
+    if (msgInputEl) {
+        msgInputEl.addEventListener('input', function() {
+            userIsTyping = true;
+            clearTimeout(typingTimeout);
+            // If user stops typing for 3 seconds, allow reload again
+            typingTimeout = setTimeout(function() {
+                userIsTyping = false;
+            }, 3000);
+        });
+        // Also mark not typing when form is submitted
+        msgInputEl.closest('form').addEventListener('submit', function() {
+            userIsTyping = false;
+        });
+    }
+
+    setInterval(function() {
+        fetch('{% url "check_new_messages" active_conv.id %}')
+            .then(r => r.json())
+            .then(data => {
+                // ✅ Only reload if user is NOT currently typing
+                if (data.has_new && !userIsTyping) {
+                    window.location.reload();
+                }
+                const ti = document.getElementById('typingIndicator');
+                if (ti) {
+                    ti.classList.toggle('show', data.is_typing || false);
+                    if (data.is_typing && chatMsgs) chatMsgs.scrollTop = chatMsgs.scrollHeight;
+                }
+            })
+            .catch(() => {});
+    }, 5000);
+    {% endif %}
+</script>
+
+</body>
+</html>
