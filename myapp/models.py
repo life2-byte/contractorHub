@@ -40,6 +40,10 @@ class signin(AbstractUser):
     email = models.EmailField(max_length=100,unique=True)
     username = models.CharField(max_length=100,null=True,blank=True,unique=True)
     phone = models.CharField(max_length=12,blank=True)
+    is_email_verified = models.BooleanField(default=False)
+    email_otp = models.CharField(max_length=6, blank=True)
+    email_otp_created_at = models.DateTimeField(null=True, blank=True)
+    is_phone_verified = models.BooleanField(default=False) 
     profile_image = models.URLField(max_length=500, null=True, blank=True)
     user_type     = models.CharField(max_length=20, null=True, blank=True)
     
@@ -55,6 +59,7 @@ class Seller_Profile(models.Model):
     cover_photo = models.ImageField(upload_to='covers/', blank=True, null=True)
     profile_photo = models.ImageField(upload_to='profiles/', blank=True, null=True)
     city = models.CharField(max_length=50, blank=True)
+    area = models.CharField(max_length=100, blank=True)
     language = models.CharField(max_length=20, blank=True)
     skills = models.TextField(blank=True)  # Comma separated: "Plumbing,Electrical,Construction"
     title = models.CharField(max_length=100, blank=True)  # "Master Contractor"

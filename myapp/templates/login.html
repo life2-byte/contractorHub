@@ -889,7 +889,7 @@
                         <div class="input-group {% if field_errors.login_password %}has-error{% endif %}">
                             <div class="password-header">
                                 <label class="input-label">Password</label>
-                                <a href="#" class="forgot-link">Forgot Password?</a>
+                                <a href="{% url 'password_reset' %}" class="forgot-link">Forgot Password?</a>
                             </div>
                             <div class="input-wrapper">
                                 <i class="fas fa-lock"></i>

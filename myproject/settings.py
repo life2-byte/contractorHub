@@ -41,6 +41,7 @@ AUTHENTICATION_BACKENDS = [
 
 LOGIN_REDIRECT_URL = '/after-login/'
 LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/signin/'  
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 SOCIALACCOUNT_LOGIN_ON_GET = True #Confirmation Screen Hatane ke liye
@@ -70,6 +71,7 @@ SOCIALACCOUNT_PROVIDERS = {
 
 INSTALLED_APPS = [
     'myapp',
+    'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -93,6 +95,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'myapp.views.NoCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -177,3 +180,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SITE_ID = 3
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+
+FIREBASE_CREDENTIALS = os.getenv('FIREBASE_CREDENTIALS')
+

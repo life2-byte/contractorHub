@@ -73,8 +73,6 @@
         .dropdown-item.client-mode{background:var(--gold-dim);color:var(--gold);font-weight:600;}
         .dropdown-item.client-mode:hover{background:rgba(201,144,58,0.2);}
         .dropdown-divider{height:1px;background:var(--border);margin:0.2rem 0;}
-
-        /* hero */
         .profile-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);border-radius:30px;padding:0;margin-bottom:0;position:relative;overflow:hidden;height:220px;}
         .profile-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(201,144,58,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(201,144,58,0.08) 1px,transparent 1px);background-size:35px 35px;}
         .hero-edit-btn{position:absolute;top:1.2rem;right:1.5rem;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;padding:0.5rem 1.2rem;border-radius:40px;font-size:0.85rem;font-weight:500;cursor:pointer;transition:0.2s;display:flex;align-items:center;gap:0.5rem;z-index:2;backdrop-filter:blur(4px);}
@@ -95,8 +93,6 @@
         .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,144,58,0.4);}
         .btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--border);padding:0.7rem 1.4rem;border-radius:40px;font-weight:600;font-size:0.875rem;cursor:pointer;transition:0.2s;display:flex;align-items:center;gap:0.5rem;}
         .btn-outline:hover{border-color:var(--gold);color:var(--gold);}
-
-        /* stats */
         .quick-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:2rem;}
         .qs-card{background:white;border-radius:20px;padding:1.4rem 1.5rem;border:1px solid var(--border);display:flex;align-items:center;gap:1rem;transition:0.2s;}
         .qs-card:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(0,0,0,0.06);}
@@ -104,7 +100,6 @@
         .qs-val{font-size:1.7rem;font-weight:700;color:var(--navy);font-family:'Space Mono',monospace;line-height:1;}
         .qs-val.empty{font-size:1rem;color:var(--gray);font-family:'DM Sans',sans-serif;font-style:italic;}
         .qs-label{font-size:0.78rem;color:var(--gray);margin-top:0.2rem;}
-
         .content-grid{display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start;}
         .section-card{background:white;border-radius:24px;border:1px solid var(--border);overflow:hidden;margin-bottom:1.5rem;}
         .section-card:last-child{margin-bottom:0;}
@@ -138,8 +133,6 @@
         .cert-date{font-size:0.72rem;color:var(--gray);margin-top:0.15rem;}
         .cert-view-btn{background:white;color:var(--gold);border:1.5px solid rgba(201,144,58,0.3);padding:0.4rem 0.9rem;border-radius:40px;font-size:0.78rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:0.35rem;transition:0.2s;flex-shrink:0;}
         .cert-view-btn:hover{background:var(--gold);color:white;}
-
-        /* reviews */
         .review-summary-box{display:flex;align-items:center;gap:1.8rem;padding:1.3rem 1.5rem;background:var(--gold-dim);border-radius:18px;margin-bottom:1.5rem;border:1px solid rgba(201,144,58,0.22);}
         .review-big-num{font-family:'Space Mono',monospace;font-size:3.2rem;font-weight:700;color:var(--gold);line-height:1;flex-shrink:0;}
         .review-summary-meta{flex:1;}
@@ -159,8 +152,6 @@
         .review-rating-stars{display:flex;gap:2px;}
         .review-rating-stars i{font-size:0.88rem;}
         .review-text{font-size:0.855rem;color:var(--gray);line-height:1.65;padding-left:3.3rem;}
-
-        /* ══ LOCATION CARD (outside modal) ══ */
         .location-card{background:white;border-radius:24px;border:1px solid var(--border);overflow:hidden;margin-bottom:1.5rem;}
         .loc-head{padding:1.2rem 1.8rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.8rem;}
         .loc-head h3{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--navy);display:flex;align-items:center;gap:0.5rem;}
@@ -172,29 +163,31 @@
         .gps-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
         @keyframes spin{to{transform:rotate(360deg)}}
         .spin{animation:spin 0.9s linear infinite;}
-        .city-pill{display:none;align-items:center;gap:0.5rem;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:#059669;padding:0.45rem 1rem;border-radius:30px;font-size:0.82rem;font-weight:600;}
-        .city-pill.show{display:flex;}
+        .location-pill{display:none;align-items:center;gap:0.5rem;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);color:#059669;padding:0.45rem 1rem;border-radius:30px;font-size:0.82rem;font-weight:600;}
+        .location-pill.show{display:flex;}
         .loc-err{font-size:0.78rem;color:var(--danger);padding:0.5rem 1rem;border-radius:10px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15);display:none;}
         .loc-err.show{display:block;}
-        .manual-toggle{font-size:0.75rem;color:var(--gray);cursor:pointer;text-decoration:underline;display:block;padding:0.4rem 1.5rem 0.8rem;}
-        .manual-toggle:hover{color:var(--gold);}
-        .manual-fallback{display:none;padding:0 1.5rem 1.2rem;}
-        .manual-fallback.show{display:block;}
-        .manual-fallback select{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:0.7rem 1rem;font-size:0.875rem;font-family:'DM Sans',sans-serif;color:var(--navy);background:white;outline:none;transition:0.2s;}
-        .manual-fallback select:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-dim);}
-
-        /* sidebar */
+        .location-fields{margin-top:1rem;padding:0 1.5rem 1.2rem;border-top:1px solid var(--border);background:var(--light);}
+        .location-fields .field-group{display:flex;gap:1rem;margin-top:1rem;}
+        .location-fields .field-group select, .location-fields .field-group input{flex:1;border:1.5px solid var(--border);border-radius:12px;padding:0.7rem 1rem;font-size:0.875rem;font-family:'DM Sans',sans-serif;color:var(--navy);outline:none;transition:0.2s;background:white;}
+        .location-fields .field-group select:focus, .location-fields .field-group input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-dim);}
+        .location-fields .manual-hint{font-size:0.7rem;color:var(--gray);margin-top:0.5rem;text-align:center;}
+        .location-fields .save-loc-btn{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);border:none;padding:0.6rem 1.2rem;border-radius:40px;font-size:0.8rem;font-weight:600;cursor:pointer;margin-top:0.8rem;width:100%;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:0.2s;}
+        .location-fields .save-loc-btn:hover{transform:translateY(-1px);}
         .sidebar-card{background:white;border-radius:24px;border:1px solid var(--border);overflow:hidden;margin-bottom:1.5rem;}
         .sidebar-card:last-child{margin-bottom:0;}
         .sidebar-card .sc-header{padding:1.1rem 1.4rem;}
         .sidebar-card .sc-body{padding:1.2rem 1.4rem;}
-        .verify-item{display:flex;align-items:center;gap:0.8rem;padding:0.65rem 0;border-bottom:1px solid var(--border);}
+        .verify-item{display:flex;align-items:center;gap:0.8rem;padding:0.65rem 0;border-bottom:1px solid var(--border);transition:background 0.15s;border-radius:8px;}
         .verify-item:last-child{border-bottom:none;}
+        .verify-item.clickable{cursor:pointer;padding:0.65rem 0.5rem;margin:0 -0.5rem;}
+        .verify-item.clickable:hover{background:var(--light);}
         .verify-icon{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;}
         .verify-icon.done{background:rgba(16,185,129,0.1);color:var(--success);}
         .verify-icon.pending{background:rgba(245,158,11,0.1);color:var(--warning);}
         .verify-label{font-size:0.82rem;font-weight:600;color:var(--navy);}
         .verify-status{font-size:0.7rem;color:var(--gray);}
+        .verify-status.clickable-hint{color:var(--warning);font-weight:500;}
         .verify-check{margin-left:auto;font-size:0.85rem;}
         .verify-check.done{color:var(--success);}
         .verify-check.pending{color:var(--warning);}
@@ -219,8 +212,6 @@
         .milestone-icon{width:34px;height:34px;border-radius:50%;background:var(--gold-dim);border:2px solid rgba(201,144,58,0.3);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:0.8rem;margin:0 auto 0.3rem;}
         .milestone.reached .milestone-icon{background:var(--gold);color:white;border-color:var(--gold);}
         .milestone-label{font-size:0.65rem;color:var(--gray);}
-
-        /* modal */
         .modal-overlay{position:fixed;inset:0;background:rgba(10,22,40,0.6);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity 0.25s ease;}
         .modal-overlay.open{opacity:1;pointer-events:all;}
         .modal{background:white;border-radius:28px;width:100%;max-width:520px;box-shadow:0 25px 60px rgba(0,0,0,0.2);transform:translateY(20px) scale(0.97);transition:transform 0.25s ease;max-height:90vh;overflow-y:auto;}
@@ -256,7 +247,36 @@
         .btn-modal-cancel:hover{border-color:var(--navy);color:var(--navy);}
         .cert-upload-area{border:2px dashed var(--border);border-radius:16px;padding:2rem;text-align:center;cursor:pointer;transition:0.2s;background:var(--light);}
         .cert-upload-area:hover{border-color:var(--gold);background:var(--gold-dim);}
-
+        .verify-overlay{position:fixed;inset:0;background:rgba(10,22,40,0.65);backdrop-filter:blur(5px);z-index:3000;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity 0.25s ease;}
+        .verify-overlay.open{opacity:1;pointer-events:all;}
+        .verify-popup{background:white;border-radius:24px;width:100%;max-width:420px;padding:2rem;box-shadow:0 25px 60px rgba(0,0,0,0.22);transform:translateY(20px) scale(0.97);transition:transform 0.25s ease;}
+        .verify-overlay.open .verify-popup{transform:translateY(0) scale(1);}
+        .verify-popup-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+        .verify-popup-icon{width:60px;height:60px;background:rgba(201,144,58,0.12);border:2px solid rgba(201,144,58,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--gold);}
+        .verify-popup-close{width:34px;height:34px;border-radius:50%;background:var(--light);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gray);font-size:0.9rem;transition:0.2s;}
+        .verify-popup-close:hover{background:#e2e8f0;color:var(--navy);}
+        .verify-popup-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem;}
+        .verify-popup-sub{color:var(--gray);font-size:0.875rem;margin-bottom:1.2rem;line-height:1.5;}
+        .verify-email-display{background:var(--light);border:1.5px solid var(--border);border-radius:12px;padding:0.9rem 1.2rem;display:flex;align-items:center;gap:0.8rem;margin-bottom:1rem;font-size:0.9rem;color:var(--navy);}
+        .verify-email-display i{color:var(--gold);}
+        .verify-popup-note{font-size:0.78rem;color:var(--gray);display:flex;align-items:center;gap:0.4rem;margin-bottom:1.5rem;}
+        .verify-popup-note i{color:var(--gold);}
+        .verify-action-btn{width:100%;padding:0.9rem;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:0.5rem;box-shadow:0 4px 15px rgba(201,144,58,0.3);}
+        .verify-action-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,144,58,0.4);}
+        .verify-action-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+        .otp-inputs{display:flex;gap:0.6rem;justify-content:center;margin-bottom:1.2rem;}
+        .otp-box{width:48px;height:56px;border:2px solid var(--border);border-radius:12px;text-align:center;font-size:1.4rem;font-weight:700;color:var(--navy);font-family:'Space Mono',monospace;outline:none;transition:0.2s;}
+        .otp-box:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,144,58,0.15);}
+        .otp-box.filled{border-color:var(--gold);background:rgba(201,144,58,0.05);}
+        .otp-box.error{border-color:var(--danger);background:rgba(239,68,68,0.05);}
+        .otp-error{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#dc2626;border-radius:8px;padding:0.6rem 0.9rem;font-size:0.8rem;margin-bottom:1rem;text-align:center;display:none;}
+        .verify-resend{text-align:center;font-size:0.82rem;color:var(--gray);margin-top:1rem;}
+        .verify-success-icon{width:80px;height:80px;background:rgba(16,185,129,0.12);border:2px solid rgba(16,185,129,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#10b981;margin:0 auto 1.2rem;animation:popInAnim 0.5s cubic-bezier(0.175,0.885,0.32,1.275);}
+        @keyframes popInAnim{from{transform:scale(0);}to{transform:scale(1);}}
+        .phone-input-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1rem;transition:0.2s;}
+        .phone-input-wrap:focus-within{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1);}
+        .phone-flag{padding:0.9rem 1rem;background:var(--light);font-size:0.875rem;font-weight:600;color:var(--navy);border-right:1.5px solid var(--border);white-space:nowrap;}
+        .phone-number-input{flex:1;padding:0.9rem 1rem;border:none;font-family:'DM Sans',sans-serif;font-size:0.95rem;color:var(--navy);outline:none;}
         .footer{background:var(--navy);color:white;padding:3rem 2rem 1.5rem;margin-top:3rem;border-radius:30px 30px 0 0;width:100%;}
         .footer-content{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2rem;}
         .footer-section h3{font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:1rem;color:var(--gold);}
@@ -269,10 +289,9 @@
         .social-links a{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:white;font-size:0.85rem;text-decoration:none;transition:background 0.2s;}
         .social-links a:hover{background:var(--gold);}
         .footer-bottom{text-align:center;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);font-size:0.8rem;max-width:1400px;margin:0 auto;}
-
         @media(max-width:1024px){.content-grid{grid-template-columns:1fr;}.quick-stats{grid-template-columns:repeat(2,1fr);}.footer-content{grid-template-columns:1fr 1fr;}}
         @media(max-width:768px){.app{padding:1rem;}.top-nav{padding:0 1rem;overflow-x:auto;border-radius:20px;}.quick-stats{grid-template-columns:repeat(2,1fr);}.profile-identity{flex-direction:column;align-items:flex-start;}.identity-actions{width:100%;}.btn-primary,.btn-outline{flex:1;justify-content:center;}.notif-popup{width:290px;}.footer-content{grid-template-columns:1fr 1fr;}}
-        @media(max-width:480px){.quick-stats{grid-template-columns:1fr 1fr;}.footer-content{grid-template-columns:1fr;}}
+        @media(max-width:480px){.quick-stats{grid-template-columns:1fr 1fr;}.footer-content{grid-template-columns:1fr;}.otp-box{width:40px;height:50px;font-size:1.2rem;}.otp-inputs{gap:0.4rem;}.location-fields .field-group{flex-direction:column;}}
     </style>
 </head>
 <body>
@@ -283,17 +302,17 @@
         <div class="logo">Contractor<span>Hub</span></div>
         <div class="nav-divider"></div>
         <div class="nav-menu">
-            <a href="{% url 'seller' %}"          class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
-            <a href="{% url 'create_proposal' %}"  class="nav-item"><i class="fas fa-file-alt"></i> Proposals</a>
-            <a href="{% url 'my_proposals' %}"     class="nav-item"><i class="fas fa-briefcase"></i> Active Work</a>
+            <a href="{% url 'seller' %}" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="{% url 'create_proposal' %}" class="nav-item"><i class="fas fa-file-alt"></i> Proposals</a>
+            <a href="{% url 'my_proposals' %}" class="nav-item"><i class="fas fa-briefcase"></i> Active Work</a>
         </div>
         <div class="right-icons">
             <div class="icon-dropdown">
                 <button class="icon-circle" onclick="toggleIconDrop('helpMenu')" title="Help"><i class="fas fa-question-circle"></i></button>
                 <div class="icon-drop-menu" id="helpMenu">
-                    <a href="{% url 'faqs' %}"     class="icon-drop-item"><i class="fas fa-question-circle"></i> FAQs</a>
+                    <a href="{% url 'faqs' %}" class="icon-drop-item"><i class="fas fa-question-circle"></i> FAQs</a>
                     <a href="{% url 'about_us' %}" class="icon-drop-item"><i class="fas fa-info-circle"></i> About Us</a>
-                    <a href="{% url 'privacy' %}"  class="icon-drop-item"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+                    <a href="{% url 'privacy' %}" class="icon-drop-item"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
                 </div>
             </div>
             <a href="{% url 'messages_page' %}" class="icon-circle" title="Messages"><i class="far fa-comment-dots"></i></a>
@@ -318,7 +337,7 @@
                         <div class="dropdown-user-info"><h4>{{ user.name|default:"Contractor" }}</h4><p>{{ profile.title|default:"Contractor" }} · Level {{ profile.level }}</p></div>
                     </div>
                     <a href="{% url 'seller_profile' %}" class="dropdown-item"><i class="fas fa-user-circle"></i> My Profile</a>
-                    <a href="{% url 'messages_page' %}"  class="dropdown-item"><i class="far fa-comment-dots"></i> Messages</a>
+                    <a href="{% url 'messages_page' %}" class="dropdown-item"><i class="far fa-comment-dots"></i> Messages</a>
                     <div class="dropdown-divider"></div>
                     <a href="{% url 'landing_page' %}?mode=client" class="dropdown-item client-mode"><i class="fas fa-exchange-alt"></i> Switch to Client</a>
                     <div class="dropdown-divider"></div>
@@ -346,7 +365,7 @@
                     <h1>{{ user.name }}</h1>
                     <div class="title-badge"><i class="fas fa-hard-hat"></i>{{ profile.title|default:"Add Your Title" }}</div>
                     <div class="meta">
-                        <span class="meta-item"><i class="fas fa-map-marker-alt"></i><span id="heroCity">{% if profile.city %}{{ profile.city }}, Pakistan{% else %}City not set{% endif %}</span></span>
+                        <span class="meta-item"><i class="fas fa-map-marker-alt"></i><span id="heroCity">{% if profile.area and profile.city %}{{ profile.area }}, {{ profile.city }}, Pakistan{% elif profile.city %}{{ profile.city }}, Pakistan{% elif profile.area %}{{ profile.area }}{% else %}Location not set{% endif %}</span></span>
                         <span class="meta-item"><i class="fas fa-clock"></i>Member since {{ user.date_joined|date:"Y" }}</span>
                         {% if profile.is_available %}<span class="meta-item"><i class="fas fa-check-circle" style="color:var(--success);"></i>Available for Work</span>{% else %}<span class="meta-item"><i class="fas fa-times-circle" style="color:var(--danger);"></i>Not Available</span>{% endif %}
                     </div>
@@ -370,91 +389,87 @@
     <!-- MAIN GRID -->
     <div class="content-grid">
     <div class="left-col">
-
-        <!-- About -->
         <div class="section-card">
             <div class="sc-header"><h3><i class="fas fa-user"></i> About Me</h3><a class="edit-link" onclick="openModal()"><i class="fas fa-pen"></i> Edit</a></div>
             <div class="sc-body">{% if profile.about %}<p class="about-text">{{ profile.about|linebreaksbr }}</p>{% else %}<div class="empty-state"><i class="fas fa-user-edit"></i><p>Apne baare mein kuch likhein</p></div>{% endif %}</div>
         </div>
-
-        <!-- Skills -->
         <div class="section-card">
             <div class="sc-header"><h3><i class="fas fa-tools"></i> Skills & Expertise</h3><a class="edit-link" onclick="openModal()"><i class="fas fa-pen"></i> Edit</a></div>
             <div class="sc-body">{% if profile.skills %}<div class="skills-wrap">{% for skill in profile.get_skills_list %}<span class="skill-tag"><i class="fas fa-tools"></i> {{ skill }}</span>{% endfor %}</div>{% else %}<div class="empty-state"><i class="fas fa-tools"></i><p>Koi skill add nahi ki abhi tak</p></div>{% endif %}</div>
         </div>
 
-        <!-- ══ LOCATION CARD (outside modal) ══ -->
+        <!-- LOCATION CARD - NEW DESIGN -->
         <div class="location-card">
             <div class="loc-head">
                 <h3><i class="fas fa-map-marker-alt"></i> My Location</h3>
-                <div class="city-pill" id="cityPill">
+                <div class="location-pill {% if profile.city or profile.area %}show{% endif %}" id="locationPill">
                     <i class="fas fa-check-circle"></i>
-                    <span id="cityName">{% if profile.city %}{{ profile.city }}{% endif %}</span>
+                    <span id="locationName">{% if profile.area and profile.city %}{{ profile.area }}, {{ profile.city }}{% elif profile.city %}{{ profile.city }}{% elif profile.area %}{{ profile.area }}{% else %}Not set{% endif %}</span>
                 </div>
             </div>
-
-            <!-- map always visible -->
             <div id="locationMap"></div>
-
-            <!-- footer: button + save form -->
             <div class="map-footer">
                 <button type="button" class="gps-btn" id="gpsBtn" onclick="detectLocation()">
                     <i class="fas fa-location-arrow" id="gpsIcon"></i>
-                    <span id="gpsBtnText">Add Location</span>
+                    <span id="gpsBtnText">{% if profile.city or profile.area %}Update Town{% else %}Detect Town{% endif %}</span>
                 </button>
                 <div class="loc-err" id="locErr"></div>
             </div>
-
-            <!-- hidden form to save city -->
+            
+            <!-- Manual Location Fields -->
+            <div class="location-fields">
+                <div class="field-group">
+                    <select id="manualCitySelect" onchange="updateLocationDisplay()">
+                        <option value="">-- Select City --</option>
+                        <optgroup label="Punjab">
+                            <option value="Lahore" {% if profile.city == 'Lahore' %}selected{% endif %}>Lahore</option>
+                            <option value="Faisalabad" {% if profile.city == 'Faisalabad' %}selected{% endif %}>Faisalabad</option>
+                            <option value="Rawalpindi" {% if profile.city == 'Rawalpindi' %}selected{% endif %}>Rawalpindi</option>
+                            <option value="Gujranwala" {% if profile.city == 'Gujranwala' %}selected{% endif %}>Gujranwala</option>
+                            <option value="Multan" {% if profile.city == 'Multan' %}selected{% endif %}>Multan</option>
+                            <option value="Sialkot" {% if profile.city == 'Sialkot' %}selected{% endif %}>Sialkot</option>
+                        </optgroup>
+                        <optgroup label="Sindh">
+                            <option value="Karachi" {% if profile.city == 'Karachi' %}selected{% endif %}>Karachi</option>
+                            <option value="Hyderabad" {% if profile.city == 'Hyderabad' %}selected{% endif %}>Hyderabad</option>
+                        </optgroup>
+                        <optgroup label="KPK">
+                            <option value="Peshawar" {% if profile.city == 'Peshawar' %}selected{% endif %}>Peshawar</option>
+                            <option value="Abbottabad" {% if profile.city == 'Abbottabad' %}selected{% endif %}>Abbottabad</option>
+                        </optgroup>
+                        <optgroup label="Balochistan">
+                            <option value="Quetta" {% if profile.city == 'Quetta' %}selected{% endif %}>Quetta</option>
+                        </optgroup>
+                        <optgroup label="Islamabad">
+                            <option value="Islamabad" {% if profile.city == 'Islamabad' %}selected{% endif %}>Islamabad</option>
+                        </optgroup>
+                    </select>
+                    <input type="text" id="manualTownInput" placeholder="Town/Area Name (e.g., Batapur, Gulberg)" value="{{ profile.area|default:'' }}" oninput="updateLocationDisplay()">
+                </div>
+                <button class="save-loc-btn" onclick="saveManualLocation()">
+                    <i class="fas fa-save"></i> Save Location
+                </button>
+                <div class="manual-hint">
+                    <i class="fas fa-info-circle"></i> Map se town auto detect hota hai, city ap manually select karein
+                </div>
+            </div>
+            
             <form method="POST" action="{% url 'seller_profile' %}" id="locationForm" style="display:none;">
                 {% csrf_token %}
                 <input type="hidden" name="city" id="cityHidden" value="{{ profile.city|default:'' }}">
+                <input type="hidden" name="area" id="areaHidden" value="{{ profile.area|default:'' }}">
                 <input type="hidden" name="location_only" value="1">
             </form>
-
-            <span class="manual-toggle" onclick="toggleManual()"><i class="fas fa-edit" style="margin-right:3px;"></i>Manually city select karein</span>
-            <div class="manual-fallback" id="manualFallback">
-                <select onchange="setManualCity(this.value)">
-                    <option value="">-- Apna shehar chunein --</option>
-                    <optgroup label="Punjab">
-                        <option value="Lahore" {% if profile.city == 'Lahore' %}selected{% endif %}>Lahore</option>
-                        <option value="Faisalabad" {% if profile.city == 'Faisalabad' %}selected{% endif %}>Faisalabad</option>
-                        <option value="Rawalpindi" {% if profile.city == 'Rawalpindi' %}selected{% endif %}>Rawalpindi</option>
-                        <option value="Gujranwala" {% if profile.city == 'Gujranwala' %}selected{% endif %}>Gujranwala</option>
-                        <option value="Multan" {% if profile.city == 'Multan' %}selected{% endif %}>Multan</option>
-                        <option value="Sialkot" {% if profile.city == 'Sialkot' %}selected{% endif %}>Sialkot</option>
-                    </optgroup>
-                    <optgroup label="Sindh">
-                        <option value="Karachi" {% if profile.city == 'Karachi' %}selected{% endif %}>Karachi</option>
-                        <option value="Hyderabad" {% if profile.city == 'Hyderabad' %}selected{% endif %}>Hyderabad</option>
-                    </optgroup>
-                    <optgroup label="KPK">
-                        <option value="Peshawar" {% if profile.city == 'Peshawar' %}selected{% endif %}>Peshawar</option>
-                        <option value="Abbottabad" {% if profile.city == 'Abbottabad' %}selected{% endif %}>Abbottabad</option>
-                    </optgroup>
-                    <optgroup label="Balochistan">
-                        <option value="Quetta" {% if profile.city == 'Quetta' %}selected{% endif %}>Quetta</option>
-                    </optgroup>
-                    <optgroup label="Islamabad">
-                        <option value="Islamabad" {% if profile.city == 'Islamabad' %}selected{% endif %}>Islamabad</option>
-                    </optgroup>
-                </select>
-            </div>
         </div>
 
-        <!-- Experience -->
         <div class="section-card">
             <div class="sc-header"><h3><i class="fas fa-history"></i> Work Experience</h3><a class="edit-link" onclick="openExpModal()"><i class="fas fa-plus"></i> Add</a></div>
             <div class="sc-body">{% if experiences %}<div class="timeline">{% for exp in experiences %}<div class="timeline-item"><div class="tl-icon"><i class="fas fa-briefcase"></i></div><div class="tl-content"><div class="tl-title">{{ exp.job_title }}</div><div class="tl-company">{{ exp.company }}{% if exp.city %} · {{ exp.city }}{% endif %}</div><div class="tl-period">{{ exp.start_date|date:"M Y" }} — {% if exp.is_current %}Present{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}</div>{% if exp.description %}<div class="tl-desc">{{ exp.description }}</div>{% endif %}</div></div>{% endfor %}</div>{% else %}<div class="empty-state"><i class="fas fa-briefcase"></i><p>Koi experience add nahi ki abhi tak</p></div>{% endif %}</div>
         </div>
-
-        <!-- Certificates -->
         <div class="section-card">
             <div class="sc-header"><h3><i class="fas fa-certificate"></i> Certificates</h3><a class="edit-link" onclick="openCertModal()"><i class="fas fa-plus"></i> Add</a></div>
             <div class="sc-body">{% if certificates %}<div class="cert-list">{% for cert in certificates %}<div class="cert-item"><div class="cert-icon"><i class="fas fa-file-alt"></i></div><div class="cert-info"><div class="cert-title">{{ cert.title }}</div><div class="cert-date">Uploaded {{ cert.uploaded_at|date:"M d, Y" }}</div></div><a href="{{ cert.file.url }}" target="_blank" class="cert-view-btn"><i class="fas fa-eye"></i> View</a></div>{% endfor %}</div>{% else %}<div class="empty-state"><i class="fas fa-certificate"></i><p>Koi certificate add nahi</p></div>{% endif %}</div>
         </div>
-
-        <!-- Reviews -->
         <div class="section-card">
             <div class="sc-header">
                 <h3><i class="fas fa-star"></i> Client Reviews</h3>
@@ -487,7 +502,6 @@
                 {% else %}<div class="empty-state"><i class="fas fa-star"></i><p>Abhi tak koi review nahi</p></div>{% endif %}
             </div>
         </div>
-
     </div>
 
     <!-- RIGHT SIDEBAR -->
@@ -523,27 +537,58 @@
                 </div>
             </div>
         </div>
+
+        <!-- VERIFICATION CARD -->
         <div class="sidebar-card">
             <div class="sc-header"><h3><i class="fas fa-shield-alt"></i> Verification</h3></div>
             <div class="sc-body">
-                <div class="verify-item"><div class="verify-icon done"><i class="fas fa-envelope"></i></div><div><div class="verify-label">Email Verified</div><div class="verify-status">{{ user.email }}</div></div><i class="fas fa-check-circle verify-check done"></i></div>
-                <div class="verify-item"><div class="verify-icon {% if user.phone %}done{% else %}pending{% endif %}"><i class="fas fa-phone"></i></div><div><div class="verify-label">Phone</div><div class="verify-status">{{ user.phone|default:"Not added" }}</div></div><i class="fas {% if user.phone %}fa-check-circle verify-check done{% else %}fa-clock verify-check pending{% endif %}"></i></div>
-                <div class="verify-item"><div class="verify-icon pending"><i class="fas fa-id-card"></i></div><div><div class="verify-label">CNIC</div><div class="verify-status">Not verified yet</div></div><i class="fas fa-clock verify-check pending"></i></div>
+                <div class="verify-item {% if not user.is_email_verified %}clickable{% endif %}"
+                     {% if not user.is_email_verified %}onclick="openEmailVerifyPopup()"{% endif %}>
+                    <div class="verify-icon {% if user.is_email_verified %}done{% else %}pending{% endif %}">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                        <div class="verify-label">Email</div>
+                        <div class="verify-status {% if not user.is_email_verified %}clickable-hint{% endif %}">
+                            {% if user.is_email_verified %}{{ user.email }}{% else %}Tap to verify →{% endif %}
+                        </div>
+                    </div>
+                    <i class="fas {% if user.is_email_verified %}fa-check-circle verify-check done{% else %}fa-clock verify-check pending{% endif %}"></i>
+                </div>
+                <div class="verify-item clickable" onclick="openPhonePopup()">
+                    <div class="verify-icon {% if user.is_phone_verified %}done{% else %}pending{% endif %}">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div>
+                        <div class="verify-label">Phone</div>
+                        <div class="verify-status {% if not user.is_phone_verified %}clickable-hint{% endif %}">
+                            {% if user.is_phone_verified %}{{ user.phone }}{% else %}Tap to verify →{% endif %}
+                        </div>
+                    </div>
+                    <i class="fas {% if user.is_phone_verified %}fa-check-circle verify-check done{% else %}fa-clock verify-check pending{% endif %}"></i>
+                </div>
             </div>
         </div>
+
         <div class="sidebar-card">
             <div class="sc-header"><h3><i class="fas fa-address-book"></i> Contact Info</h3></div>
             <div class="sc-body">
                 <div class="verify-item"><div class="verify-icon done"><i class="fas fa-phone"></i></div><div><div class="verify-label">{{ user.phone|default:"Phone not added" }}</div><div class="verify-status">Call or WhatsApp</div></div></div>
                 <div class="verify-item"><div class="verify-icon done" style="background:rgba(26,58,107,0.1);color:var(--blue);"><i class="fas fa-envelope"></i></div><div><div class="verify-label">{{ user.email }}</div><div class="verify-status">Response within 2 hrs</div></div></div>
-                <div class="verify-item"><div class="verify-icon done" style="background:rgba(16,185,129,0.1);color:var(--success);"><i class="fas fa-map-marker-alt"></i></div><div><div class="verify-label" id="sidebarCity">{% if profile.city %}{{ profile.city }}, Pakistan{% else %}Location not set{% endif %}</div><div class="verify-status">{% if profile.city %}Serves all {{ profile.city }} zones{% else %}Set location below{% endif %}</div></div></div>
+                <div class="verify-item">
+                    <div class="verify-icon done" style="background:rgba(16,185,129,0.1);color:var(--success);"><i class="fas fa-map-marker-alt"></i></div>
+                    <div>
+                        <div class="verify-label" id="sidebarCity">{% if profile.area and profile.city %}{{ profile.area }}, {{ profile.city }}, Pakistan{% elif profile.city %}{{ profile.city }}, Pakistan{% elif profile.area %}{{ profile.area }}{% else %}Location not set{% endif %}</div>
+                        <div class="verify-status">{% if profile.city %}Serves {{ profile.city }} area{% else %}Set location below{% endif %}</div>
+                    </div>
+                </div>
                 <button class="btn-primary" style="width:100%;margin-top:1rem;justify-content:center;"><i class="fas fa-paper-plane"></i> Send Message</button>
             </div>
         </div>
     </div>
-    </div><!-- content-grid -->
+    </div>
 
-</div><!-- .app -->
+</div>
 
 <!-- FOOTER -->
 <footer class="footer">
@@ -556,7 +601,7 @@
     <div class="footer-bottom"><p>&copy; {% now "Y" %} ContractorHub. All rights reserved.</p></div>
 </footer>
 
-<!-- EDIT PROFILE MODAL (no city field — managed by map below) -->
+<!-- EDIT PROFILE MODAL -->
 <div class="modal-overlay" id="editModal" onclick="closeOnOverlay(event)">
     <div class="modal">
         <div class="modal-header"><h3><i class="fas fa-pen"></i> Edit Profile</h3><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div>
@@ -638,15 +683,106 @@
     </div>
 </div>
 
+<!-- EMAIL VERIFY POPUP -->
+<div class="verify-overlay" id="emailVerifyOverlay" onclick="closeEmailPopupOnOverlay(event)">
+    <div class="verify-popup">
+        <div class="verify-popup-header">
+            <div class="verify-popup-icon"><i class="fas fa-envelope"></i></div>
+            <button class="verify-popup-close" onclick="closeEmailPopup()"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="emailStep1">
+            <h3 class="verify-popup-title">Verify Your Email</h3>
+            <p class="verify-popup-sub">Aapki email pe ek 6-digit code bheja jaayega</p>
+            <div class="verify-email-display"><i class="fas fa-envelope"></i><strong>{{ user.email }}</strong></div>
+            <p class="verify-popup-note"><i class="fas fa-clock"></i> Code 24 ghante mein expire hoga</p>
+            <button class="verify-action-btn" id="sendOtpBtn" onclick="sendEmailOTP()"><i class="fas fa-paper-plane"></i> Send Verification Code</button>
+        </div>
+        <div id="emailStep2" style="display:none;">
+            <h3 class="verify-popup-title">Code Enter Karein</h3>
+            <p class="verify-popup-sub"><strong>{{ user.email }}</strong> pe 6-digit code bheja gaya</p>
+            <div class="otp-inputs">
+                <input type="text" class="otp-box" maxlength="1" oninput="otpInput(this,0)" onkeydown="otpBackspace(event,this,0)">
+                <input type="text" class="otp-box" maxlength="1" oninput="otpInput(this,1)" onkeydown="otpBackspace(event,this,1)">
+                <input type="text" class="otp-box" maxlength="1" oninput="otpInput(this,2)" onkeydown="otpBackspace(event,this,2)">
+                <input type="text" class="otp-box" maxlength="1" oninput="otpInput(this,3)" onkeydown="otpBackspace(event,this,3)">
+                <input type="text" class="otp-box" maxlength="1" oninput="otpInput(this,4)" onkeydown="otpBackspace(event,this,4)">
+                <input type="text" class="otp-box" maxlength="1" oninput="otpInput(this,5)" onkeydown="otpBackspace(event,this,5)">
+            </div>
+            <div class="otp-error" id="otpError"></div>
+            <button class="verify-action-btn" id="verifyOtpBtn" onclick="verifyEmailOTP()"><i class="fas fa-check-circle"></i> Verify Code</button>
+            <div class="verify-resend">Code nahi mila? <span onclick="resendOTP()" style="color:var(--gold);cursor:pointer;font-weight:600;">Resend</span></div>
+        </div>
+        <div id="emailStep3" style="display:none;text-align:center;padding:1rem 0;">
+            <div class="verify-success-icon"><i class="fas fa-check"></i></div>
+            <h3 class="verify-popup-title">Email Verified! 🎉</h3>
+            <p class="verify-popup-sub" style="margin-bottom:1.5rem;">Aapki email successfully verify ho gayi!</p>
+            <button class="verify-action-btn" onclick="closeEmailPopup();location.reload();"><i class="fas fa-arrow-right"></i> Continue</button>
+        </div>
+    </div>
+</div>
+
+<!-- PHONE VERIFY POPUP -->
+<div class="verify-overlay" id="phoneVerifyOverlay" onclick="closePhonePopupOnOverlay(event)">
+    <div class="verify-popup">
+        <div class="verify-popup-header">
+            <div class="verify-popup-icon" style="background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.3);">
+                <i class="fas fa-phone" style="color:#3b82f6;"></i>
+            </div>
+            <button class="verify-popup-close" onclick="closePhonePopup()"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="phoneStep1">
+            <h3 class="verify-popup-title">Phone Verify Karein</h3>
+            <p class="verify-popup-sub">Apna Pakistan number enter karein — OTP SMS pe aayega</p>
+            <div class="phone-input-wrap">
+                <span class="phone-flag">🇵🇰 +92</span>
+                <input type="tel" class="phone-number-input" id="phoneNumberInput" placeholder="3XX XXXXXXX" maxlength="10" value="{{ user.phone|slice:'3:'|default:'' }}">
+            </div>
+            <p class="verify-popup-note" style="margin-bottom:1.5rem;"><i class="fas fa-shield-alt"></i> OTP sirf aapke phone pe aayega</p>
+            <div id="recaptcha-container" style="margin-bottom:0.5rem;"></div>
+            <button class="verify-action-btn" id="sendSmsBtn" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);color:white;box-shadow:0 4px 15px rgba(59,130,246,0.3);" onclick="sendSmsOTP()">
+                <i class="fas fa-sms"></i> Send OTP
+            </button>
+        </div>
+        <div id="phoneStep2" style="display:none;">
+            <h3 class="verify-popup-title">OTP Enter Karein</h3>
+            <p class="verify-popup-sub">6-digit code bheja gaya: <strong id="phoneDisplayNum"></strong></p>
+            <div class="otp-inputs">
+                <input type="text" class="otp-box phone-otp-box" maxlength="1" oninput="phoneOtpInput(this,0)" onkeydown="phoneOtpBackspace(event,this,0)">
+                <input type="text" class="otp-box phone-otp-box" maxlength="1" oninput="phoneOtpInput(this,1)" onkeydown="phoneOtpBackspace(event,this,1)">
+                <input type="text" class="otp-box phone-otp-box" maxlength="1" oninput="phoneOtpInput(this,2)" onkeydown="phoneOtpBackspace(event,this,2)">
+                <input type="text" class="otp-box phone-otp-box" maxlength="1" oninput="phoneOtpInput(this,3)" onkeydown="phoneOtpBackspace(event,this,3)">
+                <input type="text" class="otp-box phone-otp-box" maxlength="1" oninput="phoneOtpInput(this,4)" onkeydown="phoneOtpBackspace(event,this,4)">
+                <input type="text" class="otp-box phone-otp-box" maxlength="1" oninput="phoneOtpInput(this,5)" onkeydown="phoneOtpBackspace(event,this,5)">
+            </div>
+            <div class="otp-error" id="phoneOtpError"></div>
+            <button class="verify-action-btn" id="verifyPhoneBtn" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);color:white;box-shadow:0 4px 15px rgba(59,130,246,0.3);" onclick="verifySmsOTP()">
+                <i class="fas fa-check-circle"></i> Verify OTP
+            </button>
+            <div class="verify-resend">Code nahi mila? <span onclick="resetPhonePopup()" style="color:#3b82f6;cursor:pointer;font-weight:600;">Resend</span></div>
+        </div>
+        <div id="phoneStep3" style="display:none;text-align:center;padding:1rem 0;">
+            <div class="verify-success-icon"><i class="fas fa-check"></i></div>
+            <h3 class="verify-popup-title">Phone Verified! 🎉</h3>
+            <p class="verify-popup-sub" style="margin-bottom:1.5rem;">Aapka phone number successfully verify ho gaya!</p>
+            <button class="verify-action-btn" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);color:white;" onclick="closePhonePopup();location.reload();">
+                <i class="fas fa-arrow-right"></i> Continue
+            </button>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+
 <script>
-// ── NAV ──
+// ══ NAV ══
 function toggleIconDrop(id){const m=document.getElementById(id);const w=m.classList.contains('show');document.querySelectorAll('.icon-drop-menu,.dropdown-menu').forEach(x=>x.classList.remove('show'));document.getElementById('notifPopup').classList.remove('show');if(!w)m.classList.add('show');}
 function toggleNotif(e){e.preventDefault();e.stopPropagation();const p=document.getElementById('notifPopup');const w=p.classList.contains('show');document.querySelectorAll('.icon-drop-menu,.dropdown-menu').forEach(x=>x.classList.remove('show'));p.classList.toggle('show',!w);}
 function toggleDropdown(){const m=document.getElementById('profileDropdown');const w=m.classList.contains('show');document.querySelectorAll('.icon-drop-menu').forEach(x=>x.classList.remove('show'));document.getElementById('notifPopup').classList.remove('show');m.classList.toggle('show',!w);}
 document.addEventListener('click',function(e){document.querySelectorAll('.icon-drop-menu').forEach(m=>{if(!m.closest('.icon-dropdown').contains(e.target))m.classList.remove('show');});const np=document.getElementById('notifPopup');const nb=document.getElementById('notifBtn');if(nb&&!nb.contains(e.target)&&!np.contains(e.target))np.classList.remove('show');const pd=document.getElementById('profileDropdown');const ap=document.querySelector('.avatar-pill');if(ap&&!ap.contains(e.target)&&pd&&!pd.contains(e.target))pd.classList.remove('show');});
 
-// ── MODALS ──
+// ══ MODALS ══
 function openModal(){document.getElementById('editModal').classList.add('open');document.body.style.overflow='hidden';}
 function closeModal(){document.getElementById('editModal').classList.remove('open');document.body.style.overflow='';}
 function closeOnOverlay(e){if(e.target===document.getElementById('editModal'))closeModal();}
@@ -656,384 +792,318 @@ function closeOnOverlayExp(e){if(e.target===document.getElementById('expModal'))
 function openCertModal(){document.getElementById('certModal').classList.add('open');document.body.style.overflow='hidden';}
 function closeCertModal(){document.getElementById('certModal').classList.remove('open');document.body.style.overflow='';}
 function closeOnOverlayCert(e){if(e.target===document.getElementById('certModal'))closeCertModal();}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeExpModal();closeCertModal();}});
-
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeExpModal();closeCertModal();closeEmailPopup();closePhonePopup();}});
 function toggleCurrentJob(cb){const i=document.getElementById('endDateInput');i.disabled=cb.checked;i.style.opacity=cb.checked?'0.4':'1';if(cb.checked)i.value='';}
 function showCertFileName(i){const n=document.getElementById('certFileName');if(i.files[0]){n.textContent='✓ '+i.files[0].name;n.style.display='block';}}
 function previewPhoto(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){const img=document.getElementById('avatarImg');const ini=document.getElementById('avatarInitial');img.src=ev.target.result;img.style.display='block';if(ini)ini.style.display='none';};r.readAsDataURL(f);}
 function selectTag(el){document.querySelectorAll('.tag-pill').forEach(p=>p.classList.remove('selected'));el.classList.add('selected');document.getElementById('selectedTag').value=el.innerText.trim();}
 function toggleAvailability(el){el.classList.toggle('on');const isAv=el.classList.contains('on');document.getElementById('availSubText').textContent=isAv?'Currently accepting projects':'Not accepting projects';const f=document.createElement('form');f.method='POST';f.action="{% url 'seller_profile' %}";f.innerHTML=`{% csrf_token %}<input name="is_available" value="${isAv?'on':'off'}"><input name="availability_only" value="1">`;document.body.appendChild(f);f.submit();}
 
-// ════════════════════════════════
-// MAP + GPS — same as client_profile
-// ════════════════════════════════
+// ══ MAP - Only gets town/area from map ══
 let map, marker;
-const CITY_COORDS={'Lahore':[31.5204,74.3587],'Karachi':[24.8607,67.0011],'Islamabad':[33.6844,73.0479],'Rawalpindi':[33.5651,73.0169],'Faisalabad':[31.4504,73.1350],'Multan':[30.1575,71.5249],'Peshawar':[34.0150,71.5805],'Quetta':[30.1798,66.9750],'Gujranwala':[32.1614,74.1883],'Sialkot':[32.4945,74.5229],'Hyderabad':[25.3960,68.3578],'Sukkur':[27.7052,68.8574],'Abbottabad':[34.1463,73.2117]};
-
 const goldIcon=()=>L.divIcon({html:`<div style="width:28px;height:28px;background:linear-gradient(135deg,#c9903a,#e8a84a);border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2.5px solid white;box-shadow:0 3px 12px rgba(201,144,58,0.55);"></div>`,iconSize:[28,28],iconAnchor:[14,28],className:''});
 
-function initMap(){
-    map=L.map('locationMap',{zoomControl:true}).setView([30.3753,69.3451],6);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(map);
-    const saved='{{ profile.city|default:"" }}';
-    if(saved){const c=CITY_COORDS[saved];if(c)placePin(c[0],c[1],saved,false);document.getElementById('cityPill').classList.add('show');}
-    map.on('click',async function(e){placePin(e.latlng.lat,e.latlng.lng,null,true);const city=await reverseGeocode(e.latlng.lat,e.latlng.lng);saveCity(city,e.latlng.lat,e.latlng.lng);});
+// Get town/area from map click
+async function getTownFromMap(lat, lon) {
+    try {
+        const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`, {
+            headers: {'Accept-Language': 'en'}
+        });
+        const d = await r.json();
+        const a = d.address || {};
+        
+        // Get town/area - suburb, neighbourhood, village, quarter, hamlet, town
+        let town = a.suburb || a.neighbourhood || a.village || a.quarter || a.hamlet || a.town || '';
+        
+        console.log('Town detected:', town);
+        return town;
+    } catch (error) {
+        console.error('Error getting town:', error);
+        return '';
+    }
 }
 
-function placePin(lat,lon,label,animate){
-    if(marker)map.removeLayer(marker);
-    marker=L.marker([lat,lon],{icon:goldIcon(),draggable:true}).addTo(map);
-    if(animate)map.flyTo([lat,lon],13,{duration:1.2});else map.setView([lat,lon],13);
-    if(label)marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${label}</b>`).openPopup();
-    marker.on('dragend',async function(e){const pos=e.target.getLatLng();const city=await reverseGeocode(pos.lat,pos.lng);saveCity(city,pos.lat,pos.lng);marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${city}</b>`).openPopup();});
+function initMap() {
+    map = L.map('locationMap', {zoomControl:true}).setView([30.3753, 69.3451], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OpenStreetMap', maxZoom:19}).addTo(map);
+
+    const savedCity = '{{ profile.city|default:"" }}';
+    const savedArea = '{{ profile.area|default:"" }}';
+
+    if (savedCity || savedArea) {
+        // Try to center map on saved location if coordinates exist
+        const savedLat = '{{ profile.latitude|default:"" }}';
+        const savedLng = '{{ profile.longitude|default:"" }}';
+        if (savedLat && savedLng) {
+            placePin(parseFloat(savedLat), parseFloat(savedLng), savedArea ? `${savedArea}, ${savedCity}` : savedCity, false);
+        }
+        updateLocationDisplay();
+    }
+    
+    marker = null;
+
+    // Map click - only gets town/area
+    map.on('click', async function(e) {
+        try {
+            const gpsBtn = document.getElementById('gpsBtn');
+            gpsBtn.disabled = true;
+            
+            placePin(e.latlng.lat, e.latlng.lng, null, true);
+            
+            // Get town from map
+            const town = await getTownFromMap(e.latlng.lat, e.latlng.lng);
+            
+            if (town) {
+                // Update the town input field
+                document.getElementById('manualTownInput').value = town;
+                updateLocationDisplay();
+                
+                // Show success message
+                showErr('Town detected: ' + town, 'success');
+            } else {
+                showErr('No town/area detected at this location. You can enter manually.', 'warning');
+            }
+            
+            gpsBtn.disabled = false;
+        } catch (error) {
+            console.error('Map click error:', error);
+            showErr('Error detecting location. Please try again.');
+            document.getElementById('gpsBtn').disabled = false;
+        }
+    });
 }
 
-function saveCity(city,lat,lon){
-    document.getElementById('cityHidden').value=city;
-    document.getElementById('cityName').textContent=city;
-    document.getElementById('cityPill').classList.add('show');
-    document.getElementById('heroCity').textContent=city+', Pakistan';
-    document.getElementById('sidebarCity').textContent=city+', Pakistan';
-    document.getElementById('locErr').className='loc-err';
-    document.getElementById('gpsBtnText').textContent='Update Location';
-    document.getElementById('gpsIcon').className='fas fa-check';
-    setTimeout(()=>{document.getElementById('gpsIcon').className='fas fa-location-arrow';},2000);
-    // Auto-save to DB
-    document.getElementById('locationForm').submit();
+function placePin(lat, lon, label, animate) {
+    if (marker) map.removeLayer(marker);
+    marker = L.marker([lat, lon], {icon: goldIcon(), draggable: true}).addTo(map);
+    if (animate) map.flyTo([lat, lon], 13, {duration: 1.2});
+    else map.setView([lat, lon], 13);
+    if (label) marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${label}</b>`).openPopup();
+
+    // Marker drag end - update town
+    marker.on('dragend', async function(e) {
+        try {
+            const pos = e.target.getLatLng();
+            const town = await getTownFromMap(pos.lat, pos.lng);
+            if (town) {
+                document.getElementById('manualTownInput').value = town;
+                updateLocationDisplay();
+                marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${town}</b>`).openPopup();
+                showErr('Town updated: ' + town, 'success');
+            }
+        } catch (error) {
+            console.error('Marker drag error:', error);
+        }
+    });
 }
 
-async function detectLocation(){
-    if(!navigator.geolocation){showErr('GPS support nahi hai. Map pe click karein.');return;}
-    const btn=document.getElementById('gpsBtn');const icon=document.getElementById('gpsIcon');const txt=document.getElementById('gpsBtnText');
-    btn.disabled=true;icon.className='fas fa-spinner spin';txt.textContent='Locating…';
+// GPS detection - only gets town/area
+async function detectLocation() {
+    if (!navigator.geolocation) { 
+        showErr('GPS support nahi hai.'); 
+        return;
+    }
+    
+    const btn = document.getElementById('gpsBtn');
+    const icon = document.getElementById('gpsIcon');
+    const txt = document.getElementById('gpsBtnText');
+    
+    btn.disabled = true;
+    icon.className = 'fas fa-spinner spin';
+    txt.textContent = 'Locating...';
+    
     navigator.geolocation.getCurrentPosition(
-        async pos=>{const{latitude:lat,longitude:lon}=pos.coords;placePin(lat,lon,null,true);const city=await reverseGeocode(lat,lon);saveCity(city,lat,lon);marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${city}</b>`).openPopup();btn.disabled=false;txt.textContent='Update Location';},
-        err=>{btn.disabled=false;icon.className='fas fa-location-arrow';txt.textContent='Add Location';const msgs={1:'Permission denied. Settings mein location allow karein ya map pe click karein.',2:'Location unavailable.',3:'Timeout. Dobara try karein.'};showErr(msgs[err.code]||'Location detect nahi hui.');toggleManual();},
-        {enableHighAccuracy:true,timeout:10000,maximumAge:0}
+        async pos => {
+            try {
+                const { latitude: lat, longitude: lon } = pos.coords;
+                placePin(lat, lon, null, true);
+                
+                const town = await getTownFromMap(lat, lon);
+                if (town) {
+                    document.getElementById('manualTownInput').value = town;
+                    updateLocationDisplay();
+                    marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${town}</b>`).openPopup();
+                    showErr('Town detected: ' + town, 'success');
+                } else {
+                    showErr('No town/area detected. Please enter manually.', 'warning');
+                }
+                
+                btn.disabled = false;
+                txt.textContent = 'Detect Town';
+            } catch (error) {
+                console.error('Location error:', error);
+                btn.disabled = false;
+                icon.className = 'fas fa-location-arrow';
+                txt.textContent = 'Detect Town';
+                showErr('Error detecting location.');
+            }
+        },
+        err => {
+            btn.disabled = false;
+            icon.className = 'fas fa-location-arrow';
+            txt.textContent = 'Detect Town';
+            const msgs = {1: 'Permission denied.', 2: 'Location unavailable.', 3: 'Timeout.'};
+            showErr(msgs[err.code] || 'Error');
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
 }
 
-function showErr(msg){const e=document.getElementById('locErr');e.textContent='⚠ '+msg;e.className='loc-err show';}
+function showErr(msg, type = 'error') {
+    const e = document.getElementById('locErr');
+    if (type === 'success') {
+        e.style.background = 'rgba(16,185,129,0.08)';
+        e.style.borderColor = 'rgba(16,185,129,0.25)';
+        e.style.color = '#059669';
+    } else {
+        e.style.background = 'rgba(239,68,68,0.08)';
+        e.style.borderColor = 'rgba(239,68,68,0.15)';
+        e.style.color = '#ef4444';
+    }
+    e.textContent = '⚠ ' + msg;
+    e.className = 'loc-err show';
+    setTimeout(() => {
+        e.className = 'loc-err';
+    }, 3000);
+}
 
-async function reverseGeocode(lat,lon){try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,{headers:{'Accept-Language':'en'}});const d=await r.json();const a=d.address||{};return a.city||a.town||a.county||a.state_district||a.state||'Unknown';}catch{return 'Unknown';}}
+// Update display when city/town changes
+function updateLocationDisplay() {
+    const city = document.getElementById('manualCitySelect').value;
+    const town = document.getElementById('manualTownInput').value;
+    
+    let displayText = '';
+    if (town && city) {
+        displayText = `${town}, ${city}`;
+    } else if (city) {
+        displayText = city;
+    } else if (town) {
+        displayText = town;
+    } else {
+        displayText = 'Not set';
+    }
+    
+    document.getElementById('locationName').textContent = displayText;
+    if (city || town) {
+        document.getElementById('locationPill').classList.add('show');
+    } else {
+        document.getElementById('locationPill').classList.remove('show');
+    }
+    
+    // Update hero and sidebar
+    const heroText = (town && city) ? `${town}, ${city}, Pakistan` : (city ? `${city}, Pakistan` : (town ? town : 'Location not set'));
+    document.getElementById('heroCity').textContent = heroText;
+    
+    const sidebarText = (town && city) ? `${town}, ${city}, Pakistan` : (city ? `${city}, Pakistan` : (town ? town : 'Location not set'));
+    document.getElementById('sidebarCity').textContent = sidebarText;
+}
 
-function toggleManual(){document.getElementById('manualFallback').classList.toggle('show');}
-function setManualCity(val){if(!val)return;const c=CITY_COORDS[val];if(c){placePin(c[0],c[1],val,true);saveCity(val,c[0],c[1]);marker.bindPopup(`<b style="font-family:'DM Sans',sans-serif;color:#0a1628;">📍 ${val}</b>`).openPopup();}else{saveCity(val,0,0);}document.getElementById('manualFallback').classList.remove('show');}
+// Save manual location
+function saveManualLocation() {
+    const city = document.getElementById('manualCitySelect').value;
+    const town = document.getElementById('manualTownInput').value;
+    
+    if (!city && !town) {
+        showErr('Please select city or enter town name');
+        return;
+    }
+    
+    document.getElementById('cityHidden').value = city;
+    document.getElementById('areaHidden').value = town;
+    document.getElementById('locationForm').submit();
+}
 
-window.addEventListener('DOMContentLoaded',()=>{
+window.addEventListener('DOMContentLoaded', () => {
     initMap();
-    if(document.getElementById('cityHidden').value)document.getElementById('cityPill').classList.add('show');
+    updateLocationDisplay();
 });
+
+// ══ EMAIL VERIFY ══
+function openEmailVerifyPopup(){document.getElementById('emailVerifyOverlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeEmailPopup(){document.getElementById('emailVerifyOverlay').classList.remove('open');document.body.style.overflow='';}
+function closeEmailPopupOnOverlay(e){if(e.target===document.getElementById('emailVerifyOverlay'))closeEmailPopup();}
+async function sendEmailOTP(){const btn=document.getElementById('sendOtpBtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...';try{const res=await fetch('/send-email-otp/',{headers:{'X-Requested-With':'XMLHttpRequest'}});const data=await res.json();if(data.success){document.getElementById('emailStep1').style.display='none';document.getElementById('emailStep2').style.display='block';document.querySelectorAll('.otp-box')[0].focus();}else{btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> Send Verification Code';showOtpError(data.message);}}catch(err){btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> Send Verification Code';showOtpError('Network error. Dobara try karein.');}}
+function resendOTP(){document.getElementById('emailStep2').style.display='none';document.getElementById('emailStep1').style.display='block';const btn=document.getElementById('sendOtpBtn');btn.disabled=false;btn.innerHTML='<i class="fas fa-paper-plane"></i> Send Verification Code';document.querySelectorAll('.otp-box').forEach(b=>{b.value='';b.classList.remove('filled','error');});document.getElementById('otpError').style.display='none';}
+async function verifyEmailOTP(){const boxes=document.querySelectorAll('.otp-box');const otp=Array.from(boxes).map(b=>b.value).join('');if(otp.length<6){showOtpError('Poora 6-digit code enter karein');boxes.forEach(b=>b.classList.add('error'));return;}const btn=document.getElementById('verifyOtpBtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Verifying...';try{const res=await fetch('/verify-email-otp/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCsrfToken()},body:JSON.stringify({otp})});const data=await res.json();if(data.success){document.getElementById('emailStep2').style.display='none';document.getElementById('emailStep3').style.display='block';}else{btn.disabled=false;btn.innerHTML='<i class="fas fa-check-circle"></i> Verify Code';showOtpError(data.message);boxes.forEach(b=>b.classList.add('error'));}}catch(err){btn.disabled=false;btn.innerHTML='<i class="fas fa-check-circle"></i> Verify Code';showOtpError('Network error. Dobara try karein.');}}
+function showOtpError(msg){const el=document.getElementById('otpError');el.textContent='⚠ '+msg;el.style.display='block';}
+function otpInput(el,idx){el.value=el.value.replace(/[^0-9]/g,'');document.getElementById('otpError').style.display='none';if(el.value){el.classList.add('filled');el.classList.remove('error');const boxes=document.querySelectorAll('.otp-box');if(idx<5)boxes[idx+1].focus();const full=Array.from(boxes).every(b=>b.value.length===1);if(full)verifyEmailOTP();}}
+function otpBackspace(e,el,idx){if(e.key==='Backspace'&&!el.value&&idx>0){const boxes=document.querySelectorAll('.otp-box');boxes[idx-1].focus();boxes[idx-1].value='';boxes[idx-1].classList.remove('filled');}}
+
+// ══ FIREBASE CONFIG ══
+firebase.initializeApp({
+    apiKey: "AIzaSyCGHfr_muhxzMycmcG3a6Y8f9j3Fd1jePc",
+    authDomain: "contractorhub-ce924.firebaseapp.com",
+    projectId: "contractorhub-ce924",
+});
+
+// ══ PHONE VERIFY ══
+let confirmationResult = null;
+function openPhonePopup(){document.getElementById('phoneVerifyOverlay').classList.add('open');document.body.style.overflow='hidden';if(window.recaptchaVerifier){try{window.recaptchaVerifier.clear();}catch(e){}window.recaptchaVerifier=null;}window.recaptchaVerifier=new firebase.auth.RecaptchaVerifier('recaptcha-container',{'size':'invisible','callback':function(response){}});window.recaptchaVerifier.render();}
+function closePhonePopup(){document.getElementById('phoneVerifyOverlay').classList.remove('open');document.body.style.overflow='';}
+function closePhonePopupOnOverlay(e){if(e.target===document.getElementById('phoneVerifyOverlay'))closePhonePopup();}
+function resetPhonePopup(){document.getElementById('phoneStep2').style.display='none';document.getElementById('phoneStep1').style.display='block';document.getElementById('sendSmsBtn').disabled=false;document.getElementById('sendSmsBtn').innerHTML='<i class="fas fa-sms"></i> Send OTP';document.querySelectorAll('.phone-otp-box').forEach(b=>{b.value='';b.classList.remove('filled');});document.getElementById('phoneOtpError').style.display='none';window.recaptchaVerifier=null;if(!window.recaptchaVerifier){window.recaptchaVerifier=new firebase.auth.RecaptchaVerifier('sendSmsBtn',{'size':'invisible','callback':()=>{}});}}
+async function sendSmsOTP(){const phone=document.getElementById('phoneNumberInput').value.trim();if(!phone||phone.length<10){alert('Valid 10-digit number enter karein (e.g. 3001234567)');return;}const btn=document.getElementById('sendSmsBtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...';const fullPhone='+92'+phone;try{confirmationResult=await firebase.auth().signInWithPhoneNumber(fullPhone,window.recaptchaVerifier);document.getElementById('phoneStep1').style.display='none';document.getElementById('phoneStep2').style.display='block';document.getElementById('phoneDisplayNum').textContent=fullPhone;document.querySelectorAll('.phone-otp-box')[0].focus();}catch(err){btn.disabled=false;btn.innerHTML='<i class="fas fa-sms"></i> Send OTP';document.getElementById('phoneOtpError').textContent='⚠ '+err.message;document.getElementById('phoneOtpError').style.display='block';}}
+async function verifySmsOTP(){const boxes=document.querySelectorAll('.phone-otp-box');const otp=Array.from(boxes).map(b=>b.value).join('');if(otp.length<6){document.getElementById('phoneOtpError').textContent='⚠ Poora 6-digit code enter karein';document.getElementById('phoneOtpError').style.display='block';return;}const btn=document.getElementById('verifyPhoneBtn');btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Verifying...';try{const result=await confirmationResult.confirm(otp);const idToken=await result.user.getIdToken();const phone='+92'+document.getElementById('phoneNumberInput').value.trim();const res=await fetch('/verify-phone-otp/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCsrfToken()},body:JSON.stringify({id_token:idToken,phone:phone})});const data=await res.json();if(data.success){document.getElementById('phoneStep2').style.display='none';document.getElementById('phoneStep3').style.display='block';}else{btn.disabled=false;btn.innerHTML='<i class="fas fa-check-circle"></i> Verify OTP';document.getElementById('phoneOtpError').textContent='⚠ '+data.message;document.getElementById('phoneOtpError').style.display='block';}}catch(err){btn.disabled=false;btn.innerHTML='<i class="fas fa-check-circle"></i> Verify OTP';document.getElementById('phoneOtpError').textContent='⚠ Galat OTP! Dobara try karein.';document.getElementById('phoneOtpError').style.display='block';}}
+function phoneOtpInput(el,idx){el.value=el.value.replace(/[^0-9]/g,'');document.getElementById('phoneOtpError').style.display='none';if(el.value){el.classList.add('filled');const boxes=document.querySelectorAll('.phone-otp-box');if(idx<5)boxes[idx+1].focus();const full=Array.from(boxes).every(b=>b.value.length===1);if(full)verifySmsOTP();}}
+function phoneOtpBackspace(e,el,idx){if(e.key==='Backspace'&&!el.value&&idx>0){const boxes=document.querySelectorAll('.phone-otp-box');boxes[idx-1].focus();boxes[idx-1].value='';boxes[idx-1].classList.remove('filled');}}
+function getCsrfToken(){return document.cookie.split(';').find(c=>c.trim().startsWith('csrftoken='))?.split('=')[1]||'';}
 </script>
 
-
-<!-- ══ AI BUBBLE ══ -->
-<!-- ╔════════════════════════════════════════════════════════╗
-     ║  ContractorHub AI Bubble — paste before </body>        ║
-     ║  Works on client.html, seller.html, and any other page ║
-     ╚════════════════════════════════════════════════════════╝ -->
-
+<!-- AI BUBBLE -->
 <style>
-/* ═══════════════════════════════
-   AI BUBBLE STYLES
-═══════════════════════════════ */
-#ai-bubble-btn {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #c9903a, #e8a84a);
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 6px 24px rgba(201,144,58,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9000;
-    transition: transform 0.25s, box-shadow 0.25s;
-    color: #0a1628;
-    font-size: 1.4rem;
-}
-#ai-bubble-btn:hover {
-    transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 10px 30px rgba(201,144,58,0.6);
-}
-#ai-bubble-btn .ai-notif {
-    position: absolute;
-    top: -2px; right: -2px;
-    width: 16px; height: 16px;
-    background: #10b981;
-    border-radius: 50%;
-    border: 2px solid white;
-    font-size: 0.5rem;
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 700;
-}
-
-/* Chat window */
-#ai-chat-window {
-    position: fixed;
-    bottom: 6.5rem;
-    right: 2rem;
-    width: 380px;
-    max-height: 560px;
-    background: white;
-    border-radius: 24px;
-    box-shadow: 0 20px 60px rgba(10,22,40,0.18);
-    border: 1px solid #e2e8f0;
-    display: flex;
-    flex-direction: column;
-    z-index: 9001;
-    overflow: hidden;
-    transform: scale(0.85) translateY(20px);
-    opacity: 0;
-    pointer-events: none;
-    transition: transform 0.28s cubic-bezier(.34,1.56,.64,1), opacity 0.22s ease;
-    transform-origin: bottom right;
-}
-#ai-chat-window.open {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-    pointer-events: all;
-}
-
-/* Header */
-.ai-header {
-    background: linear-gradient(135deg, #0a1628, #1a3a6b);
-    padding: 1rem 1.2rem;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-.ai-header::before {
-    content: '';
-    position: absolute; inset: 0;
-    background-image:
-        linear-gradient(rgba(201,144,58,0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(201,144,58,0.08) 1px, transparent 1px);
-    background-size: 22px 22px;
-}
-.ai-avatar {
-    width: 42px; height: 42px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #c9903a, #e8a84a);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem; flex-shrink: 0;
-    position: relative; z-index: 1;
-    box-shadow: 0 3px 10px rgba(201,144,58,0.4);
-}
-.ai-header-info { flex: 1; position: relative; z-index: 1; }
-.ai-header-info h4 {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.95rem; font-weight: 700; color: white;
-    margin-bottom: 0.1rem;
-}
-.ai-header-info p {
-    font-size: 0.68rem; color: rgba(255,255,255,0.55);
-    display: flex; align-items: center; gap: 0.35rem;
-}
-.ai-online-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%; background: #10b981;
-    display: inline-block;
-}
-.ai-close-btn {
-    width: 32px; height: 32px;
-    border-radius: 50%; background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: white; cursor: pointer; font-size: 0.8rem;
-    display: flex; align-items: center; justify-content: center;
-    transition: 0.18s; position: relative; z-index: 1;
-}
-.ai-close-btn:hover { background: rgba(255,255,255,0.25); }
-
-/* Role pill */
-.ai-role-pill {
-    font-size: 0.62rem; font-weight: 700;
-    padding: 0.18rem 0.55rem; border-radius: 20px;
-    text-transform: uppercase; letter-spacing: 0.04em;
-    margin-top: 0.2rem; display: inline-block;
-}
-.ai-role-pill.client { background: rgba(59,130,246,0.25); color: #93c5fd; }
-.ai-role-pill.seller { background: rgba(201,144,58,0.25); color: #e8a84a; }
-
-/* Messages area */
-.ai-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    scroll-behavior: smooth;
-}
-.ai-messages::-webkit-scrollbar { width: 4px; }
-.ai-messages::-webkit-scrollbar-track { background: transparent; }
-.ai-messages::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
-
-/* Message bubbles */
-.ai-msg {
-    display: flex;
-    gap: 0.5rem;
-    align-items: flex-end;
-    animation: msgIn 0.2s ease;
-}
-@keyframes msgIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-.ai-msg.user { flex-direction: row-reverse; }
-
-.ai-msg-avatar {
-    width: 28px; height: 28px; border-radius: 50%;
-    background: linear-gradient(135deg, #c9903a, #e8a84a);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.7rem; flex-shrink: 0; color: #0a1628; font-weight: 700;
-}
-.ai-msg-avatar.user-av {
-    background: linear-gradient(135deg, #1a3a6b, #0a1628);
-    color: white;
-}
-.ai-msg-bubble {
-    max-width: 80%;
-    padding: 0.65rem 0.9rem;
-    border-radius: 18px;
-    font-size: 0.82rem;
-    line-height: 1.55;
-    color: #0a1628;
-}
-.ai-msg.ai .ai-msg-bubble {
-    background: #f1f5f9;
-    border-radius: 18px 18px 18px 4px;
-}
-.ai-msg.user .ai-msg-bubble {
-    background: linear-gradient(135deg, #c9903a, #e8a84a);
-    color: #0a1628;
-    font-weight: 500;
-    border-radius: 18px 18px 4px 18px;
-}
-
-/* Typing indicator */
-.ai-typing {
-    display: flex; gap: 4px;
-    padding: 0.65rem 0.9rem;
-    background: #f1f5f9;
-    border-radius: 18px 18px 18px 4px;
-    width: fit-content;
-}
-.ai-typing span {
-    width: 7px; height: 7px;
-    background: #94a3b8;
-    border-radius: 50%;
-    animation: typingDot 1.2s infinite;
-}
-.ai-typing span:nth-child(2) { animation-delay: 0.2s; }
-.ai-typing span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes typingDot {
-    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-    30% { transform: translateY(-5px); opacity: 1; }
-}
-
-/* Suggestion chips */
-.ai-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-top: 0.3rem;
-}
-.ai-chip {
-    background: rgba(201,144,58,0.1);
-    border: 1px solid rgba(201,144,58,0.3);
-    color: #c9903a;
-    padding: 0.3rem 0.75rem;
-    border-radius: 40px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.18s;
-    white-space: nowrap;
-}
-.ai-chip:hover {
-    background: #c9903a;
-    color: white;
-}
-
-/* Input area */
-.ai-input-wrap {
-    padding: 0.75rem;
-    border-top: 1px solid #e2e8f0;
-    display: flex;
-    gap: 0.5rem;
-    align-items: flex-end;
-    flex-shrink: 0;
-    background: white;
-}
-.ai-input {
-    flex: 1;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 20px;
-    padding: 0.6rem 1rem;
-    font-size: 0.82rem;
-    font-family: 'DM Sans', sans-serif;
-    color: #0a1628;
-    outline: none;
-    resize: none;
-    max-height: 100px;
-    transition: 0.2s;
-    line-height: 1.4;
-}
-.ai-input:focus { border-color: #c9903a; box-shadow: 0 0 0 3px rgba(201,144,58,0.1); }
-.ai-input::placeholder { color: #94a3b8; }
-.ai-send-btn {
-    width: 38px; height: 38px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #c9903a, #e8a84a);
-    border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: #0a1628; font-size: 0.9rem;
-    transition: 0.2s; flex-shrink: 0;
-    box-shadow: 0 3px 10px rgba(201,144,58,0.3);
-}
-.ai-send-btn:hover { transform: scale(1.1); }
-.ai-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-/* Powered by */
-.ai-powered {
-    text-align: center;
-    font-size: 0.62rem;
-    color: #94a3b8;
-    padding: 0.3rem;
-    border-top: 1px solid #f1f5f9;
-    flex-shrink: 0;
-}
-
-/* Mobile */
-@media (max-width: 480px) {
-    #ai-chat-window {
-        width: calc(100vw - 1.5rem);
-        right: 0.75rem;
-        bottom: 5.5rem;
-        max-height: 70vh;
-    }
-    #ai-bubble-btn { bottom: 1.2rem; right: 1.2rem; width: 54px; height: 54px; }
-}
+#ai-bubble-btn{position:fixed;bottom:2rem;right:2rem;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#c9903a,#e8a84a);border:none;cursor:pointer;box-shadow:0 6px 24px rgba(201,144,58,0.5);display:flex;align-items:center;justify-content:center;z-index:9000;transition:transform 0.25s,box-shadow 0.25s;color:#0a1628;font-size:1.4rem;}
+#ai-bubble-btn:hover{transform:translateY(-4px) scale(1.05);box-shadow:0 10px 30px rgba(201,144,58,0.6);}
+#ai-bubble-btn .ai-notif{position:absolute;top:-2px;right:-2px;width:16px;height:16px;background:#10b981;border-radius:50%;border:2px solid white;font-size:0.5rem;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;}
+#ai-chat-window{position:fixed;bottom:6.5rem;right:2rem;width:380px;max-height:560px;background:white;border-radius:24px;box-shadow:0 20px 60px rgba(10,22,40,0.18);border:1px solid #e2e8f0;display:flex;flex-direction:column;z-index:9001;overflow:hidden;transform:scale(0.85) translateY(20px);opacity:0;pointer-events:none;transition:transform 0.28s cubic-bezier(.34,1.56,.64,1),opacity 0.22s ease;transform-origin:bottom right;}
+#ai-chat-window.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
+.ai-header{background:linear-gradient(135deg,#0a1628,#1a3a6b);padding:1rem 1.2rem;display:flex;align-items:center;gap:0.8rem;position:relative;overflow:hidden;flex-shrink:0;}
+.ai-header::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(201,144,58,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(201,144,58,0.08) 1px,transparent 1px);background-size:22px 22px;}
+.ai-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#c9903a,#e8a84a);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;position:relative;z-index:1;}
+.ai-header-info{flex:1;position:relative;z-index:1;}
+.ai-header-info h4{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;color:white;margin-bottom:0.1rem;}
+.ai-header-info p{font-size:0.68rem;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:0.35rem;}
+.ai-online-dot{width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block;}
+.ai-close-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:white;cursor:pointer;font-size:0.8rem;display:flex;align-items:center;justify-content:center;transition:0.18s;position:relative;z-index:1;}
+.ai-close-btn:hover{background:rgba(255,255,255,0.25);}
+.ai-role-pill{font-size:0.62rem;font-weight:700;padding:0.18rem 0.55rem;border-radius:20px;text-transform:uppercase;letter-spacing:0.04em;margin-top:0.2rem;display:inline-block;}
+.ai-role-pill.client{background:rgba(59,130,246,0.25);color:#93c5fd;}
+.ai-role-pill.seller{background:rgba(201,144,58,0.25);color:#e8a84a;}
+.ai-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:0.75rem;scroll-behavior:smooth;}
+.ai-messages::-webkit-scrollbar{width:4px;}
+.ai-messages::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:4px;}
+.ai-msg{display:flex;gap:0.5rem;align-items:flex-end;animation:msgIn 0.2s ease;}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.ai-msg.user{flex-direction:row-reverse;}
+.ai-msg-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#c9903a,#e8a84a);display:flex;align-items:center;justify-content:center;font-size:0.7rem;flex-shrink:0;color:#0a1628;font-weight:700;}
+.ai-msg-avatar.user-av{background:linear-gradient(135deg,#1a3a6b,#0a1628);color:white;}
+.ai-msg-bubble{max-width:80%;padding:0.65rem 0.9rem;border-radius:18px;font-size:0.82rem;line-height:1.55;color:#0a1628;}
+.ai-msg.ai .ai-msg-bubble{background:#f1f5f9;border-radius:18px 18px 18px 4px;}
+.ai-msg.user .ai-msg-bubble{background:linear-gradient(135deg,#c9903a,#e8a84a);color:#0a1628;font-weight:500;border-radius:18px 18px 4px 18px;}
+.ai-typing{display:flex;gap:4px;padding:0.65rem 0.9rem;background:#f1f5f9;border-radius:18px 18px 18px 4px;width:fit-content;}
+.ai-typing span{width:7px;height:7px;background:#94a3b8;border-radius:50%;animation:typingDot 1.2s infinite;}
+.ai-typing span:nth-child(2){animation-delay:0.2s;}
+.ai-typing span:nth-child(3){animation-delay:0.4s;}
+@keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:0.4;}30%{transform:translateY(-5px);opacity:1;}}
+.ai-chips{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.3rem;}
+.ai-chip{background:rgba(201,144,58,0.1);border:1px solid rgba(201,144,58,0.3);color:#c9903a;padding:0.3rem 0.75rem;border-radius:40px;font-size:0.72rem;font-weight:600;cursor:pointer;transition:0.18s;white-space:nowrap;}
+.ai-chip:hover{background:#c9903a;color:white;}
+.ai-input-wrap{padding:0.75rem;border-top:1px solid #e2e8f0;display:flex;gap:0.5rem;align-items:flex-end;flex-shrink:0;background:white;}
+.ai-input{flex:1;border:1.5px solid #e2e8f0;border-radius:20px;padding:0.6rem 1rem;font-size:0.82rem;font-family:'DM Sans',sans-serif;color:#0a1628;outline:none;resize:none;max-height:100px;transition:0.2s;line-height:1.4;}
+.ai-input:focus{border-color:#c9903a;box-shadow:0 0 0 3px rgba(201,144,58,0.1);}
+.ai-input::placeholder{color:#94a3b8;}
+.ai-send-btn{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#c9903a,#e8a84a);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#0a1628;font-size:0.9rem;transition:0.2s;flex-shrink:0;}
+.ai-send-btn:hover{transform:scale(1.1);}
+.ai-send-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.ai-powered{text-align:center;font-size:0.62rem;color:#94a3b8;padding:0.3rem;border-top:1px solid #f1f5f9;flex-shrink:0;}
+@media(max-width:480px){#ai-chat-window{width:calc(100vw - 1.5rem);right:0.75rem;bottom:5.5rem;max-height:70vh;}#ai-bubble-btn{bottom:1.2rem;right:1.2rem;width:54px;height:54px;}}
 </style>
 
-<!-- ── BUBBLE BUTTON ── -->
 <button id="ai-bubble-btn" onclick="toggleAIBubble()" title="AI Assistant">
     <i class="fas fa-robot"></i>
     <div class="ai-notif">AI</div>
 </button>
 
-<!-- ── CHAT WINDOW ── -->
 <div id="ai-chat-window">
-
-    <!-- Header -->
     <div class="ai-header">
         <div class="ai-avatar">🤖</div>
         <div class="ai-header-info">
@@ -1041,262 +1111,33 @@ window.addEventListener('DOMContentLoaded',()=>{
             <p><span class="ai-online-dot"></span> Online — <span id="aiRoleLabel">Loading...</span></p>
             <div class="ai-role-pill" id="aiRolePill">...</div>
         </div>
-        <button class="ai-close-btn" onclick="toggleAIBubble()">
-            <i class="fas fa-times"></i>
-        </button>
+        <button class="ai-close-btn" onclick="toggleAIBubble()"><i class="fas fa-times"></i></button>
     </div>
-
-    <!-- Messages -->
-    <div class="ai-messages" id="aiMessages">
-        <!-- messages inject here -->
-    </div>
-
-    <!-- Input -->
+    <div class="ai-messages" id="aiMessages"></div>
     <div class="ai-input-wrap">
-        <textarea
-            class="ai-input"
-            id="aiInput"
-            placeholder="Message likhein..."
-            rows="1"
-            onkeydown="aiInputKeydown(event)"
-            oninput="aiAutoResize(this)"
-        ></textarea>
-        <button class="ai-send-btn" id="aiSendBtn" onclick="aiSend()">
-            <i class="fas fa-paper-plane"></i>
-        </button>
+        <textarea class="ai-input" id="aiInput" placeholder="Message likhein..." rows="1" onkeydown="aiInputKeydown(event)" oninput="aiAutoResize(this)"></textarea>
+        <button class="ai-send-btn" id="aiSendBtn" onclick="aiSend()"><i class="fas fa-paper-plane"></i></button>
     </div>
-
     <div class="ai-powered">Powered by Groq · llama-3.3-70b · ContractorHub AI</div>
 </div>
 
-
 <script>
-// ════════════════════════════════════════
-// ContractorHub AI Bubble — JS
-// ════════════════════════════════════════
-
-let aiOpen       = false;
-let aiRole       = null;      // 'client' | 'seller'
-let aiContext    = null;      // context data from server
-let aiHistory    = [];        // conversation history [{role, content}]
-let aiInitialized = false;
-
-// ── Suggestion chips per role ──
-const CLIENT_CHIPS = [
-    'Electrician chahiye Lahore mein',
-    'Plumber — budget 3000',
-    'Painter ghar ke liye',
-    'Best rated contractor kaun?',
-];
-const SELLER_CHIPS = [
-    'Meri profile improve karo',
-    'Photo mein kya daalu?',
-    'Video tips chahiye',
-    'Document kaise upload karein?',
-    'Price kaise set karoon?',
-];
-
-// ── Toggle window ──
-function toggleAIBubble() {
-    aiOpen = !aiOpen;
-    const win = document.getElementById('ai-chat-window');
-    win.classList.toggle('open', aiOpen);
-
-    if (aiOpen && !aiInitialized) {
-        initAI();
-    }
-    if (aiOpen) {
-        setTimeout(() => document.getElementById('aiInput').focus(), 300);
-    }
-}
-
-// ── Initialize: fetch context + show welcome ──
-async function initAI() {
-    aiInitialized = true;
-    addTypingIndicator();
-
-    try {
-        const resp = await fetch('/ai-context/', {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        });
-        const data = await resp.json();
-        aiRole    = data.role;
-        aiContext = data.context;
-
-        removeTypingIndicator();
-
-        // Update header
-        const isClient = aiRole === 'client';
-        document.getElementById('aiRoleLabel').textContent = isClient ? 'Client Mode' : 'Seller Coach';
-        const pill = document.getElementById('aiRolePill');
-        pill.textContent = isClient ? '🔍 Find Workers' : '🛠 Profile Coach';
-        pill.className = `ai-role-pill ${aiRole}`;
-
-        // Show welcome message
-        addAIMessage(data.welcome);
-
-        // Show suggestion chips
-        const chips = isClient ? CLIENT_CHIPS : SELLER_CHIPS;
-        addChips(chips);
-
-    } catch (err) {
-        removeTypingIndicator();
-        addAIMessage('⚠ Kuch masla aa gaya. Page refresh karein aur dobara try karein.');
-    }
-}
-
-// ── Send message ──
-async function aiSend() {
-    const input = document.getElementById('aiInput');
-    const msg   = input.value.trim();
-    if (!msg) return;
-
-    input.value  = '';
-    input.style.height = 'auto';
-
-    addUserMessage(msg);
-    document.getElementById('aiSendBtn').disabled = true;
-    addTypingIndicator();
-
-    try {
-        const resp = await fetch('/ai-chat/', {
-            method:  'POST',
-            headers: {
-                'Content-Type':  'application/json',
-                'X-CSRFToken':   getCookie('csrftoken'),
-            },
-            body: JSON.stringify({
-                message: msg,
-                history: aiHistory,
-            }),
-        });
-
-        const data = await resp.json();
-        removeTypingIndicator();
-        document.getElementById('aiSendBtn').disabled = false;
-
-        if (data.error) {
-            addAIMessage('⚠ Error: ' + data.error);
-        } else {
-            addAIMessage(data.reply);
-            // Save to history
-            aiHistory.push({ role: 'user',      content: msg });
-            aiHistory.push({ role: 'assistant', content: data.reply });
-            // Trim history
-            if (aiHistory.length > 16) aiHistory = aiHistory.slice(-16);
-        }
-
-    } catch (err) {
-        removeTypingIndicator();
-        document.getElementById('aiSendBtn').disabled = false;
-        addAIMessage('⚠ Network error. Internet check karein.');
-    }
-}
-
-// ── DOM helpers ──
-function addUserMessage(text) {
-    const msgs = document.getElementById('aiMessages');
-    const el = document.createElement('div');
-    el.className = 'ai-msg user';
-    el.innerHTML = `
-        <div class="ai-msg-avatar user-av">U</div>
-        <div class="ai-msg-bubble">${escHtml(text)}</div>
-    `;
-    msgs.appendChild(el);
-    scrollAI();
-}
-
-function addAIMessage(text) {
-    const msgs = document.getElementById('aiMessages');
-    const el = document.createElement('div');
-    el.className = 'ai-msg ai';
-    // Convert basic markdown-style formatting
-    const formatted = formatAIText(text);
-    el.innerHTML = `
-        <div class="ai-msg-avatar">🤖</div>
-        <div class="ai-msg-bubble">${formatted}</div>
-    `;
-    msgs.appendChild(el);
-    scrollAI();
-}
-
-function addChips(chips) {
-    const msgs = document.getElementById('aiMessages');
-    const el = document.createElement('div');
-    el.className = 'ai-chips';
-    el.style.paddingLeft = '38px';
-    chips.forEach(chip => {
-        const btn = document.createElement('button');
-        btn.className = 'ai-chip';
-        btn.textContent = chip;
-        btn.onclick = () => {
-            document.getElementById('aiInput').value = chip;
-            el.remove();
-            aiSend();
-        };
-        el.appendChild(btn);
-    });
-    msgs.appendChild(el);
-    scrollAI();
-}
-
-function addTypingIndicator() {
-    const msgs = document.getElementById('aiMessages');
-    const el = document.createElement('div');
-    el.className = 'ai-msg ai';
-    el.id = 'aiTyping';
-    el.innerHTML = `
-        <div class="ai-msg-avatar">🤖</div>
-        <div class="ai-typing"><span></span><span></span><span></span></div>
-    `;
-    msgs.appendChild(el);
-    scrollAI();
-}
-
-function removeTypingIndicator() {
-    const el = document.getElementById('aiTyping');
-    if (el) el.remove();
-}
-
-function scrollAI() {
-    const msgs = document.getElementById('aiMessages');
-    setTimeout(() => msgs.scrollTop = msgs.scrollHeight, 50);
-}
-
-// ── Text formatting (basic markdown) ──
-function formatAIText(text) {
-    return escHtml(text)
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/•\s/g, '• ')
-        .replace(/\n\n/g, '<br><br>')
-        .replace(/\n/g, '<br>');
-}
-
-function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ── Input helpers ──
-function aiInputKeydown(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        aiSend();
-    }
-}
-function aiAutoResize(el) {
-    el.style.height = 'auto';
-    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
-}
-
-// ── CSRF helper ──
-function getCookie(name) {
-    let val = null;
-    document.cookie.split(';').forEach(c => {
-        const [k, v] = c.trim().split('=');
-        if (k === name) val = decodeURIComponent(v);
-    });
-    return val;
-}
+let aiOpen=false,aiRole=null,aiContext=null,aiHistory=[],aiInitialized=false;
+const CLIENT_CHIPS=['Electrician chahiye Lahore mein','Plumber — budget 3000','Painter ghar ke liye','Best rated contractor kaun?'];
+const SELLER_CHIPS=['Meri profile improve karo','Photo mein kya daalu?','Video tips chahiye','Document kaise upload karein?','Price kaise set karoon?'];
+function toggleAIBubble(){aiOpen=!aiOpen;const win=document.getElementById('ai-chat-window');win.classList.toggle('open',aiOpen);if(aiOpen&&!aiInitialized)initAI();if(aiOpen)setTimeout(()=>document.getElementById('aiInput').focus(),300);}
+async function initAI(){aiInitialized=true;addTypingIndicator();try{const resp=await fetch('/ai-context/',{headers:{'X-Requested-With':'XMLHttpRequest'}});const data=await resp.json();aiRole=data.role;aiContext=data.context;removeTypingIndicator();const isClient=aiRole==='client';document.getElementById('aiRoleLabel').textContent=isClient?'Client Mode':'Seller Coach';const pill=document.getElementById('aiRolePill');pill.textContent=isClient?'🔍 Find Workers':'🛠 Profile Coach';pill.className=`ai-role-pill ${aiRole}`;addAIMessage(data.welcome);addChips(isClient?CLIENT_CHIPS:SELLER_CHIPS);}catch(err){removeTypingIndicator();addAIMessage('⚠ Kuch masla aa gaya. Page refresh karein.');}}
+async function aiSend(){const input=document.getElementById('aiInput');const msg=input.value.trim();if(!msg)return;input.value='';input.style.height='auto';addUserMessage(msg);document.getElementById('aiSendBtn').disabled=true;addTypingIndicator();try{const resp=await fetch('/ai-chat/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCsrfToken()},body:JSON.stringify({message:msg,history:aiHistory})});const data=await resp.json();removeTypingIndicator();document.getElementById('aiSendBtn').disabled=false;if(data.error){addAIMessage('⚠ Error: '+data.error);}else{addAIMessage(data.reply);aiHistory.push({role:'user',content:msg});aiHistory.push({role:'assistant',content:data.reply});if(aiHistory.length>16)aiHistory=aiHistory.slice(-16);}}catch(err){removeTypingIndicator();document.getElementById('aiSendBtn').disabled=false;addAIMessage('⚠ Network error.');}}
+function addUserMessage(text){const msgs=document.getElementById('aiMessages');const el=document.createElement('div');el.className='ai-msg user';el.innerHTML=`<div class="ai-msg-avatar user-av">U</div><div class="ai-msg-bubble">${escHtml(text)}</div>`;msgs.appendChild(el);scrollAI();}
+function addAIMessage(text){const msgs=document.getElementById('aiMessages');const el=document.createElement('div');el.className='ai-msg ai';el.innerHTML=`<div class="ai-msg-avatar">🤖</div><div class="ai-msg-bubble">${formatAIText(text)}</div>`;msgs.appendChild(el);scrollAI();}
+function addChips(chips){const msgs=document.getElementById('aiMessages');const el=document.createElement('div');el.className='ai-chips';el.style.paddingLeft='38px';chips.forEach(chip=>{const btn=document.createElement('button');btn.className='ai-chip';btn.textContent=chip;btn.onclick=()=>{document.getElementById('aiInput').value=chip;el.remove();aiSend();};el.appendChild(btn);});msgs.appendChild(el);scrollAI();}
+function addTypingIndicator(){const msgs=document.getElementById('aiMessages');const el=document.createElement('div');el.className='ai-msg ai';el.id='aiTyping';el.innerHTML=`<div class="ai-msg-avatar">🤖</div><div class="ai-typing"><span></span><span></span><span></span></div>`;msgs.appendChild(el);scrollAI();}
+function removeTypingIndicator(){const el=document.getElementById('aiTyping');if(el)el.remove();}
+function scrollAI(){const msgs=document.getElementById('aiMessages');setTimeout(()=>msgs.scrollTop=msgs.scrollHeight,50);}
+function formatAIText(text){return escHtml(text).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');}
+function escHtml(str){return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function aiInputKeydown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();aiSend();}}
+function aiAutoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
 </script>
 
 </body>

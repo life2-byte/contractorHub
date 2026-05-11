@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,1361 +8,838 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --navy: #0a1628;
-            --navy-2: #0d1f3c;
-            --blue: #1a3a6b;
-            --gold: #c9903a;
-            --gold-light: #e8a84a;
-            --gold-dim: rgba(201,144,58,0.12);
-            --gold-border: rgba(201,144,58,0.25);
-            --white: #ffffff;
-            --gray: #64748b;
-            --light: #f1f5f9;
-            --border: #e2e8f0;
-            --success: #10b981;
-            --success-bg: rgba(16,185,129,0.1);
-            --danger: #ef4444;
-            --danger-bg: rgba(239,68,68,0.1);
-            --warning: #f59e0b;
-            --warning-bg: rgba(245,158,11,0.1);
-            --sidebar-w: 260px;
-        }
+        :root{--navy:#0a1628;--blue:#1a3a6b;--gold:#c9903a;--gold-light:#e8a84a;--gold-dim:rgba(201,144,58,0.12);--gold-border:rgba(201,144,58,0.25);--gray:#64748b;--light:#f1f5f9;--border:#e2e8f0;--success:#10b981;--success-bg:rgba(16,185,129,0.1);--danger:#ef4444;--danger-bg:rgba(239,68,68,0.1);--warning:#f59e0b;--warning-bg:rgba(245,158,11,0.1);--sidebar-w:255px;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'DM Sans',sans-serif;background:#f0f4fb;color:var(--navy);display:flex;min-height:100vh;}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* SIDEBAR */
+        .sidebar{width:var(--sidebar-w);background:var(--navy);min-height:100vh;position:fixed;top:0;left:0;display:flex;flex-direction:column;z-index:100;overflow-y:auto;}
+        .sb-logo{padding:1.8rem 1.5rem 1.2rem;border-bottom:1px solid rgba(255,255,255,0.07);}
+        .sb-logo h1{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:#fff;}
+        .sb-logo h1 span{color:var(--gold);}
+        .sb-logo p{font-size:0.65rem;color:rgba(255,255,255,0.3);letter-spacing:1.5px;text-transform:uppercase;margin-top:0.2rem;}
+        .sb-section{padding:1.1rem 1rem 0.4rem;}
+        .sb-label{font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.22);letter-spacing:2px;text-transform:uppercase;padding:0 0.5rem;margin-bottom:0.4rem;}
+        .nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.7rem 1rem;border-radius:10px;color:rgba(255,255,255,0.5);font-size:0.85rem;font-weight:500;margin-bottom:0.15rem;text-decoration:none;transition:0.2s;}
+        .nav-item i{width:16px;font-size:0.85rem;}
+        .nav-item:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.85);}
+        .nav-item.active{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-border);}
+        .sb-footer{margin-top:auto;padding:1rem;border-top:1px solid rgba(255,255,255,0.07);}
+        .admin-profile{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0.8rem;border-radius:10px;background:rgba(255,255,255,0.05);}
+        .admin-av{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:var(--navy);flex-shrink:0;}
+        .admin-info h4{font-size:0.8rem;font-weight:600;color:#fff;}
+        .admin-info p{font-size:0.68rem;color:rgba(255,255,255,0.32);}
 
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: #f0f4fb;
-            color: var(--navy);
-            display: flex;
-            min-height: 100vh;
-        }
+        /* MAIN */
+        .main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;}
+        .topbar{background:#fff;padding:0.9rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
+        .topbar h2{font-size:1.15rem;font-weight:700;}
+        .topbar p{font-size:0.75rem;color:var(--gray);}
+        .tb-right{display:flex;align-items:center;gap:0.8rem;}
+        .tb-search{display:flex;align-items:center;gap:0.5rem;background:var(--light);border-radius:30px;padding:0.45rem 1rem;border:1px solid var(--border);}
+        .tb-search i{color:var(--gray);font-size:0.8rem;}
+        .tb-search input{border:none;background:none;outline:none;font-size:0.82rem;width:160px;}
+        .tb-icon{width:38px;height:38px;border-radius:9px;background:var(--light);display:flex;align-items:center;justify-content:center;color:var(--gray);cursor:pointer;transition:0.2s;text-decoration:none;}
+        .tb-icon:hover{background:var(--gold-dim);color:var(--gold);}
 
-        /* ── SIDEBAR ── */
-        .sidebar {
-            width: var(--sidebar-w);
-            background: var(--navy);
-            min-height: 100vh;
-            position: fixed;
-            top: 0; left: 0;
-            display: flex;
-            flex-direction: column;
-            z-index: 100;
-            overflow-y: auto;
-        }
+        .page-wrap{padding:1.8rem 2rem;}
 
-        .sidebar-logo {
-            padding: 1.8rem 1.5rem 1.2rem;
-            border-bottom: 1px solid rgba(255,255,255,0.07);
-        }
+        /* STATS */
+        .stats-grid{display:grid;gap:1.2rem;margin-bottom:1.8rem;}
+        .sg-4{grid-template-columns:repeat(4,1fr);}
+        .sg-2{grid-template-columns:repeat(2,1fr);}
+        .stat-card{background:#fff;border-radius:14px;padding:1.3rem;border:1px solid var(--border);transition:0.2s;position:relative;overflow:hidden;}
+        .stat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.06);}
+        .stat-card::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:3px;background:var(--gold);transform:scaleX(0);transition:0.3s;}
+        .stat-card:hover::after{transform:scaleX(1);}
+        .stat-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.9rem;}
+        .stat-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+        .si-gold{background:var(--gold-dim);color:var(--gold);}
+        .si-green{background:var(--success-bg);color:var(--success);}
+        .si-red{background:var(--danger-bg);color:var(--danger);}
+        .si-blue{background:rgba(26,58,107,0.1);color:var(--blue);}
+        .stat-num{font-family:'Space Mono',monospace;font-size:1.8rem;font-weight:700;margin-bottom:0.15rem;}
+        .stat-label{font-size:0.8rem;color:var(--gray);}
 
-        .sidebar-logo h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: white;
-        }
-
-        .sidebar-logo h1 span { color: var(--gold); }
-
-        .sidebar-logo p {
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.35);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-top: 0.2rem;
-        }
-
-        .sidebar-section {
-            padding: 1.2rem 1rem 0.5rem;
-        }
-
-        .sidebar-section-label {
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: rgba(255,255,255,0.25);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 0 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.75rem 1rem;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.2s;
-            color: rgba(255,255,255,0.55);
-            font-size: 0.88rem;
-            font-weight: 500;
-            margin-bottom: 0.2rem;
-            text-decoration: none;
-        }
-
-        .nav-item i { width: 18px; font-size: 0.9rem; }
-
-        .nav-item:hover {
-            background: rgba(255,255,255,0.06);
-            color: rgba(255,255,255,0.85);
-        }
-
-        .nav-item.active {
-            background: var(--gold-dim);
-            color: var(--gold);
-            border: 1px solid var(--gold-border);
-        }
-
-        .nav-item .badge {
-            margin-left: auto;
-            background: var(--danger);
-            color: white;
-            font-size: 0.65rem;
-            padding: 0.1rem 0.5rem;
-            border-radius: 10px;
-            font-weight: 700;
-        }
-
-        .nav-item .badge.gold { background: var(--gold); }
-        .nav-item .badge.green { background: var(--success); }
-
-        .sidebar-footer {
-            margin-top: auto;
-            padding: 1.2rem 1rem;
-            border-top: 1px solid rgba(255,255,255,0.07);
-        }
-
-        .admin-profile {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.7rem 0.8rem;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.05);
-            cursor: pointer;
-        }
-
-        .admin-avatar {
-            width: 38px;
-            height: 38px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-light));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: var(--navy);
-            flex-shrink: 0;
-        }
-
-        .admin-info h4 {
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: white;
-        }
-
-        .admin-info p {
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.35);
-        }
-
-        /* ── MAIN ── */
-        .main {
-            margin-left: var(--sidebar-w);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* TOP BAR */
-        .topbar {
-            background: white;
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        .topbar-left h2 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--navy);
-        }
-
-        .topbar-left p {
-            font-size: 0.78rem;
-            color: var(--gray);
-        }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .topbar-search {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--light);
-            border-radius: 30px;
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border);
-        }
-
-        .topbar-search i { color: var(--gray); font-size: 0.85rem; }
-        .topbar-search input { border: none; background: none; outline: none; font-size: 0.85rem; width: 180px; }
-
-        .topbar-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: var(--light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--gray);
-            cursor: pointer;
-            position: relative;
-            transition: 0.2s;
-        }
-
-        .topbar-icon:hover { background: var(--gold-dim); color: var(--gold); }
-
-        .topbar-dot {
-            position: absolute;
-            top: 8px; right: 9px;
-            width: 7px; height: 7px;
-            background: var(--danger);
-            border-radius: 50%;
-            border: 1.5px solid white;
-        }
-
-        /* PAGE CONTENT */
-        .page { display: none; padding: 2rem; }
-        .page.active { display: block; }
-
-        /* STATS GRID */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            border: 1px solid var(--border);
-            transition: 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
-        }
-
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 100%; height: 3px;
-            background: var(--gold);
-            transform: scaleX(0);
-            transition: 0.3s;
-        }
-
-        .stat-card:hover::after { transform: scaleX(1); }
-
-        .stat-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-
-        .stat-icon {
-            width: 45px; height: 45px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-        }
-
-        .stat-icon.gold { background: var(--gold-dim); color: var(--gold); }
-        .stat-icon.green { background: var(--success-bg); color: var(--success); }
-        .stat-icon.red { background: var(--danger-bg); color: var(--danger); }
-        .stat-icon.blue { background: rgba(26,58,107,0.1); color: var(--blue); }
-
-        .stat-change {
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.2rem;
-        }
-
-        .stat-change.up { color: var(--success); }
-        .stat-change.down { color: var(--danger); }
-
-        .stat-num {
-            font-family: 'Space Mono', monospace;
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--navy);
-            margin-bottom: 0.2rem;
-        }
-
-        .stat-label {
-            font-size: 0.82rem;
-            color: var(--gray);
-        }
-
-        /* GRID 2 COL */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .grid-3-1 {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
+        /* GRID LAYOUTS */
+        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.2rem;}
+        .grid-3-1{display:grid;grid-template-columns:2fr 1fr;gap:1.2rem;margin-bottom:1.2rem;}
 
         /* CARD */
-        .card {
-            background: white;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-        }
-
-        .card-header {
-            padding: 1.2rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .card-header h3 {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--navy);
-        }
-
-        .card-header p { font-size: 0.75rem; color: var(--gray); }
-
-        .card-action {
-            font-size: 0.78rem;
-            color: var(--gold);
-            cursor: pointer;
-            font-weight: 600;
-        }
+        .card{background:#fff;border-radius:14px;border:1px solid var(--border);overflow:hidden;margin-bottom:1.2rem;}
+        .card-header{padding:1.1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+        .card-header h3{font-size:0.95rem;font-weight:700;}
+        .card-header p{font-size:0.72rem;color:var(--gray);}
 
         /* TABLE */
-        .table-wrap { overflow-x: auto; }
+        .tw{overflow-x:auto;}
+        table{width:100%;border-collapse:collapse;}
+        thead th{padding:0.75rem 1.4rem;text-align:left;font-size:0.68rem;font-weight:700;color:var(--gray);letter-spacing:1px;text-transform:uppercase;background:var(--light);white-space:nowrap;}
+        tbody td{padding:0.9rem 1.4rem;font-size:0.85rem;border-bottom:1px solid var(--border);vertical-align:middle;}
+        tbody tr:last-child td{border-bottom:none;}
+        tbody tr:hover{background:#fafbff;}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead th {
-            padding: 0.8rem 1.5rem;
-            text-align: left;
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: var(--gray);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            background: var(--light);
-            white-space: nowrap;
-        }
-
-        tbody td {
-            padding: 1rem 1.5rem;
-            font-size: 0.875rem;
-            border-bottom: 1px solid var(--border);
-            vertical-align: middle;
-        }
-
-        tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover { background: #fafbff; }
-
-        .user-cell {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .user-cell .av {
-            width: 36px; height: 36px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-light));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.8rem;
-            color: var(--navy);
-            flex-shrink: 0;
-        }
-
-        .user-cell .av.blue { background: linear-gradient(135deg, var(--navy), var(--blue)); color: white; }
-        .user-cell strong { display: block; font-size: 0.875rem; }
-        .user-cell span { font-size: 0.75rem; color: var(--gray); }
+        /* USER CELL */
+        .uc{display:flex;align-items:center;gap:0.75rem;}
+        .uc .av{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;color:var(--navy);flex-shrink:0;overflow:hidden;}
+        .uc .av.blue{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;}
+        .uc strong{display:block;font-size:0.85rem;}
+        .uc span{font-size:0.72rem;color:var(--gray);}
 
         /* BADGES */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            padding: 0.25rem 0.7rem;
-            border-radius: 20px;
-            font-size: 0.72rem;
-            font-weight: 600;
-        }
+        .badge{display:inline-flex;align-items:center;gap:0.25rem;padding:0.2rem 0.65rem;border-radius:20px;font-size:0.7rem;font-weight:600;}
+        .b-success{background:var(--success-bg);color:var(--success);}
+        .b-danger{background:var(--danger-bg);color:var(--danger);}
+        .b-warning{background:var(--warning-bg);color:var(--warning);}
+        .b-gold{background:var(--gold-dim);color:var(--gold);}
+        .b-gray{background:var(--light);color:var(--gray);}
 
-        .badge.success { background: var(--success-bg); color: var(--success); }
-        .badge.danger { background: var(--danger-bg); color: var(--danger); }
-        .badge.warning { background: var(--warning-bg); color: var(--warning); }
-        .badge.gold { background: var(--gold-dim); color: var(--gold); }
-        .badge.gray { background: var(--light); color: var(--gray); }
-
-        /* ACTION BTNS */
-        .action-btns { display: flex; gap: 0.4rem; }
-
-        .btn-icon {
-            width: 30px; height: 30px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            cursor: pointer;
-            border: none;
-            transition: 0.2s;
-        }
-
-        .btn-icon.view { background: rgba(26,58,107,0.08); color: var(--blue); }
-        .btn-icon.edit { background: var(--gold-dim); color: var(--gold); }
-        .btn-icon.del { background: var(--danger-bg); color: var(--danger); }
-        .btn-icon:hover { opacity: 0.75; transform: scale(1.1); }
-
-        /* MINI STATS */
-        .mini-stats {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-        }
-
-        .mini-stat {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .mini-stat:last-child { border-bottom: none; }
-
-        .mini-stat-left {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .mini-stat-icon {
-            width: 38px; height: 38px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-        }
-
-        .mini-stat-label { font-size: 0.85rem; font-weight: 600; }
-        .mini-stat-sub { font-size: 0.72rem; color: var(--gray); }
-
-        .mini-stat-val {
-            font-family: 'Space Mono', monospace;
-            font-size: 1rem;
-            font-weight: 700;
-        }
-
-        /* CHART PLACEHOLDER */
-        .chart-area {
-            padding: 1.5rem;
-            height: 200px;
-            display: flex;
-            align-items: flex-end;
-            gap: 0.5rem;
-        }
-
-        .bar-group {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .bar {
-            width: 100%;
-            border-radius: 6px 6px 0 0;
-            transition: 0.3s;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .bar:hover { opacity: 0.8; }
-
-        .bar.gold { background: var(--gold); }
-        .bar.navy { background: var(--navy); opacity: 0.15; }
-
-        .bar-label {
-            font-size: 0.65rem;
-            color: var(--gray);
-            white-space: nowrap;
-        }
-
-        /* ACTIVITY FEED */
-        .activity-feed { padding: 0.5rem 0; }
-
-        .activity-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            padding: 0.9rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-            transition: 0.2s;
-        }
-
-        .activity-item:last-child { border-bottom: none; }
-        .activity-item:hover { background: #fafbff; }
-
-        .activity-dot {
-            width: 36px; height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            flex-shrink: 0;
-            margin-top: 0.1rem;
-        }
-
-        .activity-text { flex: 1; }
-        .activity-text p { font-size: 0.85rem; line-height: 1.5; }
-        .activity-text p strong { color: var(--navy); }
-        .activity-time { font-size: 0.72rem; color: var(--gray); margin-top: 0.2rem; }
-
-        /* PENDING CARD */
-        .pending-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .pending-item:last-child { border-bottom: none; }
-
-        .pending-info { flex: 1; }
-        .pending-info strong { display: block; font-size: 0.85rem; }
-        .pending-info span { font-size: 0.75rem; color: var(--gray); }
-
-        .pending-actions { display: flex; gap: 0.5rem; }
-
-        .btn-sm {
-            padding: 0.3rem 0.8rem;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-sm.approve { background: var(--success-bg); color: var(--success); }
-        .btn-sm.reject { background: var(--danger-bg); color: var(--danger); }
-        .btn-sm.approve:hover { background: var(--success); color: white; }
-        .btn-sm.reject:hover { background: var(--danger); color: white; }
+        /* BUTTONS */
+        .action-btns{display:flex;gap:0.35rem;}
+        .btn-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;cursor:pointer;border:none;transition:0.2s;}
+        .bi-view{background:rgba(26,58,107,0.08);color:var(--blue);}
+        .bi-del{background:var(--danger-bg);color:var(--danger);}
+        .bi-edit{background:var(--gold-dim);color:var(--gold);}
+        .btn-icon:hover{opacity:0.75;transform:scale(1.08);}
+        .btn-gold{background:var(--gold);color:#fff;border:none;padding:0.55rem 1.3rem;border-radius:9px;font-size:0.82rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:0.45rem;transition:0.2s;text-decoration:none;}
+        .btn-gold:hover{background:var(--gold-light);}
+        .btn-sm{padding:0.28rem 0.75rem;border-radius:7px;font-size:0.72rem;font-weight:600;border:none;cursor:pointer;transition:0.2s;}
+        .bs-approve{background:var(--success-bg);color:var(--success);}
+        .bs-reject{background:var(--danger-bg);color:var(--danger);}
+        .bs-approve:hover{background:var(--success);color:#fff;}
+        .bs-reject:hover{background:var(--danger);color:#fff;}
 
         /* PAGE HEADER */
-        .page-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-        }
+        .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem;}
+        .page-header h2{font-family:'Playfair Display',serif;font-size:1.45rem;}
 
-        .page-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-        }
+        /* FILTERS */
+        .filters-row{display:flex;gap:0.7rem;margin-bottom:1.3rem;flex-wrap:wrap;align-items:center;}
+        .filter-select{padding:0.45rem 0.9rem;border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:var(--navy);background:#fff;cursor:pointer;outline:none;}
+        .filter-search{display:flex;align-items:center;gap:0.45rem;background:#fff;border:1px solid var(--border);border-radius:9px;padding:0.45rem 0.9rem;flex:1;max-width:280px;}
+        .filter-search i{color:var(--gray);font-size:0.8rem;}
+        .filter-search input{border:none;outline:none;font-size:0.82rem;width:100%;}
 
-        .btn-gold {
-            background: var(--gold);
-            color: white;
-            border: none;
-            padding: 0.6rem 1.5rem;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: 0.2s;
-        }
+        /* BAR CHART */
+        .chart-area{padding:1.4rem;height:190px;display:flex;align-items:flex-end;gap:0.5rem;}
+        .bar-group{flex:1;display:flex;flex-direction:column;align-items:center;gap:0.35rem;}
+        .bar{width:100%;border-radius:5px 5px 0 0;transition:0.3s;cursor:pointer;}
+        .bar:hover{opacity:0.78;}
+        .bar.gold{background:var(--gold);}
+        .bar-lbl{font-size:0.62rem;color:var(--gray);white-space:nowrap;}
 
-        .btn-gold:hover { background: var(--gold-light); }
+        /* DONUT */
+        .donut-wrap{padding:1.4rem;display:flex;align-items:center;gap:1.8rem;}
+        .donut{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;}
+        .donut::after{content:'';position:absolute;width:65px;height:65px;background:#fff;border-radius:50%;}
+        .legend-item{display:flex;align-items:center;gap:0.55rem;margin-bottom:0.55rem;font-size:0.8rem;}
+        .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+        .legend-item span{color:var(--gray);margin-left:auto;font-weight:600;}
 
-        /* FILTERS ROW */
-        .filters-row {
-            display: flex;
-            gap: 0.8rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            align-items: center;
-        }
+        /* MINI STATS */
+        .mini-stat{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1.4rem;border-bottom:1px solid var(--border);}
+        .mini-stat:last-child{border-bottom:none;}
+        .ms-left{display:flex;align-items:center;gap:0.75rem;}
+        .ms-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;}
+        .ms-label{font-size:0.83rem;font-weight:600;}
+        .ms-sub{font-size:0.7rem;color:var(--gray);}
+        .ms-val{font-family:'Space Mono',monospace;font-size:0.95rem;font-weight:700;}
 
-        .filter-select {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.85rem;
-            color: var(--navy);
-            background: white;
-            cursor: pointer;
-            outline: none;
-        }
+        /* ACTIVITY */
+        .activity-item{display:flex;align-items:flex-start;gap:0.9rem;padding:0.85rem 1.4rem;border-bottom:1px solid var(--border);transition:0.2s;}
+        .activity-item:last-child{border-bottom:none;}
+        .activity-item:hover{background:#fafbff;}
+        .act-dot{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;flex-shrink:0;}
+        .act-text p{font-size:0.83rem;line-height:1.5;}
+        .act-time{font-size:0.7rem;color:var(--gray);margin-top:0.15rem;}
 
-        .filter-search {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 0.5rem 1rem;
-            flex: 1;
-            max-width: 300px;
-        }
+        /* PENDING ROW */
+        .pending-item{display:flex;align-items:center;gap:0.9rem;padding:0.9rem 1.4rem;border-bottom:1px solid var(--border);}
+        .pending-item:last-child{border-bottom:none;}
+        .pi-info{flex:1;}
+        .pi-info strong{display:block;font-size:0.83rem;}
+        .pi-info span{font-size:0.72rem;color:var(--gray);}
 
-        .filter-search i { color: var(--gray); font-size: 0.85rem; }
-        .filter-search input { border: none; outline: none; font-size: 0.85rem; width: 100%; }
+        /* DETAIL */
+        .detail-grid{display:grid;grid-template-columns:1fr 2fr;gap:1.4rem;}
+        .info-row{display:flex;justify-content:space-between;padding:0.65rem 0;border-bottom:1px solid var(--border);font-size:0.85rem;}
+        .info-row:last-child{border-bottom:none;}
+        .info-label{color:var(--gray);font-weight:500;}
+        .info-val{font-weight:600;}
+        .stars{color:var(--gold);}
 
-        /* DONUT PLACEHOLDER */
-        .donut-wrap {
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .donut {
-            width: 120px; height: 120px;
-            border-radius: 50%;
-            background: conic-gradient(
-                var(--gold) 0% 45%,
-                var(--navy) 45% 72%,
-                var(--success) 72% 88%,
-                var(--danger) 88% 100%
-            );
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            position: relative;
-        }
-
-        .donut::after {
-            content: '';
-            position: absolute;
-            width: 70px; height: 70px;
-            background: white;
-            border-radius: 50%;
-        }
-
-        .donut-legend { flex: 1; }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            margin-bottom: 0.6rem;
-            font-size: 0.82rem;
-        }
-
-        .legend-dot {
-            width: 10px; height: 10px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .legend-item span { color: var(--gray); margin-left: auto; font-weight: 600; }
+        /* EMPTY */
+        .empty-state{text-align:center;padding:2.5rem 1rem;color:var(--gray);}
+        .empty-state i{font-size:2.5rem;margin-bottom:0.8rem;opacity:0.25;display:block;}
+        .empty-state p{font-size:0.88rem;}
 
         /* TOAST */
-        .toast {
-            position: fixed;
-            bottom: 2rem; right: 2rem;
-            background: var(--navy);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            font-size: 0.88rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            z-index: 1000;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: 0.3s;
-        }
-
-        .toast.show { transform: translateY(0); opacity: 1; }
-        .toast i { color: var(--gold); }
+        .toast{position:fixed;bottom:1.8rem;right:1.8rem;background:var(--navy);color:#fff;padding:0.9rem 1.4rem;border-radius:11px;font-size:0.85rem;display:flex;align-items:center;gap:0.75rem;box-shadow:0 10px 30px rgba(0,0,0,0.18);z-index:9999;transform:translateY(100px);opacity:0;transition:0.3s;}
+        .toast.show{transform:translateY(0);opacity:1;}
+        .toast i{color:var(--gold);}
     </style>
 </head>
 <body>
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="sidebar-logo">
-            <h1>Contractor<span>Hub</span></h1>
-            <p>Admin Panel</p>
-        </div>
-
-        <div class="sidebar-section">
-            <div class="sidebar-section-label">Main</div>
-            <a class="nav-item active" onclick="showPage('dashboard', this)">
-                <i class="fas fa-th-large"></i> Dashboard
-            </a>
-            <a class="nav-item" onclick="showPage('analytics', this)">
-                <i class="fas fa-chart-line"></i> Analytics
-            </a>
-        </div>
-
-        <div class="sidebar-section">
-            <div class="sidebar-section-label">Users</div>
-            <a class="nav-item" onclick="showPage('users', this)">
-                <i class="fas fa-users"></i> All Users
-                <span class="badge gold">12.4K</span>
-            </a>
-            <a class="nav-item" onclick="showPage('workers', this)">
-                <i class="fas fa-hard-hat"></i> Workers
-            </a>
-            <a class="nav-item" onclick="showPage('clients', this)">
-                <i class="fas fa-briefcase"></i> Clients
-            </a>
-            <a class="nav-item" onclick="showPage('verifications', this)">
-                <i class="fas fa-id-card"></i> Verifications
-                <span class="badge">14</span>
-            </a>
-        </div>
-
-        <div class="sidebar-section">
-            <div class="sidebar-section-label">Platform</div>
-            <a class="nav-item" onclick="showPage('jobs', this)">
-                <i class="fas fa-clipboard-list"></i> Jobs
-            </a>
-            <a class="nav-item" onclick="showPage('payments', this)">
-                <i class="fas fa-wallet"></i> Payments
-            </a>
-            <a class="nav-item" onclick="showPage('disputes', this)">
-                <i class="fas fa-balance-scale"></i> Disputes
-                <span class="badge">7</span>
-            </a>
-            <a class="nav-item" onclick="showPage('reports', this)">
-                <i class="fas fa-flag"></i> Reports
-                <span class="badge">3</span>
-            </a>
-        </div>
-
-        <div class="sidebar-section">
-            <div class="sidebar-section-label">System</div>
-            <a class="nav-item" onclick="showPage('settings', this)">
-                <i class="fas fa-cog"></i> Settings
-            </a>
-            <a class="nav-item" onclick="showPage('logs', this)">
-                <i class="fas fa-terminal"></i> Activity Logs
-            </a>
-        </div>
-
-        <div class="sidebar-footer">
-            <div class="admin-profile">
-                <div class="admin-avatar">SA</div>
-                <div class="admin-info">
-                    <h4>Super Admin</h4>
-                    <p>admin@contractorhub.pk</p>
-                </div>
-                <i class="fas fa-chevron-right" style="color:rgba(255,255,255,0.2); font-size:0.7rem; margin-left:auto;"></i>
-            </div>
-        </div>
-    </aside>
-
-    <!-- MAIN -->
-    <div class="main">
-
-        <!-- TOPBAR -->
-        <div class="topbar">
-            <div class="topbar-left">
-                <h2 id="pageTitle">Dashboard Overview</h2>
-                <p id="pageSubtitle">Welcome back, Super Admin · <span id="currentDate"></span></p>
-            </div>
-            <div class="topbar-right">
-                <div class="topbar-search">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search anything...">
-                </div>
-                <div class="topbar-icon">
-                    <i class="fas fa-bell"></i>
-                    <span class="topbar-dot"></span>
-                </div>
-                <div class="topbar-icon">
-                    <i class="fas fa-sign-out-alt"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- ── DASHBOARD PAGE ── -->
-        <div class="page active" id="page-dashboard">
-
-            <!-- STATS -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-top">
-                        <div class="stat-icon gold"><i class="fas fa-users"></i></div>
-                        <span class="stat-change up"><i class="fas fa-arrow-up"></i> 12%</span>
-                    </div>
-                    <div class="stat-num">12,480</div>
-                    <div class="stat-label">Total Users</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-top">
-                        <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
-                        <span class="stat-change up"><i class="fas fa-arrow-up"></i> 8%</span>
-                    </div>
-                    <div class="stat-num">3,241</div>
-                    <div class="stat-label">Jobs Completed</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-top">
-                        <div class="stat-icon gold"><i class="fas fa-wallet"></i></div>
-                        <span class="stat-change up"><i class="fas fa-arrow-up"></i> 23%</span>
-                    </div>
-                    <div class="stat-num">Rs 4.2M</div>
-                    <div class="stat-label">Revenue (This Month)</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-top">
-                        <div class="stat-icon red"><i class="fas fa-exclamation-triangle"></i></div>
-                        <span class="stat-change down"><i class="fas fa-arrow-down"></i> 3%</span>
-                    </div>
-                    <div class="stat-num">7</div>
-                    <div class="stat-label">Open Disputes</div>
-                </div>
-            </div>
-
-            <div class="grid-3-1">
-                <!-- REVENUE CHART -->
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <h3>Revenue Overview</h3>
-                            <p>Monthly revenue — 2026</p>
-                        </div>
-                        <select class="filter-select" style="border:none; font-size:0.8rem; color:var(--gray);">
-                            <option>Last 6 months</option>
-                            <option>Last 12 months</option>
-                        </select>
-                    </div>
-                    <div class="chart-area">
-                        <div class="bar-group">
-                            <div class="bar gold" style="height:60px;" title="Jan: Rs 2.1M"></div>
-                            <div class="bar-label">Jan</div>
-                        </div>
-                        <div class="bar-group">
-                            <div class="bar gold" style="height:90px;" title="Feb: Rs 2.8M"></div>
-                            <div class="bar-label">Feb</div>
-                        </div>
-                        <div class="bar-group">
-                            <div class="bar gold" style="height:75px;" title="Mar: Rs 2.5M"></div>
-                            <div class="bar-label">Mar</div>
-                        </div>
-                        <div class="bar-group">
-                            <div class="bar gold" style="height:110px;" title="Apr: Rs 3.2M"></div>
-                            <div class="bar-label">Apr</div>
-                        </div>
-                        <div class="bar-group">
-                            <div class="bar gold" style="height:130px;" title="May: Rs 3.8M"></div>
-                            <div class="bar-label">May</div>
-                        </div>
-                        <div class="bar-group">
-                            <div class="bar gold" style="height:160px;" title="Jun: Rs 4.2M"></div>
-                            <div class="bar-label">Jun</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- USER BREAKDOWN -->
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <h3>User Types</h3>
-                            <p>Platform breakdown</p>
-                        </div>
-                    </div>
-                    <div class="donut-wrap">
-                        <div class="donut"></div>
-                        <div class="donut-legend">
-                            <div class="legend-item">
-                                <div class="legend-dot" style="background:var(--gold)"></div>
-                                Workers <span>45%</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-dot" style="background:var(--navy)"></div>
-                                Clients <span>27%</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-dot" style="background:var(--success)"></div>
-                                Both <span>16%</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-dot" style="background:var(--danger)"></div>
-                                Inactive <span>12%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid-2">
-                <!-- RECENT USERS -->
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <h3>Recent Signups</h3>
-                            <p>Latest registered users</p>
-                        </div>
-                        <span class="card-action" onclick="showPage('users', document.querySelector('[onclick*=users]'))">View All</span>
-                    </div>
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>User</th>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><div class="user-cell"><div class="av">AK</div><div><strong>Ahmad Khan</strong><span>ahmad@email.com</span></div></div></td>
-                                    <td><span class="badge gold">Worker</span></td>
-                                    <td><span class="badge success"><i class="fas fa-circle" style="font-size:0.5rem"></i> Active</span></td>
-                                    <td><div class="action-btns"><button class="btn-icon view" onclick="showToast('Viewing Ahmad Khan')"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del"><i class="fas fa-trash"></i></button></div></td>
-                                </tr>
-                                <tr>
-                                    <td><div class="user-cell"><div class="av blue">SR</div><div><strong>Sara Raza</strong><span>sara@email.com</span></div></div></td>
-                                    <td><span class="badge gray">Client</span></td>
-                                    <td><span class="badge success"><i class="fas fa-circle" style="font-size:0.5rem"></i> Active</span></td>
-                                    <td><div class="action-btns"><button class="btn-icon view" onclick="showToast('Viewing Sara Raza')"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del"><i class="fas fa-trash"></i></button></div></td>
-                                </tr>
-                                <tr>
-                                    <td><div class="user-cell"><div class="av">UM</div><div><strong>Usman Malik</strong><span>usman@email.com</span></div></div></td>
-                                    <td><span class="badge gold">Worker</span></td>
-                                    <td><span class="badge warning"><i class="fas fa-circle" style="font-size:0.5rem"></i> Pending</span></td>
-                                    <td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del"><i class="fas fa-trash"></i></button></div></td>
-                                </tr>
-                                <tr>
-                                    <td><div class="user-cell"><div class="av blue">ZA</div><div><strong>Zara Ahmed</strong><span>zara@email.com</span></div></div></td>
-                                    <td><span class="badge gray">Client</span></td>
-                                    <td><span class="badge danger"><i class="fas fa-circle" style="font-size:0.5rem"></i> Suspended</span></td>
-                                    <td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del"><i class="fas fa-trash"></i></button></div></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- ACTIVITY + PENDING -->
-                <div style="display:flex; flex-direction:column; gap:1.5rem;">
-                    <!-- PENDING VERIFICATIONS -->
-                    <div class="card">
-                        <div class="card-header">
-                            <div><h3>Pending Verifications</h3><p>Workers awaiting CNIC check</p></div>
-                            <span class="badge danger">14 pending</span>
-                        </div>
-                        <div>
-                            <div class="pending-item">
-                                <div class="user-cell" style="flex:1">
-                                    <div class="av">MR</div>
-                                    <div><strong>Muhammad Rafiq</strong><span>Painter · Lahore</span></div>
-                                </div>
-                                <div class="pending-actions">
-                                    <button class="btn-sm approve" onclick="showToast('✓ Muhammad Rafiq approved!')">Approve</button>
-                                    <button class="btn-sm reject" onclick="showToast('✗ Request rejected')">Reject</button>
-                                </div>
-                            </div>
-                            <div class="pending-item">
-                                <div class="user-cell" style="flex:1">
-                                    <div class="av">AH</div>
-                                    <div><strong>Ali Hassan</strong><span>Electrician · Karachi</span></div>
-                                </div>
-                                <div class="pending-actions">
-                                    <button class="btn-sm approve" onclick="showToast('✓ Ali Hassan approved!')">Approve</button>
-                                    <button class="btn-sm reject" onclick="showToast('✗ Request rejected')">Reject</button>
-                                </div>
-                            </div>
-                            <div class="pending-item">
-                                <div class="user-cell" style="flex:1">
-                                    <div class="av">SK</div>
-                                    <div><strong>Sajid Khan</strong><span>Plumber · Islamabad</span></div>
-                                </div>
-                                <div class="pending-actions">
-                                    <button class="btn-sm approve" onclick="showToast('✓ Sajid Khan approved!')">Approve</button>
-                                    <button class="btn-sm reject" onclick="showToast('✗ Request rejected')">Reject</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- PLATFORM STATS -->
-                    <div class="card">
-                        <div class="card-header"><h3>Platform Health</h3></div>
-                        <div class="mini-stats">
-                            <div class="mini-stat">
-                                <div class="mini-stat-left">
-                                    <div class="mini-stat-icon gold-dim" style="background:var(--gold-dim); color:var(--gold)"><i class="fas fa-star"></i></div>
-                                    <div><div class="mini-stat-label">Avg Rating</div><div class="mini-stat-sub">Across all workers</div></div>
-                                </div>
-                                <div class="mini-stat-val" style="color:var(--gold)">4.7 ★</div>
-                            </div>
-                            <div class="mini-stat">
-                                <div class="mini-stat-left">
-                                    <div class="mini-stat-icon" style="background:var(--success-bg); color:var(--success)"><i class="fas fa-check"></i></div>
-                                    <div><div class="mini-stat-label">Completion Rate</div><div class="mini-stat-sub">Jobs finished on time</div></div>
-                                </div>
-                                <div class="mini-stat-val" style="color:var(--success)">94%</div>
-                            </div>
-                            <div class="mini-stat">
-                                <div class="mini-stat-left">
-                                    <div class="mini-stat-icon" style="background:var(--danger-bg); color:var(--danger)"><i class="fas fa-times"></i></div>
-                                    <div><div class="mini-stat-label">Dispute Rate</div><div class="mini-stat-sub">Out of all jobs</div></div>
-                                </div>
-                                <div class="mini-stat-val" style="color:var(--danger)">2.1%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ── USERS PAGE ── -->
-        <div class="page" id="page-users">
-            <div class="page-header">
-                <h2>All Users</h2>
-                <button class="btn-gold"><i class="fas fa-plus"></i> Add User</button>
-            </div>
-            <div class="filters-row">
-                <div class="filter-search"><i class="fas fa-search"></i><input type="text" placeholder="Search users..."></div>
-                <select class="filter-select"><option>All Types</option><option>Workers</option><option>Clients</option></select>
-                <select class="filter-select"><option>All Status</option><option>Active</option><option>Pending</option><option>Suspended</option></select>
-                <select class="filter-select"><option>All Cities</option><option>Lahore</option><option>Karachi</option><option>Islamabad</option></select>
-            </div>
-            <div class="card">
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr><th>User</th><th>Type</th><th>City</th><th>Joined</th><th>Jobs</th><th>Rating</th><th>Status</th><th>Actions</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><div class="user-cell"><div class="av">AK</div><div><strong>Ahmad Khan</strong><span>+92-300-1234567</span></div></div></td><td><span class="badge gold">Worker</span></td><td>Lahore</td><td>Jan 15, 2026</td><td>23</td><td>⭐ 4.9</td><td><span class="badge success">Active</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del" onclick="showToast('User suspended!')"><i class="fas fa-ban"></i></button></div></td></tr>
-                            <tr><td><div class="user-cell"><div class="av blue">SR</div><div><strong>Sara Raza</strong><span>+92-321-7654321</span></div></div></td><td><span class="badge gray">Client</span></td><td>Karachi</td><td>Jan 18, 2026</td><td>8</td><td>—</td><td><span class="badge success">Active</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del" onclick="showToast('User suspended!')"><i class="fas fa-ban"></i></button></div></td></tr>
-                            <tr><td><div class="user-cell"><div class="av">UM</div><div><strong>Usman Malik</strong><span>+92-333-9876543</span></div></div></td><td><span class="badge gold">Worker</span></td><td>Islamabad</td><td>Feb 1, 2026</td><td>0</td><td>—</td><td><span class="badge warning">Pending</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del" onclick="showToast('User suspended!')"><i class="fas fa-ban"></i></button></div></td></tr>
-                            <tr><td><div class="user-cell"><div class="av blue">ZA</div><div><strong>Zara Ahmed</strong><span>+92-345-5551234</span></div></div></td><td><span class="badge gray">Client</span></td><td>Lahore</td><td>Feb 10, 2026</td><td>2</td><td>—</td><td><span class="badge danger">Suspended</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del"><i class="fas fa-trash"></i></button></div></td></tr>
-                            <tr><td><div class="user-cell"><div class="av">MR</div><div><strong>Muhammad Rafiq</strong><span>+92-300-1111222</span></div></div></td><td><span class="badge gold">Worker</span></td><td>Faisalabad</td><td>Feb 14, 2026</td><td>15</td><td>⭐ 4.7</td><td><span class="badge success">Active</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon edit"><i class="fas fa-pen"></i></button><button class="btn-icon del" onclick="showToast('User suspended!')"><i class="fas fa-ban"></i></button></div></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ── JOBS PAGE ── -->
-        <div class="page" id="page-jobs">
-            <div class="page-header">
-                <h2>All Jobs</h2>
-                <button class="btn-gold"><i class="fas fa-download"></i> Export</button>
-            </div>
-            <div class="filters-row">
-                <div class="filter-search"><i class="fas fa-search"></i><input type="text" placeholder="Search jobs..."></div>
-                <select class="filter-select"><option>All Status</option><option>Active</option><option>Completed</option><option>Cancelled</option><option>Disputed</option></select>
-                <select class="filter-select"><option>All Categories</option><option>Painting</option><option>Electrical</option><option>Plumbing</option></select>
-            </div>
-            <div class="card">
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr><th>Job</th><th>Client</th><th>Worker</th><th>Amount</th><th>Posted</th><th>Status</th><th>Actions</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td><strong>House Painting - 3 Rooms</strong><br><small style="color:var(--gray)">Painting · Lahore</small></td><td>Sara Raza</td><td>Ahmad Khan</td><td style="font-family:'Space Mono',monospace; font-weight:700;">Rs 12,000</td><td>Feb 20, 2026</td><td><span class="badge success">Completed</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button></div></td></tr>
-                            <tr><td><strong>Solar Panel Installation</strong><br><small style="color:var(--gray)">Electrical · Karachi</small></td><td>Zara Ahmed</td><td>Ali Hassan</td><td style="font-family:'Space Mono',monospace; font-weight:700;">Rs 45,000</td><td>Feb 22, 2026</td><td><span class="badge gold">Active</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button></div></td></tr>
-                            <tr><td><strong>Bathroom Pipe Repair</strong><br><small style="color:var(--gray)">Plumbing · Islamabad</small></td><td>Usman Malik</td><td>Sajid Khan</td><td style="font-family:'Space Mono',monospace; font-weight:700;">Rs 5,500</td><td>Feb 24, 2026</td><td><span class="badge danger">Disputed</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button></div></td></tr>
-                            <tr><td><strong>Wood Door Installation</strong><br><small style="color:var(--gray)">Carpentry · Lahore</small></td><td>Ahmad Khan</td><td>Naeem Abbas</td><td style="font-family:'Space Mono',monospace; font-weight:700;">Rs 18,000</td><td>Feb 26, 2026</td><td><span class="badge warning">Pending</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button></div></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ── PAYMENTS PAGE ── -->
-        <div class="page" id="page-payments">
-            <div class="page-header">
-                <h2>Payments</h2>
-                <button class="btn-gold"><i class="fas fa-download"></i> Export CSV</button>
-            </div>
-            <div class="stats-grid" style="grid-template-columns: repeat(3,1fr);">
-                <div class="stat-card"><div class="stat-top"><div class="stat-icon gold"><i class="fas fa-money-bill"></i></div><span class="stat-change up">↑ 23%</span></div><div class="stat-num">Rs 4.2M</div><div class="stat-label">Total Revenue</div></div>
-                <div class="stat-card"><div class="stat-top"><div class="stat-icon green"><i class="fas fa-check"></i></div></div><div class="stat-num">Rs 3.8M</div><div class="stat-label">Paid Out to Workers</div></div>
-                <div class="stat-card"><div class="stat-top"><div class="stat-icon blue"><i class="fas fa-clock"></i></div></div><div class="stat-num">Rs 380K</div><div class="stat-label">Pending Payout</div></div>
-            </div>
-            <div class="card">
-                <div class="card-header"><h3>Recent Transactions</h3></div>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Transaction ID</th><th>From</th><th>To</th><th>Amount</th><th>Fee</th><th>Method</th><th>Date</th><th>Status</th></tr></thead>
-                        <tbody>
-                            <tr><td><code style="font-size:0.75rem; color:var(--gold)">#TXN-00421</code></td><td>Sara Raza</td><td>Ahmad Khan</td><td style="font-weight:700;">Rs 12,000</td><td>Rs 1,800</td><td>JazzCash</td><td>Feb 20, 2026</td><td><span class="badge success">Completed</span></td></tr>
-                            <tr><td><code style="font-size:0.75rem; color:var(--gold)">#TXN-00420</code></td><td>Zara Ahmed</td><td>Ali Hassan</td><td style="font-weight:700;">Rs 45,000</td><td>Rs 6,750</td><td>Bank Transfer</td><td>Feb 22, 2026</td><td><span class="badge warning">Pending</span></td></tr>
-                            <tr><td><code style="font-size:0.75rem; color:var(--gold)">#TXN-00419</code></td><td>Usman Malik</td><td>Sajid Khan</td><td style="font-weight:700;">Rs 5,500</td><td>Rs 825</td><td>EasyPaisa</td><td>Feb 24, 2026</td><td><span class="badge danger">On Hold</span></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ── DISPUTES PAGE ── -->
-        <div class="page" id="page-disputes">
-            <div class="page-header">
-                <h2>Disputes</h2>
-                <span class="badge danger" style="font-size:0.85rem; padding:0.4rem 1rem;">7 Open</span>
-            </div>
-            <div class="card">
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Dispute ID</th><th>Job</th><th>Client</th><th>Worker</th><th>Amount</th><th>Raised</th><th>Status</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            <tr><td><code style="color:var(--danger); font-size:0.75rem">#DSP-007</code></td><td>Bathroom Repair</td><td>Usman Malik</td><td>Sajid Khan</td><td style="font-weight:700;">Rs 5,500</td><td>Feb 25</td><td><span class="badge danger">Open</span></td><td><div class="action-btns"><button class="btn-icon view" onclick="showToast('Dispute details opened')"><i class="fas fa-eye"></i></button><button class="btn-sm approve" style="font-size:0.72rem; padding:0.3rem 0.6rem;" onclick="showToast('Resolved in client favor')">Resolve</button></div></td></tr>
-                            <tr><td><code style="color:var(--warning); font-size:0.75rem">#DSP-006</code></td><td>Wall Plastering</td><td>Bilal Awan</td><td>Tariq Shah</td><td style="font-weight:700;">Rs 8,200</td><td>Feb 23</td><td><span class="badge warning">Reviewing</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button></div></td></tr>
-                            <tr><td><code style="color:var(--success); font-size:0.75rem">#DSP-005</code></td><td>AC Installation</td><td>Hira Baig</td><td>Kamran Ali</td><td style="font-weight:700;">Rs 15,000</td><td>Feb 20</td><td><span class="badge success">Resolved</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button></div></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ── VERIFICATIONS PAGE ── -->
-        <div class="page" id="page-verifications">
-            <div class="page-header">
-                <h2>Verifications</h2>
-                <span class="badge danger" style="font-size:0.85rem; padding:0.4rem 1rem;">14 Pending</span>
-            </div>
-            <div class="card">
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Worker</th><th>Skill</th><th>City</th><th>Submitted</th><th>Documents</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            <tr><td><div class="user-cell"><div class="av">MR</div><div><strong>Muhammad Rafiq</strong><span>+92-300-1111</span></div></div></td><td>Painter</td><td>Lahore</td><td>Feb 26, 2026</td><td><span class="badge success"><i class="fas fa-check"></i> CNIC + Selfie</span></td><td><div class="action-btns"><button class="btn-sm approve" onclick="showToast('✓ Verified successfully!')">Approve</button><button class="btn-sm reject" onclick="showToast('✗ Rejected')">Reject</button></div></td></tr>
-                            <tr><td><div class="user-cell"><div class="av">AH</div><div><strong>Ali Hassan</strong><span>+92-333-2222</span></div></div></td><td>Electrician</td><td>Karachi</td><td>Feb 27, 2026</td><td><span class="badge warning"><i class="fas fa-clock"></i> CNIC Only</span></td><td><div class="action-btns"><button class="btn-sm approve" onclick="showToast('✓ Verified successfully!')">Approve</button><button class="btn-sm reject" onclick="showToast('✗ Rejected')">Reject</button></div></td></tr>
-                            <tr><td><div class="user-cell"><div class="av">SK</div><div><strong>Sajid Khan</strong><span>+92-321-3333</span></div></div></td><td>Plumber</td><td>Islamabad</td><td>Feb 27, 2026</td><td><span class="badge success"><i class="fas fa-check"></i> CNIC + Selfie</span></td><td><div class="action-btns"><button class="btn-sm approve" onclick="showToast('✓ Verified successfully!')">Approve</button><button class="btn-sm reject" onclick="showToast('✗ Rejected')">Reject</button></div></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ── REPORTS PAGE ── -->
-        <div class="page" id="page-reports">
-            <div class="page-header"><h2>User Reports</h2></div>
-            <div class="card">
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Reported User</th><th>Reported By</th><th>Reason</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            <tr><td><div class="user-cell"><div class="av blue">ZA</div><div><strong>Zara Ahmed</strong><span>Client</span></div></div></td><td>Ahmad Khan</td><td>Fraudulent payment</td><td>Feb 25, 2026</td><td><span class="badge danger">Urgent</span></td><td><div class="action-btns"><button class="btn-icon view" onclick="showToast('Report opened')"><i class="fas fa-eye"></i></button><button class="btn-sm reject" onclick="showToast('Account suspended!')">Suspend</button></div></td></tr>
-                            <tr><td><div class="user-cell"><div class="av">XX</div><div><strong>Unknown Worker</strong><span>Worker</span></div></div></td><td>Sara Raza</td><td>No-show for job</td><td>Feb 26, 2026</td><td><span class="badge warning">Reviewing</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button></div></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ── SETTINGS PAGE ── -->
-        <div class="page" id="page-settings">
-            <div class="page-header"><h2>Platform Settings</h2></div>
-            <div class="grid-2">
-                <div class="card">
-                    <div class="card-header"><h3>Fee Configuration</h3></div>
-                    <div style="padding:1.5rem; display:flex; flex-direction:column; gap:1.2rem;">
-                        <div>
-                            <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:0.4rem;">Worker Service Fee (%)</label>
-                            <input type="number" value="10" style="width:100%; padding:0.7rem 1rem; border:1px solid var(--border); border-radius:10px; font-size:0.9rem; outline:none;">
-                        </div>
-                        <div>
-                            <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:0.4rem;">Client Processing Fee (%)</label>
-                            <input type="number" value="5" style="width:100%; padding:0.7rem 1rem; border:1px solid var(--border); border-radius:10px; font-size:0.9rem; outline:none;">
-                        </div>
-                        <div>
-                            <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:0.4rem;">Payout Delay (days)</label>
-                            <input type="number" value="3" style="width:100%; padding:0.7rem 1rem; border:1px solid var(--border); border-radius:10px; font-size:0.9rem; outline:none;">
-                        </div>
-                        <button class="btn-gold" onclick="showToast('Settings saved!')" style="align-self:flex-start;"><i class="fas fa-save"></i> Save Changes</button>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header"><h3>Platform Toggles</h3></div>
-                    <div style="padding:1.5rem; display:flex; flex-direction:column; gap:1rem;">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div><div style="font-size:0.88rem; font-weight:600;">New Registrations</div><div style="font-size:0.75rem; color:var(--gray);">Allow new user signups</div></div>
-                            <label style="position:relative; width:44px; height:24px; cursor:pointer;"><input type="checkbox" checked style="opacity:0; width:0; height:0;"><span style="position:absolute; inset:0; background:var(--gold); border-radius:24px;"><span style="position:absolute; top:3px; left:3px; width:18px; height:18px; background:white; border-radius:50%; transition:0.2s; transform:translateX(20px);"></span></span></label>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div><div style="font-size:0.88rem; font-weight:600;">Job Posting</div><div style="font-size:0.75rem; color:var(--gray);">Allow clients to post jobs</div></div>
-                            <label style="position:relative; width:44px; height:24px; cursor:pointer;"><input type="checkbox" checked style="opacity:0; width:0; height:0;"><span style="position:absolute; inset:0; background:var(--gold); border-radius:24px;"><span style="position:absolute; top:3px; left:3px; width:18px; height:18px; background:white; border-radius:50%; transition:0.2s; transform:translateX(20px);"></span></span></label>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div><div style="font-size:0.88rem; font-weight:600;">Maintenance Mode</div><div style="font-size:0.75rem; color:var(--gray);">Take platform offline</div></div>
-                            <label style="position:relative; width:44px; height:24px; cursor:pointer;"><input type="checkbox" style="opacity:0; width:0; height:0;"><span style="position:absolute; inset:0; background:var(--border); border-radius:24px;"><span style="position:absolute; top:3px; left:3px; width:18px; height:18px; background:white; border-radius:50%; transition:0.2s;"></span></span></label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ── OTHER PAGES (analytics, workers, clients, logs) ── -->
-        <div class="page" id="page-analytics">
-            <div class="page-header"><h2>Analytics</h2></div>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-top"><div class="stat-icon gold"><i class="fas fa-eye"></i></div><span class="stat-change up">↑ 18%</span></div><div class="stat-num">142K</div><div class="stat-label">Page Views</div></div>
-                <div class="stat-card"><div class="stat-top"><div class="stat-icon green"><i class="fas fa-user-plus"></i></div><span class="stat-change up">↑ 12%</span></div><div class="stat-num">1,240</div><div class="stat-label">New Signups</div></div>
-                <div class="stat-card"><div class="stat-top"><div class="stat-icon blue"><i class="fas fa-mouse-pointer"></i></div></div><div class="stat-num">68%</div><div class="stat-label">Conversion Rate</div></div>
-                <div class="stat-card"><div class="stat-top"><div class="stat-icon gold"><i class="fas fa-clock"></i></div></div><div class="stat-num">4m 32s</div><div class="stat-label">Avg Session</div></div>
-            </div>
-            <div class="card"><div class="card-header"><h3>Traffic Overview</h3></div><div class="chart-area">
-                <div class="bar-group"><div class="bar gold" style="height:80px"></div><div class="bar-label">Mon</div></div>
-                <div class="bar-group"><div class="bar gold" style="height:120px"></div><div class="bar-label">Tue</div></div>
-                <div class="bar-group"><div class="bar gold" style="height:100px"></div><div class="bar-label">Wed</div></div>
-                <div class="bar-group"><div class="bar gold" style="height:150px"></div><div class="bar-label">Thu</div></div>
-                <div class="bar-group"><div class="bar gold" style="height:170px"></div><div class="bar-label">Fri</div></div>
-                <div class="bar-group"><div class="bar gold" style="height:130px"></div><div class="bar-label">Sat</div></div>
-                <div class="bar-group"><div class="bar gold" style="height:90px"></div><div class="bar-label">Sun</div></div>
-            </div></div>
-        </div>
-
-        <div class="page" id="page-workers">
-            <div class="page-header"><h2>Workers</h2><button class="btn-gold"><i class="fas fa-download"></i> Export</button></div>
-            <div class="card"><div class="card-header"><h3>All Verified Workers</h3></div>
-            <div class="table-wrap"><table><thead><tr><th>Worker</th><th>Skills</th><th>City</th><th>Rate/hr</th><th>Rating</th><th>Jobs Done</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody>
-                <tr><td><div class="user-cell"><div class="av">MR</div><div><strong>Muhammad Rafiq</strong><span>12 yrs exp</span></div></div></td><td>Painting, Texture</td><td>Lahore</td><td>Rs 800</td><td>⭐ 4.9</td><td>42</td><td><span class="badge success">Active</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon del" onclick="showToast('Worker suspended!')"><i class="fas fa-ban"></i></button></div></td></tr>
-                <tr><td><div class="user-cell"><div class="av">AH</div><div><strong>Ali Hassan</strong><span>8 yrs exp</span></div></div></td><td>Wiring, Solar</td><td>Karachi</td><td>Rs 600</td><td>⭐ 4.8</td><td>28</td><td><span class="badge success">Active</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon del" onclick="showToast('Worker suspended!')"><i class="fas fa-ban"></i></button></div></td></tr>
-            </tbody></table></div></div>
-        </div>
-
-        <div class="page" id="page-clients">
-            <div class="page-header"><h2>Clients</h2><button class="btn-gold"><i class="fas fa-download"></i> Export</button></div>
-            <div class="card"><div class="card-header"><h3>All Clients</h3></div>
-            <div class="table-wrap"><table><thead><tr><th>Client</th><th>City</th><th>Total Spent</th><th>Jobs Posted</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody>
-                <tr><td><div class="user-cell"><div class="av blue">SR</div><div><strong>Sara Raza</strong><span>sara@email.com</span></div></div></td><td>Karachi</td><td style="font-weight:700;">Rs 58,000</td><td>8</td><td>Jan 18, 2026</td><td><span class="badge success">Active</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon del" onclick="showToast('Client suspended!')"><i class="fas fa-ban"></i></button></div></td></tr>
-                <tr><td><div class="user-cell"><div class="av blue">ZA</div><div><strong>Zara Ahmed</strong><span>zara@email.com</span></div></div></td><td>Lahore</td><td style="font-weight:700;">Rs 12,500</td><td>2</td><td>Feb 10, 2026</td><td><span class="badge danger">Suspended</span></td><td><div class="action-btns"><button class="btn-icon view"><i class="fas fa-eye"></i></button><button class="btn-icon del"><i class="fas fa-trash"></i></button></div></td></tr>
-            </tbody></table></div></div>
-        </div>
-
-        <div class="page" id="page-logs">
-            <div class="page-header"><h2>Activity Logs</h2></div>
-            <div class="card">
-                <div class="activity-feed">
-                    <div class="activity-item"><div class="activity-dot" style="background:var(--success-bg); color:var(--success)"><i class="fas fa-user-plus"></i></div><div class="activity-text"><p><strong>New user registered</strong> — Ahmad Khan (Worker, Lahore)</p><div class="activity-time">2 minutes ago</div></div></div>
-                    <div class="activity-item"><div class="activity-dot" style="background:var(--gold-dim); color:var(--gold)"><i class="fas fa-id-card"></i></div><div class="activity-text"><p><strong>Verification approved</strong> — Muhammad Rafiq verified by Admin</p><div class="activity-time">15 minutes ago</div></div></div>
-                    <div class="activity-item"><div class="activity-dot" style="background:var(--danger-bg); color:var(--danger)"><i class="fas fa-flag"></i></div><div class="activity-text"><p><strong>Dispute raised</strong> — Job #1042 disputed by Usman Malik</p><div class="activity-time">1 hour ago</div></div></div>
-                    <div class="activity-item"><div class="activity-dot" style="background:var(--success-bg); color:var(--success)"><i class="fas fa-wallet"></i></div><div class="activity-text"><p><strong>Payment processed</strong> — Rs 12,000 released to Ahmad Khan</p><div class="activity-time">2 hours ago</div></div></div>
-                    <div class="activity-item"><div class="activity-dot" style="background:var(--danger-bg); color:var(--danger)"><i class="fas fa-ban"></i></div><div class="activity-text"><p><strong>Account suspended</strong> — Zara Ahmed suspended for ToS violation</p><div class="activity-time">3 hours ago</div></div></div>
-                    <div class="activity-item"><div class="activity-dot" style="background:var(--gold-dim); color:var(--gold)"><i class="fas fa-briefcase"></i></div><div class="activity-text"><p><strong>New job posted</strong> — Solar Installation (Rs 45,000) by Sara Raza</p><div class="activity-time">5 hours ago</div></div></div>
-                </div>
-            </div>
-        </div>
-
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+    <div class="sb-logo">
+        <h1>Contractor<span>Hub</span></h1>
+        <p>Admin Panel</p>
     </div>
 
-    <!-- TOAST -->
-    <div class="toast" id="toast">
-        <i class="fas fa-check-circle"></i>
-        <span id="toastMsg">Action completed!</span>
+    <div class="sb-section">
+        <div class="sb-label">Main</div>
+        <a href="{% url 'myadmin' %}" class="nav-item {% if not section %}active{% endif %}">
+            <i class="fas fa-th-large"></i> Dashboard
+        </a>
+        <a href="{% url 'admin_logs' %}" class="nav-item {% if section == 'logs' %}active{% endif %}">
+            <i class="fas fa-terminal"></i> Activity Logs
+        </a>
     </div>
 
-    <script>
-        // Set date
-        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-PK', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    <div class="sb-section">
+        <div class="sb-label">Users</div>
+        <a href="{% url 'admin_users' %}" class="nav-item {% if section == 'users' or section == 'user_detail' %}active{% endif %}">
+            <i class="fas fa-users"></i> All Users
+        </a>
+        <a href="{% url 'admin_users' %}?type=contractor" class="nav-item">
+            <i class="fas fa-hard-hat"></i> Workers
+        </a>
+        <a href="{% url 'admin_users' %}?type=client" class="nav-item">
+            <i class="fas fa-briefcase"></i> Clients
+        </a>
+        <a href="{% url 'admin_verifications' %}" class="nav-item {% if section == 'verifications' %}active{% endif %}">
+            <i class="fas fa-id-card"></i> Verifications
+        </a>
+    </div>
 
-        const pageTitles = {
-            dashboard: ['Dashboard Overview', 'Platform summary at a glance'],
-            analytics: ['Analytics', 'Traffic and user engagement data'],
-            users: ['All Users', 'Manage platform users'],
-            workers: ['Workers', 'All registered workers'],
-            clients: ['Clients', 'All registered clients'],
-            verifications: ['Verifications', 'Pending CNIC verification requests'],
-            jobs: ['Jobs', 'All platform jobs'],
-            payments: ['Payments', 'Transaction history and revenue'],
-            disputes: ['Disputes', 'Open and resolved disputes'],
-            reports: ['User Reports', 'Flagged users and incidents'],
-            settings: ['Settings', 'Platform configuration'],
-            logs: ['Activity Logs', 'Recent admin and system activity'],
-        };
+    <div class="sb-section">
+        <div class="sb-label">Platform</div>
+        <a href="{% url 'admin_proposals' %}" class="nav-item {% if section == 'proposals' %}active{% endif %}">
+            <i class="fas fa-clipboard-list"></i> Proposals
+        </a>
+        <a href="{% url 'admin_reviews' %}" class="nav-item {% if section == 'reviews' %}active{% endif %}">
+            <i class="fas fa-star"></i> Reviews
+        </a>
+        <a href="{% url 'admin_messages' %}" class="nav-item {% if section == 'messages' %}active{% endif %}">
+            <i class="fas fa-comments"></i> Messages
+        </a>
+    </div>
 
-        function showPage(pageId, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    <div class="sb-footer">
+        <div class="admin-profile">
+            <div class="admin-av">{{ request.user.name|slice:":2"|upper }}</div>
+            <div class="admin-info">
+                <h4>{{ request.user.name }}</h4>
+                <p>{{ request.user.email }}</p>
+            </div>
+        </div>
+        <a href="{% url 'logout' %}" style="display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0.8rem;margin-top:0.4rem;color:rgba(255,255,255,0.38);font-size:0.8rem;text-decoration:none;border-radius:9px;transition:0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.38)'">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</aside>
 
-            document.getElementById('page-' + pageId).classList.add('active');
-            if (el) el.classList.add('active');
+<!-- ══ MAIN ══ -->
+<div class="main">
 
-            const titles = pageTitles[pageId] || [pageId, ''];
-            document.getElementById('pageTitle').textContent = titles[0];
-            document.getElementById('pageSubtitle').textContent = titles[1];
-        }
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div>
+            <h2>
+                {% if section == 'users' or section == 'user_detail' %}Users
+                {% elif section == 'proposals' %}Proposals
+                {% elif section == 'reviews' %}Reviews
+                {% elif section == 'verifications' %}Verifications
+                {% elif section == 'messages' %}Messages
+                {% elif section == 'logs' %}Activity Logs
+                {% else %}Dashboard{% endif %}
+            </h2>
+            <p>ContractorHub Admin · <span id="curDate"></span></p>
+        </div>
+        <div class="tb-right">
+            <div class="tb-search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search table..." id="globalSearch">
+            </div>
+            <a href="{% url 'client' %}" class="tb-icon" title="View Site"><i class="fas fa-external-link-alt"></i></a>
+        </div>
+    </div>
 
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-    </script>
+    <div class="page-wrap">
+
+    {# ══════════════ DASHBOARD ══════════════ #}
+    {% if not section %}
+
+    <div class="stats-grid sg-4">
+        <div class="stat-card">
+            <div class="stat-top"><div class="stat-icon si-gold"><i class="fas fa-users"></i></div></div>
+            <div class="stat-num">{{ total_users }}</div><div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-top"><div class="stat-icon si-green"><i class="fas fa-hard-hat"></i></div></div>
+            <div class="stat-num">{{ total_workers }}</div><div class="stat-label">Workers</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-top"><div class="stat-icon si-blue"><i class="fas fa-clipboard-list"></i></div></div>
+            <div class="stat-num">{{ total_proposals }}</div><div class="stat-label">Total Proposals</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-top"><div class="stat-icon si-gold"><i class="fas fa-star"></i></div></div>
+            <div class="stat-num">{{ avg_rating }}★</div><div class="stat-label">Avg Rating</div>
+        </div>
+    </div>
+
+    <div class="stats-grid sg-4">
+        <div class="stat-card">
+            <div class="stat-top"><div class="stat-icon si-green"><i class="fas fa-user-plus"></i></div></div>
+            <div class="stat-num">{{ new_today }}</div><div class="stat-label">New Today</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-top"><div class="stat-icon si-blue"><i class="fas fa-briefcase"></i></div></div>
+            <div class="stat-num">{{ total_clients }}</div><div class="stat-label">Clients</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-top"><div class="stat-icon si-gold"><i class="fas fa-check-circle"></i></div></div>
+            <div class="stat-num">{{ active_proposals }}</div><div class="stat-label">Active Proposals</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-top"><div class="stat-icon si-green"><i class="fas fa-comment-dots"></i></div></div>
+            <div class="stat-num">{{ total_reviews }}</div><div class="stat-label">Reviews</div>
+        </div>
+    </div>
+
+    <div class="grid-3-1">
+        <div class="card">
+            <div class="card-header"><div><h3>Signup Trend</h3><p>Last 6 months</p></div></div>
+            <div class="chart-area" id="signupChart"></div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3>User Types</h3></div>
+            <div class="donut-wrap">
+                <div class="donut" id="donutChart"></div>
+                <div id="donutLegend"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <!-- Recent Signups -->
+        <div class="card">
+            <div class="card-header">
+                <div><h3>Recent Signups</h3></div>
+                <a href="{% url 'admin_users' %}" class="btn-gold" style="padding:0.35rem 0.9rem;font-size:0.75rem;">View All</a>
+            </div>
+            <div class="tw"><table>
+                <thead><tr><th>User</th><th>Type</th><th>Joined</th><th>Status</th><th>Act</th></tr></thead>
+                <tbody>
+                    {% for u in recent_users %}
+                    <tr>
+                        <td><div class="uc">
+                            <div class="av {% if u.user_type == 'client' %}blue{% endif %}">{{ u.name|slice:":2"|upper|default:"??" }}</div>
+                            <div><strong>{{ u.name|default:"No Name" }}</strong><span>{{ u.email }}</span></div>
+                        </div></td>
+                        <td>{% if u.user_type == 'contractor' %}<span class="badge b-gold">Worker</span>{% elif u.user_type == 'client' %}<span class="badge b-gray">Client</span>{% else %}<span class="badge b-gray">—</span>{% endif %}</td>
+                        <td>{{ u.date_joined|date:"M d" }}</td>
+                        <td>{% if u.is_active %}<span class="badge b-success">Active</span>{% else %}<span class="badge b-danger">Suspended</span>{% endif %}</td>
+                        <td><div class="action-btns">
+                            <a href="{% url 'admin_user_detail' u.id %}" class="btn-icon bi-view"><i class="fas fa-eye"></i></a>
+                            {% if not u.is_superuser %}<button class="btn-icon bi-del" onclick="toggleUser({{ u.id }}, this)"><i class="fas fa-ban"></i></button>{% endif %}
+                        </div></td>
+                    </tr>
+                    {% empty %}<tr><td colspan="5"><div class="empty-state"><p>No users</p></div></td></tr>{% endfor %}
+                </tbody>
+            </table></div>
+        </div>
+
+        <!-- Right col -->
+        <div style="display:flex;flex-direction:column;gap:1.2rem;">
+            <div class="card">
+                <div class="card-header">
+                    <div><h3>Recent Reviews</h3></div>
+                    <a href="{% url 'admin_reviews' %}" style="font-size:0.75rem;color:var(--gold);font-weight:600;text-decoration:none;">View All</a>
+                </div>
+                {% for r in recent_reviews %}
+                <div class="pending-item" id="rv-{{ r.id }}">
+                    <div class="pi-info">
+                        <strong>{{ r.client.name|default:"?" }} → {{ r.seller.name|default:"?" }}</strong>
+                        <span class="stars">{% for i in "12345" %}{% if forloop.counter <= r.rating %}★{% else %}☆{% endif %}{% endfor %} · {{ r.comment|truncatechars:45 }}</span>
+                    </div>
+                    <button class="btn-sm bs-reject" onclick="deleteReview({{ r.id }}, this)">Del</button>
+                </div>
+                {% empty %}<div class="empty-state"><p>No reviews</p></div>{% endfor %}
+            </div>
+
+            <div class="card">
+                <div class="card-header"><h3>Platform Health</h3></div>
+                <div class="mini-stat">
+                    <div class="ms-left"><div class="ms-icon si-gold"><i class="fas fa-star"></i></div><div><div class="ms-label">Avg Rating</div><div class="ms-sub">All workers</div></div></div>
+                    <div class="ms-val" style="color:var(--gold)">{{ avg_rating }}★</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="ms-left"><div class="ms-icon si-green"><i class="fas fa-check-circle"></i></div><div><div class="ms-label">Active Proposals</div><div class="ms-sub">Live on platform</div></div></div>
+                    <div class="ms-val" style="color:var(--success)">{{ active_proposals }}</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="ms-left"><div class="ms-icon si-blue"><i class="fas fa-comments"></i></div><div><div class="ms-label">Conversations</div><div class="ms-sub">Total</div></div></div>
+                    <div class="ms-val" style="color:var(--blue)">{{ total_convs }}</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="ms-left"><div class="ms-icon si-blue"><i class="fas fa-envelope"></i></div><div><div class="ms-label">Messages</div><div class="ms-sub">Total sent</div></div></div>
+                    <div class="ms-val" style="color:var(--blue)">{{ total_messages }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+    {# ══════════════ USERS LIST ══════════════ #}
+    {% if section == 'users' %}
+    <div class="page-header"><h2>All Users</h2></div>
+    <form method="get" action="{% url 'admin_users' %}">
+        <div class="filters-row">
+            <div class="filter-search"><i class="fas fa-search"></i><input type="text" name="search" placeholder="Name / email / phone..." value="{{ search }}"></div>
+            <select name="type" class="filter-select" onchange="this.form.submit()">
+                <option value="">All Types</option>
+                <option value="contractor" {% if utype == 'contractor' %}selected{% endif %}>Workers</option>
+                <option value="client" {% if utype == 'client' %}selected{% endif %}>Clients</option>
+            </select>
+            <select name="status" class="filter-select" onchange="this.form.submit()">
+                <option value="">All Status</option>
+                <option value="active" {% if status == 'active' %}selected{% endif %}>Active</option>
+                <option value="suspended" {% if status == 'suspended' %}selected{% endif %}>Suspended</option>
+            </select>
+            <button type="submit" class="btn-gold"><i class="fas fa-search"></i> Search</button>
+        </div>
+    </form>
+    <div class="card"><div class="tw"><table>
+        <thead><tr><th>User</th><th>Type</th><th>Phone</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+            {% for u in users %}
+            <tr id="ur-{{ u.id }}">
+                <td><div class="uc">
+                    <div class="av {% if u.user_type == 'client' %}blue{% endif %}">{{ u.name|slice:":2"|upper|default:"??" }}</div>
+                    <div><strong>{{ u.name|default:"No Name" }}</strong><span>{{ u.email }}</span></div>
+                </div></td>
+                <td>{% if u.is_superuser %}<span class="badge b-danger">Admin</span>{% elif u.user_type == 'contractor' %}<span class="badge b-gold">Worker</span>{% elif u.user_type == 'client' %}<span class="badge b-gray">Client</span>{% else %}<span class="badge b-gray">—</span>{% endif %}</td>
+                <td>{{ u.phone|default:"—" }}</td>
+                <td>{{ u.date_joined|date:"M d, Y" }}</td>
+                <td id="us-{{ u.id }}">{% if u.is_active %}<span class="badge b-success">Active</span>{% else %}<span class="badge b-danger">Suspended</span>{% endif %}</td>
+                <td><div class="action-btns">
+                    <a href="{% url 'admin_user_detail' u.id %}" class="btn-icon bi-view"><i class="fas fa-eye"></i></a>
+                    {% if not u.is_superuser %}
+                    <button class="btn-icon bi-del" onclick="toggleUser({{ u.id }}, this)" title="Suspend/Activate"><i class="fas fa-ban"></i></button>
+                    <button class="btn-icon bi-del" style="background:#fecaca" onclick="deleteUser({{ u.id }}, this)" title="Delete"><i class="fas fa-trash"></i></button>
+                    {% endif %}
+                </div></td>
+            </tr>
+            {% empty %}<tr><td colspan="6"><div class="empty-state"><i class="fas fa-users"></i><p>No users found</p></div></td></tr>{% endfor %}
+        </tbody>
+    </table></div></div>
+    {% endif %}
+
+
+    {# ══════════════ USER DETAIL ══════════════ #}
+    {% if section == 'user_detail' %}
+    <div class="page-header">
+        <h2>{{ target.name|default:"User" }}</h2>
+        <a href="{% url 'admin_users' %}" class="btn-gold"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+    <div class="detail-grid">
+        <div>
+            <div class="card">
+                <div class="card-header"><h3>Basic Info</h3></div>
+                <div style="padding:1.1rem 1.4rem;">
+                    <div class="info-row"><span class="info-label">Name</span><span class="info-val">{{ target.name|default:"—" }}</span></div>
+                    <div class="info-row"><span class="info-label">Email</span><span class="info-val">{{ target.email }}</span></div>
+                    <div class="info-row"><span class="info-label">Phone</span><span class="info-val">{{ target.phone|default:"—" }}</span></div>
+                    <div class="info-row"><span class="info-label">Type</span><span class="info-val">{{ target.user_type|default:"—" }}</span></div>
+                    <div class="info-row"><span class="info-label">Joined</span><span class="info-val">{{ target.date_joined|date:"M d, Y" }}</span></div>
+                    <div class="info-row"><span class="info-label">Status</span><span class="info-val" id="det-status">{% if target.is_active %}<span class="badge b-success">Active</span>{% else %}<span class="badge b-danger">Suspended</span>{% endif %}</span></div>
+                </div>
+                {% if not target.is_superuser %}
+                <div style="padding:0.9rem 1.4rem;border-top:1px solid var(--border);display:flex;gap:0.7rem;">
+                    <button class="btn-sm bs-approve" onclick="toggleUser({{ target.id }}, this)">{% if target.is_active %}Suspend{% else %}Activate{% endif %}</button>
+                    <button class="btn-sm bs-reject" onclick="deleteUser({{ target.id }}, this)">Delete</button>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if seller_profile %}
+            <div class="card" style="margin-top:0;">
+                <div class="card-header"><h3>Seller Profile</h3></div>
+                <div style="padding:1.1rem 1.4rem;">
+                    {% if seller_profile.profile_photo %}<img src="{{ seller_profile.profile_photo.url }}" style="width:75px;height:75px;border-radius:10px;object-fit:cover;margin-bottom:0.9rem;">{% endif %}
+                    <div class="info-row"><span class="info-label">Title</span><span class="info-val">{{ seller_profile.title|default:"—" }}</span></div>
+                    <div class="info-row"><span class="info-label">City</span><span class="info-val">{{ seller_profile.city|default:"—" }}</span></div>
+                    <div class="info-row"><span class="info-label">Skills</span><span class="info-val">{{ seller_profile.skills|default:"—" }}</span></div>
+                    <div class="info-row"><span class="info-label">Avg Rating</span><span class="info-val stars">{{ avg_rating|default:"No ratings" }}</span></div>
+                    <div class="info-row"><span class="info-label">Available</span><span class="info-val">{% if seller_profile.is_available %}✅{% else %}❌{% endif %}</span></div>
+                    <div class="info-row"><span class="info-label">Level</span><span class="info-val">{{ seller_profile.level }}</span></div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div>
+            {% if proposals %}
+            <div class="card">
+                <div class="card-header"><h3>Proposals ({{ proposals.count }})</h3></div>
+                <div class="tw"><table>
+                    <thead><tr><th>Title</th><th>Price</th><th>Type</th><th>Active</th><th>Act</th></tr></thead>
+                    <tbody>
+                        {% for p in proposals %}
+                        <tr id="pr-{{ p.id }}">
+                            <td><strong>{{ p.title }}</strong></td>
+                            <td>Rs {{ p.base_price }}</td>
+                            <td>{{ p.work_type|default:"—" }}</td>
+                            <td id="ps-{{ p.id }}">{% if p.is_active %}<span class="badge b-success">Yes</span>{% else %}<span class="badge b-danger">No</span>{% endif %}</td>
+                            <td><div class="action-btns">
+                                <button class="btn-icon bi-edit" onclick="toggleProposal({{ p.id }}, this)"><i class="fas fa-power-off"></i></button>
+                                <button class="btn-icon bi-del" onclick="deleteProposal({{ p.id }}, this)"><i class="fas fa-trash"></i></button>
+                            </div></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table></div>
+            </div>
+            {% endif %}
+
+            <div class="card">
+                <div class="card-header"><h3>Reviews ({{ reviews.count }})</h3></div>
+                {% for r in reviews %}
+                <div class="pending-item" id="rv-{{ r.id }}">
+                    <div class="pi-info">
+                        <strong>{{ r.client.name|default:"Unknown" }}</strong>
+                        <span class="stars">{% for i in "12345" %}{% if forloop.counter <= r.rating %}★{% else %}☆{% endif %}{% endfor %}</span>
+                        <span>{{ r.comment|truncatechars:70 }}</span>
+                    </div>
+                    <button class="btn-sm bs-reject" onclick="deleteReview({{ r.id }}, this)">Del</button>
+                </div>
+                {% empty %}<div class="empty-state"><p>No reviews</p></div>{% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+    {# ══════════════ PROPOSALS ══════════════ #}
+    {% if section == 'proposals' %}
+    <div class="page-header"><h2>All Proposals</h2></div>
+    <form method="get" action="{% url 'admin_proposals' %}">
+        <div class="filters-row">
+            <div class="filter-search"><i class="fas fa-search"></i><input type="text" name="search" placeholder="Title or worker name..."></div>
+            <select name="status" class="filter-select" onchange="this.form.submit()">
+                <option value="">All</option><option value="active">Active</option><option value="inactive">Inactive</option>
+            </select>
+            <button type="submit" class="btn-gold"><i class="fas fa-search"></i> Search</button>
+        </div>
+    </form>
+    <div class="card"><div class="tw"><table>
+        <thead><tr><th>Title</th><th>Worker</th><th>Price</th><th>Work Type</th><th>Tag</th><th>Created</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+            {% for p in proposals %}
+            <tr id="pr-{{ p.id }}">
+                <td><strong>{{ p.title }}</strong></td>
+                <td>{{ p.seller.user.name|default:"—" }}</td>
+                <td>Rs {{ p.base_price }}</td>
+                <td>{{ p.work_type|default:"—" }}</td>
+                <td><span class="badge b-gray">{{ p.search_tag|default:"—" }}</span></td>
+                <td>{{ p.created_at|date:"M d, Y" }}</td>
+                <td id="ps-{{ p.id }}">{% if p.is_active %}<span class="badge b-success">Active</span>{% else %}<span class="badge b-danger">Inactive</span>{% endif %}</td>
+                <td><div class="action-btns">
+                    <button class="btn-icon bi-edit" onclick="toggleProposal({{ p.id }}, this)" title="Toggle"><i class="fas fa-power-off"></i></button>
+                    <button class="btn-icon bi-del" onclick="deleteProposal({{ p.id }}, this)"><i class="fas fa-trash"></i></button>
+                </div></td>
+            </tr>
+            {% empty %}<tr><td colspan="8"><div class="empty-state"><i class="fas fa-clipboard-list"></i><p>No proposals</p></div></td></tr>{% endfor %}
+        </tbody>
+    </table></div></div>
+    {% endif %}
+
+
+    {# ══════════════ REVIEWS ══════════════ #}
+    {% if section == 'reviews' %}
+    <div class="page-header">
+        <h2>Reviews</h2>
+        <span class="badge b-gold" style="font-size:0.85rem;padding:0.35rem 0.9rem;">Avg: {{ avg_rating }}★</span>
+    </div>
+    <div class="card"><div class="tw"><table>
+        <thead><tr><th>From (Client)</th><th>To (Worker)</th><th>Rating</th><th>Comment</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody>
+            {% for r in reviews %}
+            <tr id="rv-{{ r.id }}">
+                <td>{{ r.client.name|default:"Unknown" }}</td>
+                <td>{{ r.seller.name|default:"Unknown" }}</td>
+                <td><span class="stars">{% for i in "12345" %}{% if forloop.counter <= r.rating %}★{% else %}☆{% endif %}{% endfor %}</span> ({{ r.rating }})</td>
+                <td>{{ r.comment|truncatechars:60 }}</td>
+                <td>{{ r.created_at|date:"M d, Y" }}</td>
+                <td><button class="btn-icon bi-del" onclick="deleteReview({{ r.id }}, this)"><i class="fas fa-trash"></i></button></td>
+            </tr>
+            {% empty %}<tr><td colspan="6"><div class="empty-state"><i class="fas fa-star"></i><p>No reviews</p></div></td></tr>{% endfor %}
+        </tbody>
+    </table></div></div>
+    {% endif %}
+
+
+    {# ══════════════ VERIFICATIONS ══════════════ #}
+    {% if section == 'verifications' %}
+    <div class="page-header">
+        <h2>Verifications</h2>
+        <span class="badge b-danger" style="font-size:0.82rem;padding:0.35rem 0.9rem;">{{ pending|length }} Incomplete Profiles</span>
+    </div>
+    <div class="card"><div class="tw"><table>
+        <thead><tr><th>Worker</th><th>Title</th><th>City</th><th>Skills</th><th>Profile Photo</th><th>About</th><th>Actions</th></tr></thead>
+        <tbody>
+            {% for sp in pending %}
+            <tr id="vr-{{ sp.id }}">
+                <td><div class="uc">
+                    <div class="av">{{ sp.user.name|slice:":2"|upper|default:"??" }}</div>
+                    <div><strong>{{ sp.user.name|default:"Unknown" }}</strong><span>{{ sp.user.email }}</span></div>
+                </div></td>
+                <td>{{ sp.title|default:"—" }}</td>
+                <td>{{ sp.city|default:"—" }}</td>
+                <td>{{ sp.skills|truncatechars:30|default:"—" }}</td>
+                <td>{% if sp.profile_photo %}<span class="badge b-success">✓ Uploaded</span>{% else %}<span class="badge b-danger">Missing</span>{% endif %}</td>
+                <td>{% if sp.about %}<span class="badge b-success">✓ Written</span>{% else %}<span class="badge b-warning">Missing</span>{% endif %}</td>
+                <td>
+                    <div style="display:flex;gap:0.5rem;">
+                        <a href="{% url 'admin_user_detail' sp.user.id %}" class="btn-icon bi-view"><i class="fas fa-eye"></i></a>
+                        <button class="btn-sm bs-reject" onclick="removeVerRow({{ sp.id }}, this)">Dismiss</button>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}<tr><td colspan="7"><div class="empty-state"><i class="fas fa-id-card"></i><p>All profiles complete!</p></div></td></tr>{% endfor %}
+        </tbody>
+    </table></div></div>
+    {% endif %}
+
+
+    {# ══════════════ MESSAGES ══════════════ #}
+    {% if section == 'messages' %}
+    <div class="page-header"><h2>Messages</h2></div>
+    <div class="stats-grid sg-2">
+        <div class="stat-card"><div class="stat-top"><div class="stat-icon si-blue"><i class="fas fa-comments"></i></div></div><div class="stat-num">{{ total_convs }}</div><div class="stat-label">Conversations</div></div>
+        <div class="stat-card"><div class="stat-top"><div class="stat-icon si-gold"><i class="fas fa-envelope"></i></div></div><div class="stat-num">{{ total_messages }}</div><div class="stat-label">Messages</div></div>
+    </div>
+    <div class="card"><div class="tw"><table>
+        <thead><tr><th>Participants</th><th>Messages</th><th>Last Message</th><th>Updated</th></tr></thead>
+        <tbody>
+            {% for cd in conv_data %}
+            <tr>
+                <td>{% for p in cd.participants %}<span class="badge b-gray" style="margin-right:0.3rem;">{{ p.name|default:p.email }}</span>{% endfor %}</td>
+                <td>{{ cd.msg_count }}</td>
+                <td>{{ cd.last_msg.content|truncatechars:50|default:"—" }}</td>
+                <td>{{ cd.conv.updated_at|date:"M d, Y H:i" }}</td>
+            </tr>
+            {% empty %}<tr><td colspan="4"><div class="empty-state"><i class="fas fa-comments"></i><p>No conversations</p></div></td></tr>{% endfor %}
+        </tbody>
+    </table></div></div>
+    {% endif %}
+
+
+    {# ══════════════ LOGS ══════════════ #}
+    {% if section == 'logs' %}
+    <div class="page-header"><h2>Activity Logs</h2></div>
+
+    <div class="card">
+        <div class="card-header"><h3>Recent Signups</h3></div>
+        {% for u in recent_users %}
+        <div class="activity-item">
+            <div class="act-dot si-green"><i class="fas fa-user-plus"></i></div>
+            <div class="act-text">
+                <p><strong>New user</strong> — {{ u.name|default:"Unknown" }} ({{ u.user_type|default:"—" }}, {{ u.email }})</p>
+                <div class="act-time">{{ u.date_joined|timesince }} ago</div>
+            </div>
+        </div>
+        {% empty %}<div class="empty-state"><p>No signups</p></div>{% endfor %}
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h3>Recent Reviews</h3></div>
+        {% for r in recent_reviews %}
+        <div class="activity-item">
+            <div class="act-dot si-gold"><i class="fas fa-star"></i></div>
+            <div class="act-text">
+                <p><strong>Review</strong> — {{ r.client.name|default:"?" }} gave <span class="stars">{{ r.rating }}★</span> to {{ r.seller.name|default:"?" }}</p>
+                <div class="act-time">{{ r.created_at|timesince }} ago</div>
+            </div>
+        </div>
+        {% empty %}<div class="empty-state"><p>No reviews</p></div>{% endfor %}
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h3>Recent Proposals</h3></div>
+        {% for p in recent_proposals %}
+        <div class="activity-item">
+            <div class="act-dot si-blue"><i class="fas fa-briefcase"></i></div>
+            <div class="act-text">
+                <p><strong>Proposal posted</strong> — "{{ p.title }}" by {{ p.seller.user.name|default:"Unknown" }} (Rs {{ p.base_price }})</p>
+                <div class="act-time">{{ p.created_at|timesince }} ago</div>
+            </div>
+        </div>
+        {% empty %}<div class="empty-state"><p>No proposals</p></div>{% endfor %}
+    </div>
+    {% endif %}
+
+    </div><!-- page-wrap -->
+</div><!-- main -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Done!</span></div>
+
+<script>
+const CSRF = '{{ csrf_token }}';
+
+document.getElementById('curDate').textContent =
+    new Date().toLocaleDateString('en-PK', {weekday:'short', year:'numeric', month:'short', day:'numeric'});
+
+// Toast
+function toast(msg, ok=true) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.querySelector('i').className = ok ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// POST helper
+async function post(url, data={}) {
+    const fd = new FormData();
+    Object.entries(data).forEach(([k,v]) => fd.append(k, v));
+    const r = await fetch(url, {method:'POST', headers:{'X-CSRFToken': CSRF}, body: fd});
+    return r.json();
+}
+
+// Toggle User suspend/activate
+async function toggleUser(id, btn) {
+    if (!confirm('Toggle this user\'s status?')) return;
+    try {
+        const d = await post(`/myadmin/users/${id}/toggle/`);
+        if (d.success) {
+            toast(d.message);
+            ['us-'+id, 'det-status'].forEach(elId => {
+                const el = document.getElementById(elId);
+                if (el) el.innerHTML = d.is_active
+                    ? '<span class="badge b-success">Active</span>'
+                    : '<span class="badge b-danger">Suspended</span>';
+            });
+        } else toast(d.error || 'Error', false);
+    } catch { toast('Network error', false); }
+}
+
+// Delete User
+async function deleteUser(id, btn) {
+    if (!confirm('Permanently delete user? Cannot be undone.')) return;
+    try {
+        const d = await post(`/myadmin/users/${id}/delete/`);
+        if (d.success) {
+            toast(d.message);
+            const row = document.getElementById('ur-'+id);
+            if (row) row.remove();
+            else window.location.href = '/myadmin/users/';
+        } else toast(d.error || 'Error', false);
+    } catch { toast('Network error', false); }
+}
+
+// Toggle Proposal active
+async function toggleProposal(id, btn) {
+    try {
+        const d = await post(`/myadmin/proposals/${id}/toggle/`);
+        if (d.success) {
+            toast(d.message);
+            const el = document.getElementById('ps-'+id);
+            if (el) el.innerHTML = d.is_active
+                ? '<span class="badge b-success">Active</span>'
+                : '<span class="badge b-danger">Inactive</span>';
+        } else toast(d.error || 'Error', false);
+    } catch { toast('Network error', false); }
+}
+
+// Delete Proposal
+async function deleteProposal(id, btn) {
+    if (!confirm('Delete proposal?')) return;
+    try {
+        const d = await post(`/myadmin/proposals/${id}/delete/`);
+        if (d.success) {
+            toast(d.message);
+            const row = document.getElementById('pr-'+id);
+            if (row) row.remove();
+        } else toast(d.error || 'Error', false);
+    } catch { toast('Network error', false); }
+}
+
+// Delete Review
+async function deleteReview(id, btn) {
+    if (!confirm('Delete review?')) return;
+    try {
+        const d = await post(`/myadmin/reviews/${id}/delete/`);
+        if (d.success) {
+            toast('Review deleted');
+            const row = document.getElementById('rv-'+id);
+            if (row) row.remove();
+        } else toast(d.error || 'Error', false);
+    } catch { toast('Network error', false); }
+}
+
+// Dismiss verification row
+function removeVerRow(id, btn) {
+    const row = document.getElementById('vr-'+id);
+    if (row) { row.style.opacity='0.4'; setTimeout(() => row.remove(), 300); }
+    toast('Dismissed');
+}
+
+// Global table search
+document.getElementById('globalSearch').addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('tbody tr').forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+});
+
+// Dashboard charts
+{% if not section %}
+(async () => {
+    try {
+        const data = await (await fetch('/myadmin/api/stats/')).json();
+
+        // Bar chart
+        const chartEl = document.getElementById('signupChart');
+        const max = Math.max(...data.daily_signups.map(d => d.count), 1);
+        chartEl.innerHTML = data.daily_signups.map(d =>
+            `<div class="bar-group">
+                <div class="bar gold" style="height:${Math.max((d.count/max)*155,4)}px" title="${d.day}: ${d.count}"></div>
+                <div class="bar-lbl">${d.day}</div>
+            </div>`
+        ).join('');
+
+        // Donut
+        const ub = data.user_breakdown;
+        const total = (ub.workers + ub.clients + ub.admins + ub.inactive) || 1;
+        const segs = [
+            {v: ub.workers,  c: 'var(--gold)',    l: 'Workers'},
+            {v: ub.clients,  c: 'var(--navy)',    l: 'Clients'},
+            {v: ub.inactive, c: 'var(--danger)',  l: 'Inactive'},
+        ];
+        let pct = 0;
+        const grad = 'conic-gradient(' + segs.map(s => {
+            const p = (s.v/total*100);
+            const seg = `${s.c} ${pct.toFixed(1)}% ${(pct+p).toFixed(1)}%`;
+            pct += p; return seg;
+        }).join(', ') + ')';
+        document.getElementById('donutChart').style.background = grad;
+
+        document.getElementById('donutLegend').innerHTML = segs.map(s =>
+            `<div class="legend-item">
+                <div class="legend-dot" style="background:${s.c}"></div>
+                ${s.l} <span>${(s.v/total*100).toFixed(0)}% (${s.v})</span>
+            </div>`
+        ).join('');
+    } catch(e) { console.log('Chart error:', e); }
+})();
+{% endif %}
+</script>
 </body>
 </html>
