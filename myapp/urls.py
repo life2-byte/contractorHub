@@ -55,7 +55,6 @@ urlpatterns = [
     path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name='password_reset_complete'),
     path('send-email-otp/', views.send_email_otp, name='send_email_otp'),
     path('verify-email-otp/', views.verify_email_otp, name='verify_email_otp'),
-    path('send-phone-otp/', views.send_phone_otp, name='send_phone_otp'),
-    path('verify-phone-otp/', views.verify_phone_otp, name='verify_phone_otp'),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
