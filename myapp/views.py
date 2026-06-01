@@ -426,7 +426,7 @@ def seller_page(request):
     if not request.user.user_type:
         return redirect('landing_page')
     
-    if request.user.user_type.lower() != 'contractor':
+    if not request.user.user_type or request.user.user_type.lower() != 'contractor':
         return redirect('client')
     
 
