@@ -333,7 +333,7 @@
                 </div>
                 <div class="dropdown-menu" id="profileDropdown">
                     <div class="dropdown-user-header">
-                        {% if profile.profile_photo %}<img src="{{ profile.profile_photo.url }}" class="dropdown-user-avatar-img" alt="">{% else %}<div class="dropdown-user-avatar">{{ user.name|first|default:user.email|first|upper }}</div>{% endif %}
+                        {% if profile.profile_photo %}<img src="{{ profile.profile_photo.url }}" class="dropdown-user-avatar-img" alt="">{% else %}<div class="dropdown-user-avatar">{{ user.name|default:user.email|default:"?"|first|upper }}</div>{% endif %}
                         <div class="dropdown-user-info"><h4>{{ user.name|default:"Contractor" }}</h4><p>{{ profile.title|default:"Contractor" }} · Level {{ profile.level }}</p></div>
                     </div>
                     <a href="{% url 'seller_profile' %}" class="dropdown-item"><i class="fas fa-user-circle"></i> My Profile</a>
