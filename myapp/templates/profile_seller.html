@@ -327,7 +327,7 @@
             </div>
             <div class="profile-dropdown">
                 <div class="avatar-pill" onclick="toggleDropdown()">
-                    {% if profile.profile_photo %}<img src="{{ profile.profile_photo.url }}" class="avatar-img" alt="">{% else %}<div class="avatar">{{ user.name|first|default:user.email|first|upper }}</div>{% endif %}
+                    {% if profile.profile_photo %}<img src="{{ profile.profile_photo.url }}" class="avatar-img" alt="">{% else %}<div class="avatar">{{ user.name|default:user.email|default:"?"|first|upper }}</div>{% endif %}
                     {{ user.name|default:"Me"|truncatechars:10 }}
                     <i class="fas fa-chevron-down" style="font-size:0.55rem;color:#999;margin-left:2px;"></i>
                 </div>
