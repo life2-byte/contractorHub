@@ -410,7 +410,7 @@
                     {% if profile.profile_photo %}
                     <img src="{{ profile.profile_photo.url }}" class="avatar-img" alt="">
                     {% else %}
-                    <div class="avatar">{{ user.name|first|default:user.email|first|upper }}</div>
+                    <div class="avatar">{{ user.name|default:user.email|default:"?"|first|upper }}</div>
                     {% endif %}
                     {{ user.name|default:"Me"|truncatechars:10 }}
                     <i class="fas fa-chevron-down" style="font-size:0.55rem;color:#999;margin-left:2px;"></i>
@@ -420,7 +420,7 @@
                         {% if profile.profile_photo %}
                         <img src="{{ profile.profile_photo.url }}" class="dropdown-user-avatar-img" alt="">
                         {% else %}
-                        <div class="dropdown-user-avatar">{{ user.name|first|default:user.email|first|upper }}</div>
+                        <div class="dropdown-user-avatar">{{ user.name|default:user.email|default:"?"|first|upper }}</div>
                         {% endif %}
                         <div class="dropdown-user-info">
                             <h4>{{ user.name|default:"Contractor" }}</h4>
