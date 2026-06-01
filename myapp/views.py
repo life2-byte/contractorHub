@@ -1793,61 +1793,12 @@ def verify_email_otp(request):
 #----------------------------------
 #  firebase credential
 #----------------------------------
-import firebase_admin
-from firebase_admin import credentials, auth as firebase_auth
-
-if not firebase_admin._apps:
-    cred_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'firebase_credentials.json')
-    cred_path = os.path.normpath(cred_path)
-    cred = credentials.Certificate(cred_path)
-    firebase_admin.initialize_app(cred)
 
 # ─────────────────────────────────────────
 # Phone OTP — Send
 # ─────────────────────────────────────────
-@login_required
-@require_POST
-def send_phone_otp(request):
-    try:
-        data = json.loads(request.body)
-        phone = data.get('phone', '').strip()
-    except:
-        return JsonResponse({'success': False, 'message': 'Invalid request'})
-
-    if not phone:
-        return JsonResponse({'success': False, 'message': 'Phone number required'})
-
-    # Firebase se verification link/token generate karo
-    try:
-        # Custom token create karo
-        token = firebase_auth.create_custom_token(phone)
-        return JsonResponse({'success': True, 'token': token.decode()})
-    except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)})
 
 
 # ─────────────────────────────────────────
 # Phone OTP — Verify
 # ─────────────────────────────────────────
-@login_required
-@require_POST
-def verify_phone_otp(request):
-    try:
-        data = json.loads(request.body)
-        id_token = data.get('id_token', '').strip()
-        phone = data.get('phone', '').strip()
-    except:
-        return JsonResponse({'success': False, 'message': 'Invalid request'})
-
-    try:
-        # Firebase token verify karo
-        decoded = firebase_auth.verify_id_token(id_token)
-        
-        # Save to DB
-        request.user.phone = phone
-        request.user.is_phone_verified = True
-        request.user.save(update_fields=['phone', 'is_phone_verified'])
-        
-        return JsonResponse({'success': True, 'message': 'Phone verified! ✅'})
-    except Exception as e:
-        return JsonResponse({'success': False, 'message': 'Verification failed!'})
