@@ -26,7 +26,7 @@ load_dotenv('env.env')
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['contractorhub-4.onrender.com']
 
