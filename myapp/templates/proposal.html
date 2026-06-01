@@ -242,7 +242,7 @@
                         {% if profile.profile_photo %}
                         <img src="{{ profile.profile_photo.url }}" class="dropdown-user-avatar-img" alt="">
                         {% else %}
-                        <div class="dropdown-user-avatar">{{ user.name|first|default:user.email|first|upper }}</div>
+                        <div class="dropdown-user-avatar">{{ user.name|default:user.email|default:"?"|first|upper }}</div>
                         {% endif %}
                         <div class="dropdown-user-info">
                             <h4>{{ user.name|default:"Contractor" }}</h4>
